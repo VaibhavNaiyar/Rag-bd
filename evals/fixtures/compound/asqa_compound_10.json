@@ -1,0 +1,45 @@
+{
+  "id": "asqa_compound_10",
+  "corpus": "asqa",
+  "sample_id": "-8671730800953225881",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_10.json",
+  "turns": [
+    {
+      "utterance": "Who played flash gordon in the tv series?",
+      "chunks": [
+        {
+          "text": "Who played flash",
+          "atMs": 1200
+        },
+        {
+          "text": "gordon in the tv",
+          "atMs": 2800
+        },
+        {
+          "text": "series?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who played flash gordon in the 1954 tv series?",
+          "Who was flash gordon's voice in the 1996 tv series?",
+          "Who played flash gordon in the 2007tv series?"
+        ],
+        "gold_passages": [
+          "Steve Holland (January 8, 1925 – May 10, 1997) was an American actor and male paperback, magazine, and fashion model.",
+          "Toby Proctor is a Canadian voice, film and television actor."
+        ],
+        "gold_answers": [
+          "Eric Johnson",
+          "Steve Holland",
+          "Toby Proctor"
+        ]
+      }
+    }
+  ]
+}

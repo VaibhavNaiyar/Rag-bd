@@ -1,0 +1,44 @@
+{
+  "id": "asqa_compound_08",
+  "corpus": "asqa",
+  "sample_id": "3880667713687536806",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_08.json",
+  "turns": [
+    {
+      "utterance": "Who was the first person who discovered electricity?",
+      "chunks": [
+        {
+          "text": "Who was the",
+          "atMs": 1200
+        },
+        {
+          "text": "first person who discovered",
+          "atMs": 2800
+        },
+        {
+          "text": "electricity?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who was the first person who discovered shocks from electric fish?",
+          "Who was the first person who made a careful study of electricity and magnetism?"
+        ],
+        "gold_passages": [
+          "Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote \"De Magnete\", in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber. He coined the New Latin word \"electricus\" (\"of amber\" or \"like amber\", from ἤλεκτρον, \"elektron\", the Greek word for \"amber\") to refer to the property of attracting small objects after being rubbed. This association gave rise to the English words \"electric\" and \"electricity\", which made their first appearance in print in Thomas Browne's \"Pseudodoxia Epidemica\" of 1646.",
+          "Long before any knowledge of electricity existed, people were aware of shocks from electric fish. Ancient Egyptian texts dating from 2750 BCE referred to these fish as the \"Thunderer of the Nile\", and described them as the \"protectors\" of all other fish. Electric fish were again reported millennia later by ancient Greek, Roman and Arabic naturalists and physicians. Several ancient writers, such as Pliny the Elder and Scribonius Largus, attested to the numbing effect of electric shocks delivered by electric catfish and electric rays, and knew that such shocks could travel along conducting objects. Patients suffering from ailments such as gout or headache were directed to touch electric fish in the hope that the powerful jolt might cure them. Possibly the earliest and nearest approach to the discovery of the identity of lightning, and electricity from any other source, is to be attributed to the Arabs, who before the 15th century had the Arabic word for lightning \"ra‘ad\" () applied to the electric ray."
+        ],
+        "gold_answers": [
+          "Ancient Egyptian",
+          "Gilberd",
+          "William Gilbert"
+        ]
+      }
+    }
+  ]
+}

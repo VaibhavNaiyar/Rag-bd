@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_09",
+  "family": "compound",
+  "sample_id": "-6631842452804060768",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When was the city of new york founded?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "city of new york",
+          "atMs": 2800
+        },
+        {
+          "text": "founded?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

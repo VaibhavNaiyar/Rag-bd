@@ -1,0 +1,52 @@
+{
+  "id": "asqa_compound_35",
+  "corpus": "asqa",
+  "sample_id": "-4943218915122663292",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_35.json",
+  "turns": [
+    {
+      "utterance": "Ok google who won the world cup soccer?",
+      "chunks": [
+        {
+          "text": "Ok google who",
+          "atMs": 1200
+        },
+        {
+          "text": "won the world cup",
+          "atMs": 2800
+        },
+        {
+          "text": "soccer?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who won the 2015 FIFA Women's World Cup?",
+          "Who won the 2011 FIFA Women's World Cup?",
+          "Who won the 2007 FIFA Women's World Cup?",
+          "Who won the 2014 FIFA World Cup?",
+          "Who won the 2010 FIFA World Cup?",
+          "Who won the 2006 FIFA World Cup?"
+        ],
+        "gold_passages": [
+          "Because of the expanded competition format, it was the first time the finalists had played a seventh game in the tournament. The United States had previously reached the final game three times, winning twice (in 1991 and 1999) and placing as runners up in 2011. This was Japan's second successive final appearance and was their attempt to be the first country to successfully defend a title since Germany in the 2007 World Cup. Both teams were undefeated throughout the tournament, with the United States only conceding one goal in the six matches leading up to the final and Japan winning all of their matches in regular time.",
+          "Brazil, Argentina, Spain and Germany are the only teams to win a World Cup outside their continental confederation; Brazil came out victorious in Europe (1958), North America (1970 and 1994) and Asia (2002). Argentina won a World Cup in North America in 1986, while Spain won in Africa in 2010. In 2014, Germany became the first European team to win in the Americas. Only on five occasions have consecutive World Cups been won by teams from the same continent, and currently it is the first time with four champions in a row from the same continental confederation. Italy and Brazil successfully defended their titles in 1938 and 1962 respectively, while Italy's triumph in 2006 has been followed by wins for Spain in 2010, Germany in 2014 and France in 2018. Currently, it is also the first time that one of the currently winning continents (Europe) is ahead of the other (South America) by more than one championship.",
+          "The 2015 FIFA Women's World Cup Final was a women's association football match that took place on 5 July 2015 at BC Place, in Vancouver, British Columbia, Canada, to determine the winner of the 2015 FIFA Women's World Cup. It was played between Japan and the United States, in a rematch of the 2011 final. The stakes were high for both sides: if the United States won the match, it would be the only country to have won in three Women's World Cup finals; if Japan had won instead, then it would be the first football team, men's or women's, to win twice under the same coach (Norio Sasaki for Japan) since Vittorio Pozzo led Italy to victory in the 1934 World Cup and the 1938 World Cup. Ultimately, the United States won 5–2, winning its first title in 16 years and becoming the first team to win three Women's World Cup finals.",
+          "The 2015 final was Japan's second consecutive time contesting a World Cup final. Their first and only win was at the expense of the United States in the 2011 Women's World Cup, held in Germany. It was also the third consecutive time that a major women's football tournament final featured Japan and the United States, after the 2011 World Cup and 2012 Olympics."
+        ],
+        "gold_answers": [
+          "Germany",
+          "Italy",
+          "Japan",
+          "Spain",
+          "United States"
+        ]
+      }
+    }
+  ]
+}

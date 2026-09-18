@@ -1,0 +1,23 @@
+{
+  "id": "compound_01",
+  "corpus": "demo",
+  "description": "Guide example 1: venue capacity, cancellation terms and catering in one utterance.",
+  "turns": [
+    {
+      "utterance": "I need to plan a customer workshop in Pune for 30 people, and I need the cancellation policy and the catering options.",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Pune workshop venue with capacity for 30 people",
+          "venue cancellation and refund policy",
+          "catering options for a workshop in Pune"
+        ],
+        "gold_docs": [
+          "pune_workshop_venues.md",
+          "venue_cancellation_policy.md",
+          "catering_guidelines.md"
+        ]
+      }
+    }
+  ]
+}

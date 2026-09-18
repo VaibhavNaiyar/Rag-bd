@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_01",
+  "family": "single",
+  "sample_id": "7652576904728829439",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the Royal New Zealand Yacht Squadron win its first America's Cup?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Royal New Zealand Yacht",
+          "atMs": 2800
+        },
+        {
+          "text": "Squadron win its first America's",
+          "atMs": 4800
+        },
+        {
+          "text": "Cup?",
+          "atMs": 5200
+        }
+      ],
+      "speech_end_ms": 5200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450
+    }
+  ]
+}

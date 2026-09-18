@@ -1,0 +1,50 @@
+{
+  "id": "asqa_compound_18",
+  "corpus": "asqa",
+  "sample_id": "-6082358069944180451",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_18.json",
+  "turns": [
+    {
+      "utterance": "Who won the men's french open title?",
+      "chunks": [
+        {
+          "text": "Who won the",
+          "atMs": 1200
+        },
+        {
+          "text": "men's french open title?",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who won the singles men's French Open title in 2017?",
+          "Who won the singles men's French Open title in 2016?",
+          "Who won the singles men's French Open title in 2015?",
+          "Who won the doubles men's French Open title in 2017?",
+          "Who won the doubles men's French Open title in 2016?",
+          "Who won the doubles men's French Open title in 2015?"
+        ],
+        "gold_passages": [
+          "American Jim Courier won consecutive titles in 1991 and 1992 before Spaniard Sergi Bruguera repeated the feat in 1993 and 1994. Gustavo Kuerten won three titles in 1997, 2000 and 2001. 2005 marked Rafael Nadal's first French Open; he won four consecutive titles from 2005 to 2008. Nadal was beaten in the round of 16 of the 2009 tournament by Robin Söderling who lost to Roger Federer in the final. Nadal regained the title in 2010 and defended his crowns in 2011, 2012, 2013, and 2014. In the 2015 event, he was knocked out in the quarter-finals by Novak Djokovic, who eventually lost in the final to Stan Wawrinka.",
+          "Rafael Nadal has won the most French Open titles, with twelve (which is also a record for any player, male or female, in any one of the four major tournaments) and also holds the record for the most consecutive wins in the Open Era, with five from 2010 to 2014. Max Decugis won eight French Championships prior to the Open Era. Michael Chang became the youngest player to win the French Open when he took the title in 1989 at . In contrast, André Vacherot is the oldest champion, having won in 1901 at 40 years old. In the Open era, this record belongs to Andrés Gimeno, who was 34 years and 9 months old when he won in 1972. French players have won the most French Open men's singles titles, with 38 victories, followed by Spanish (18) and Australian players (11). The current champion is Rafael Nadal who beat Dominic Thiem in the 2019 final to win his twelfth French Open title."
+        ],
+        "gold_answers": [
+          "Feliciano López",
+          "Ivan Dodig",
+          "Marc López",
+          "Marcelo Melo",
+          "Michael Venus",
+          "Novak Djokovic",
+          "Rafael Nadal",
+          "Ryan Harrison",
+          "Stan Wawrinka"
+        ]
+      }
+    }
+  ]
+}

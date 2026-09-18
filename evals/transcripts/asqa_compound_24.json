@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_24",
+  "family": "compound",
+  "sample_id": "1402203654099218009",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who wrote the national anthem trinidad and tobago?",
+      "chunks": [
+        {
+          "text": "Who wrote the",
+          "atMs": 1200
+        },
+        {
+          "text": "national anthem trinidad and",
+          "atMs": 2800
+        },
+        {
+          "text": "tobago?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

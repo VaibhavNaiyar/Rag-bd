@@ -1,0 +1,37 @@
+{
+  "id": "asqa_single_09",
+  "family": "single",
+  "sample_id": "-4879828696940526525",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What play has the line it is a tale told by an idiot full of sound and fury?",
+      "chunks": [
+        {
+          "text": "What play has",
+          "atMs": 1200
+        },
+        {
+          "text": "the line it is",
+          "atMs": 2800
+        },
+        {
+          "text": "a tale told by an",
+          "atMs": 4800
+        },
+        {
+          "text": "idiot full of",
+          "atMs": 6000
+        },
+        {
+          "text": "sound and fury?",
+          "atMs": 7200
+        }
+      ],
+      "speech_end_ms": 7200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 7450
+    }
+  ]
+}

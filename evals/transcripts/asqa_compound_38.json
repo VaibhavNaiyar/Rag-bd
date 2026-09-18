@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_38",
+  "family": "compound",
+  "sample_id": "-2460031680453256643",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who did kobe bryant beat in the finals?",
+      "chunks": [
+        {
+          "text": "Who did kobe",
+          "atMs": 1200
+        },
+        {
+          "text": "bryant beat in the",
+          "atMs": 2800
+        },
+        {
+          "text": "finals?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

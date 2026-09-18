@@ -1,0 +1,41 @@
+{
+  "id": "asqa_single_15",
+  "corpus": "asqa",
+  "sample_id": "3643093465010420057",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_15.json",
+  "turns": [
+    {
+      "utterance": "What unincorporated city in texas has the highest elevation?",
+      "chunks": [
+        {
+          "text": "What unincorporated city",
+          "atMs": 1200
+        },
+        {
+          "text": "in texas has the",
+          "atMs": 2800
+        },
+        {
+          "text": "highest elevation?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What unincorporated city in texas has the highest elevation?"
+        ],
+        "gold_passages": [
+          "Fort Davis has the highest elevation above sea level of any county seat in Texas; the elevation is ."
+        ],
+        "gold_answers": [
+          "Fort Davis",
+          "Fort Davis, Texas"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_40",
+  "family": "compound",
+  "sample_id": "-1227379877123735381",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who played the older dottie in a league of their own?",
+      "chunks": [
+        {
+          "text": "Who played the",
+          "atMs": 1200
+        },
+        {
+          "text": "older dottie in a",
+          "atMs": 2800
+        },
+        {
+          "text": "league of their own?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

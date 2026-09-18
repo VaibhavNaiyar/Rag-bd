@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+data/index/
+data/index_asqa/
+data/corpus/
+data/traces/
+*.egg-info/
+freeze.txt
+data/logs/

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_11",
+  "family": "late_detail",
+  "sample_id": "767737324563716850",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who has the most rbis in major league history?",
+      "chunks": [
+        {
+          "text": "Who has the",
+          "atMs": 1200
+        },
+        {
+          "text": "most rbis in major",
+          "atMs": 2800
+        },
+        {
+          "text": "league history?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Sorry, I mean a single season.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "a single season.",
+          "atMs": 2400
+        }
+      ],
+      "speech_end_ms": 2400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2650
+    }
+  ]
+}

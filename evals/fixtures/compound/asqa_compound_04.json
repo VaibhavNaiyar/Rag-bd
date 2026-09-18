@@ -1,0 +1,45 @@
+{
+  "id": "asqa_compound_04",
+  "corpus": "asqa",
+  "sample_id": "4214526319411191996",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_04.json",
+  "turns": [
+    {
+      "utterance": "Who played the chicago cubs in the world series last year?",
+      "chunks": [
+        {
+          "text": "Who played the",
+          "atMs": 1200
+        },
+        {
+          "text": "chicago cubs in the",
+          "atMs": 2800
+        },
+        {
+          "text": "world series last year?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who played the Chicago Cubs in the 2016 World Series?",
+          "Who played the Chicago Cubs in the 1908 World Series?",
+          "Who played the Chicago Cubs in the 1907 World Series?"
+        ],
+        "gold_passages": [
+          "Chicago halted St. Louis' run to the playoffs by taking four of five games from the Cardinals at Wrigley Field in early September, after which they won their first division title in 14 years. They then went on to defeat the Atlanta Braves in a dramatic five-game Division Series, the franchise's first postseason series win since beating the Detroit Tigers in the 1908 World Series.",
+          "The 1993 film \"Rookie of the Year\", directed by Daniel Stern, centers on the Cubs as a team going nowhere into August when the team chances upon 12-year-old Cubs fan Henry Rowengartner (Thomas Ian Nicholas), whose right (throwing) arm tendons have healed tightly after a broken arm and granted him the ability to regularly pitch at speeds in excess of . Following the Cubs' win over the Cleveland Indians in Game 7 of the 2016 World Series, Nicholas, in celebration, tweeted the final shot from the movie: Henry holding his fist up to the camera to show a Cubs World Series ring.",
+          "The Cubs enjoyed one more pennant at the close of World War II, finishing 98–56. Due to the wartime travel restrictions, the first three games of the 1945 World Series were played in Detroit, where the Cubs won two games, including a one-hitter by Claude Passeau, and the final four were played at Wrigley. The Cubs lost the series, and did not return until the 2016 World Series. After losing the 1945 World Series to the Detroit Tigers, the Cubs finished with a respectable 82–71 record in the following year, but this was only good enough for third place."
+        ],
+        "gold_answers": [
+          "Cleveland Indians",
+          "Detroit Tigers"
+        ]
+      }
+    }
+  ]
+}

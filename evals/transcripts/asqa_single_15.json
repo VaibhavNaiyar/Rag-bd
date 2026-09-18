@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_15",
+  "family": "single",
+  "sample_id": "3643093465010420057",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What unincorporated city in texas has the highest elevation?",
+      "chunks": [
+        {
+          "text": "What unincorporated city",
+          "atMs": 1200
+        },
+        {
+          "text": "in texas has the",
+          "atMs": 2800
+        },
+        {
+          "text": "highest elevation?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "chitchat_01",
+  "corpus": "demo",
+  "description": "No information need at all.",
+  "turns": [
+    {
+      "utterance": "Okay thanks, that is great.",
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_17",
+  "family": "single",
+  "sample_id": "-3141829133091032540",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Which character is the girl from brenda's got a baby video?",
+      "chunks": [
+        {
+          "text": "Which character is",
+          "atMs": 1200
+        },
+        {
+          "text": "the girl from brenda's",
+          "atMs": 2800
+        },
+        {
+          "text": "got a baby video?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

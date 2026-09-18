@@ -1,0 +1,57 @@
+{
+  "id": "asqa_late_detail_05",
+  "corpus": "asqa",
+  "sample_id": "-3125267951932062499",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('a process').",
+  "transcript": "evals/transcripts/asqa_late_detail_05.json",
+  "turns": [
+    {
+      "utterance": "The dna directed synthesis of an rna molecule is called?",
+      "chunks": [
+        {
+          "text": "The dna directed",
+          "atMs": 1200
+        },
+        {
+          "text": "synthesis of an rna",
+          "atMs": 2800
+        },
+        {
+          "text": "molecule is called?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Sorry, I mean a process.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "a process.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "RNA polymerase (ribonucleic acid polymerase), abbreviated RNAP or RNApol, officially DNA-directed RNA polymerase, is an enzyme that synthesizes RNA from a DNA template. RNAP locally opens the double-stranded DNA (usually about four turns of the double helix) so that one strand of the exposed nucleotides can be used as a template for the synthesis of RNA, a process called transcription. A transcription factor and its associated transcription mediator complex must be attached to a DNA binding site called a promoter region before RNAP can initiate the DNA unwinding at that position. RNAP not only initiates RNA transcription, it also guides the nucleotides into position, facilitates attachment and elongation, has intrinsic proofreading and replacement capabilities, and termination recognition capability. In eukaryotes, RNAP can build chains as long as 2.4 million nucleotides."
+        ],
+        "gold_answers": [
+          "Transcription"
+        ],
+        "refined_question": "The dna directed synthesis of an rna molecule is a process called?",
+        "condition": "a process"
+      }
+    }
+  ]
+}

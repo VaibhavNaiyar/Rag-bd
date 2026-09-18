@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_05",
+  "family": "suppression",
+  "sample_id": "-8308194152547313994",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where does implantation of the fertilized ovum usually occur?",
+      "chunks": [
+        {
+          "text": "Where does implantation",
+          "atMs": 1200
+        },
+        {
+          "text": "of the fertilized ovum",
+          "atMs": 2800
+        },
+        {
+          "text": "usually occur?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Read the last answer again.",
+      "chunks": [
+        {
+          "text": "Read the last",
+          "atMs": 1200
+        },
+        {
+          "text": "answer again.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_06",
+  "family": "late_detail",
+  "sample_id": "1763501929942667006",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who is the singer of main tera boyfriend?",
+      "chunks": [
+        {
+          "text": "Who is the",
+          "atMs": 1200
+        },
+        {
+          "text": "singer of main tera",
+          "atMs": 2800
+        },
+        {
+          "text": "boyfriend?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Oh wait, I meant the original version.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant the original version.",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

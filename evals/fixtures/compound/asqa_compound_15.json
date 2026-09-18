@@ -1,0 +1,47 @@
+{
+  "id": "asqa_compound_15",
+  "corpus": "asqa",
+  "sample_id": "-1553526002861565167",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_15.json",
+  "turns": [
+    {
+      "utterance": "Who plays cat in beauty and the beast?",
+      "chunks": [
+        {
+          "text": "Who plays cat",
+          "atMs": 1200
+        },
+        {
+          "text": "in beauty and the",
+          "atMs": 2800
+        },
+        {
+          "text": "beast?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who plays cat in the 2012 reboot of beauty and the beast tv series?",
+          "Who plays cat in the 1987 beauty and the beast tv series?",
+          "Who plays Catherine in the 2012 reboot of the beauty and the beast tv series?",
+          "Who plays Catherine in the 1987 beauty and the beast tv series?"
+        ],
+        "gold_passages": [
+          "Beauty and the Beast is an American fantasy-drama television series which first aired on CBS from September 25, 1987 to August 4, 1990. Creator Ron Koslow's updated version of the fairy tale has a double focus: the relationship between Vincent (Ron Perlman), a mythic, noble man-beast, and Catherine (Linda Hamilton), a savvy Assistant District Attorney in New York, and a secret utopian community of social outcasts living in a subterranean sanctuary. Through an empathetic bond, Vincent senses Catherine's emotions, and becomes her guardian.",
+          "The television series stars New Zealand actor Jay Ryan as Vincent (the \"beast\") and Canadian actress Kristin Kreuk as Catherine (the \"beauty\"). The pilot was filmed in Toronto, Ontario, Canada in March 2012."
+        ],
+        "gold_answers": [
+          "Kristin Kreuk",
+          "Kristin Laura Kreuk",
+          "Linda Carroll Hamilton",
+          "Linda Hamilton"
+        ]
+      }
+    }
+  ]
+}

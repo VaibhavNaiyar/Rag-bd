@@ -1,0 +1,19 @@
+{
+  "id": "single_02",
+  "corpus": "demo",
+  "description": "One information need; must yield exactly one sub-query.",
+  "turns": [
+    {
+      "utterance": "How many people can Riverside Hall seat in a classroom layout?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "How many people can Riverside Hall seat in a classroom layout?"
+        ],
+        "gold_docs": [
+          "pune_workshop_venues.md"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "asqa_suppression_03",
+  "family": "suppression",
+  "sample_id": "2460950840947172152",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who's won the most premierships in afl?",
+      "chunks": [
+        {
+          "text": "Who's won the",
+          "atMs": 1200
+        },
+        {
+          "text": "most premierships in afl?",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    },
+    {
+      "text": "Put that in one sentence.",
+      "chunks": [
+        {
+          "text": "Put that in",
+          "atMs": 1200
+        },
+        {
+          "text": "one sentence.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

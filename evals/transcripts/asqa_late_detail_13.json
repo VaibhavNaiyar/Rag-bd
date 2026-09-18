@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_13",
+  "family": "late_detail",
+  "sample_id": "2416330318995122750",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What is the name of the tower big ben is in?",
+      "chunks": [
+        {
+          "text": "What is the",
+          "atMs": 1200
+        },
+        {
+          "text": "name of the tower",
+          "atMs": 2800
+        },
+        {
+          "text": "big ben is in?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    },
+    {
+      "text": "Actually, I meant since 2012.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "since 2012.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

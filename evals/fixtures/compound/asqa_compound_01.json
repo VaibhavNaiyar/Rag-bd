@@ -1,0 +1,49 @@
+{
+  "id": "asqa_compound_01",
+  "corpus": "asqa",
+  "sample_id": "-196855123397981737",
+  "description": "ASQA ambiguous question with 5 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_01.json",
+  "turns": [
+    {
+      "utterance": "Who took control of the italian government in 1922?",
+      "chunks": [
+        {
+          "text": "Who took control",
+          "atMs": 1200
+        },
+        {
+          "text": "of the italian government",
+          "atMs": 2800
+        },
+        {
+          "text": "in 1922?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What party took control of the Italian government in 1922?",
+          "What leader took control of the Italian government in 1922?",
+          "What faction took control of the Italian government in 1922?",
+          "Who is the party that took control of the italian government in 1922?",
+          "Who is the prime minister that took control of the italian government in 1922?"
+        ],
+        "gold_passages": [
+          "Fascist Italy is the era of National Fascist Party government from 1922 to 1943 with Benito Mussolini as Prime Minister of the Kingdom of Italy. The Italian Fascists imposed totalitarian rule and crushed political and intellectual opposition, while promoting economic modernization, traditional social values and a rapprochement with the Roman Catholic Church. According to Payne (1996), \"[the] Fascist government passed through several relatively distinct phases\". The first phase (1923–1925) was nominally a continuation of the parliamentary system, albeit with a \"legally-organized executive dictatorship\". The second phase (1925–1929) was \"the construction of the Fascist dictatorship proper\". The third phase (1929–1934) was with less activism. The fourth phase (1935–1940) was characterized by an aggressive foreign policy: Second Italo-Ethiopian War, which was launched from Eritrea and Somaliland; confrontations with the League of Nations, leading to sanctions; growing economic autarky; invasion of Albania; and the signing of the Pact of Steel. The fifth phase (1940–1943) was World War II itself which ended in military defeat, while the sixth and final phase (1943–1945) was the rump Salò Government under German control."
+        ],
+        "gold_answers": [
+          "Benito Amilcare Andrea Mussolini",
+          "Benito Mussolini",
+          "Italian fascists",
+          "National Fascist Party",
+          "PNF",
+          "Partito Nazionale Fascista"
+        ]
+      }
+    }
+  ]
+}

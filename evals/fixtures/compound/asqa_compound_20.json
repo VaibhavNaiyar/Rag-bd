@@ -1,0 +1,45 @@
+{
+  "id": "asqa_compound_20",
+  "corpus": "asqa",
+  "sample_id": "-8636176444481722834",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_20.json",
+  "turns": [
+    {
+      "utterance": "Who acted as harley quinn in suicide squad?",
+      "chunks": [
+        {
+          "text": "Who acted as",
+          "atMs": 1200
+        },
+        {
+          "text": "harley quinn in suicide",
+          "atMs": 2800
+        },
+        {
+          "text": "squad?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who acted as harley quinn in the 2016 suicide squad?",
+          "Who acted as harley quinn in the Suicide Squad: Hell to Pay?",
+          "Who acted as harley quinn in suicide squad 2?"
+        ],
+        "gold_passages": [
+          "Suicide Squad: Hell to Pay is a 2018 American adult animated superhero film produced by Warner Bros. Animation and distributed by Warner Bros. Home Entertainment...The voice cast includes Christian Slater as Deadshot, Tara Strong as Harley Quinn and Vanessa Williams as Amanda Waller.",
+          "The character was originally voiced by Arleen Sorkin in the DC animated universe. Since then, she has later starred in her own animated series, with her voice provided by Kaley Cuoco. In the \"Birds of Prey\" television series, she was portrayed by actress Mia Sara. In the Fox series \"Gotham\" a character known as Ecco, portrayed by Francesca Root-Dodson and bearing all the characteristics of Harley Quinn, was introduced in the fourth season. The character made her live-action feature film debut in the 2016 film \"Suicide Squad\", portrayed by Margot Robbie. Robbie will reprise the role in \"Birds of Prey\" (2020) and \"The Suicide Squad\" (2021).",
+          "The film's mid-credit scene leads to the 2017 film \"Justice League\". After the release and financial success of \"Suicide Squad\", Warner Bros. and DC Films announced multiple films being developed featuring Margot Robbie reprising her role as Harley Quinn, including: \"Suicide Squad 2\", \"Gotham City Sirens\", \"Birds of Prey\", and an untitled film centered around Quinn and the Joker. Various sources report that the studios plan on featuring the anti-heroine in a trilogy of films for the character's first story-arc."
+        ],
+        "gold_answers": [
+          "Margot Robbie",
+          "Tara Strong"
+        ]
+      }
+    }
+  ]
+}

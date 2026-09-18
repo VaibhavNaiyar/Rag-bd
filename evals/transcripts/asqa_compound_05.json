@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_05",
+  "family": "compound",
+  "sample_id": "-9141149438582194391",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who has scored the highest number of runs in test cricket?",
+      "chunks": [
+        {
+          "text": "Who has scored",
+          "atMs": 1200
+        },
+        {
+          "text": "the highest number of",
+          "atMs": 2800
+        },
+        {
+          "text": "runs in test cricket?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

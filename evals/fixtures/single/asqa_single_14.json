@@ -1,0 +1,44 @@
+{
+  "id": "asqa_single_14",
+  "corpus": "asqa",
+  "sample_id": "-6301438413612247126",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_14.json",
+  "turns": [
+    {
+      "utterance": "What part of the the shoulder does flat iron cut of meat come from?",
+      "chunks": [
+        {
+          "text": "What part of",
+          "atMs": 1200
+        },
+        {
+          "text": "the the shoulder does",
+          "atMs": 2800
+        },
+        {
+          "text": "flat iron cut of meat",
+          "atMs": 4800
+        },
+        {
+          "text": "come from?",
+          "atMs": 5600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What part of the the shoulder does flat iron cut of meat come from?"
+        ],
+        "gold_passages": [
+          "This cut of steak is from the shoulder of a beef animal. It is located adjacent to the heart of the shoulder clod, under the seven or paddle bone (shoulder blade or scapula). The steak encompasses the infraspinatus muscles of beef, and one may see this displayed in some butcher shops and meat markets as a top blade roast or informally called a \"patio steak\". Anatomically, the muscle forms the dorsal part of the rotator cuff of the steer. This cut is anatomically distinct from the shoulder tender, which lies directly below it and is the teres major."
+        ],
+        "gold_answers": [
+          "adjacent to the heart of the shoulder clod, under the seven or paddle bone"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "unanswerable_01",
+  "corpus": "demo",
+  "description": "One need the corpus cannot answer, one it can partly answer.",
+  "turns": [
+    {
+      "utterance": "What is the company policy on bringing pets to the office, and what does parking cost at Riverside Hall?",
+      "expect": {
+        "mode": "retrieve",
+        "must_flag_uncertainty": true
+      }
+    }
+  ]
+}

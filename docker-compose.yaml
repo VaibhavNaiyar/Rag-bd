@@ -1,0 +1,60 @@
+# One service by default, so `docker compose up` is one fast command (gate G1).
+# Dashboards are opt-in: `docker compose --profile observability up`.
+
+services:
+  app:
+    build: .
+    image: streaming-live-rag:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # Serves the demo corpus shipped in the image. ./data/corpus is the ASQA
+      # eval corpus, so point this at your own mount to serve a real one.
+      SLR_CORPUS_DIR: /app/evals/corpora/demo
+      SLR_INDEX_DIR: /data/index
+      SLR_TRACE_PATH: /data/traces/trace.jsonl
+      # Unset -> the deterministic offline arms run, and the suite still passes.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SLR_LLM: ${SLR_LLM:-auto}
+      SLR_LLM_MODEL: ${SLR_LLM_MODEL:-gpt-4o-mini}
+      SLR_CONTROLLER: ${SLR_CONTROLLER:-rule}
+      SLR_BRANCHES: ${SLR_BRANCHES:-bm25,dense}
+      SLR_QUOTA_PER_INTENT: ${SLR_QUOTA_PER_INTENT:-2}
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+
+  # `docker compose run --rm eval` — the benchmark, unattended.
+  eval:
+    build: .
+    image: streaming-live-rag:latest
+    profiles: ["eval"]
+    environment:
+      # The demo corpus ships in the image; ./data/corpus is the ASQA eval corpus.
+      SLR_CORPUS_DIR: /app/evals/corpora/demo
+      SLR_INDEX_DIR: /data/index
+      SLR_TRACE_PATH: /data/traces/trace.jsonl
+      SLR_ASQA_DIR: /data
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./data:/data
+      - ./docs:/app/docs
+      - ./evals/results:/app/evals/results
+    entrypoint: ["/app/scripts/entrypoint.sh"]
+    command: ["eval"]
+
+  # Optional: OTLP collector for the trace stream. Never on the default path —
+  # a judge running G1 must not wait for a second image to boot.
+  otel:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    profiles: ["observability"]
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./docs/otel-collector.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "4318:4318"

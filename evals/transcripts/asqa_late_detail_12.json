@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_12",
+  "family": "late_detail",
+  "sample_id": "-1839582389367643155",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who played alice in a league of their own?",
+      "chunks": [
+        {
+          "text": "Who played alice",
+          "atMs": 1200
+        },
+        {
+          "text": "in a league of",
+          "atMs": 2800
+        },
+        {
+          "text": "their own?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Oh wait, I meant younger.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant younger.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

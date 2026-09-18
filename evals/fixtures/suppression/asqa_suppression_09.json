@@ -1,0 +1,49 @@
+{
+  "id": "asqa_suppression_09",
+  "corpus": "asqa",
+  "sample_id": "-7856526841607636298",
+  "description": "A normal ASQA question, then a presentation-only follow-up that must not retrieve.",
+  "transcript": "evals/transcripts/asqa_suppression_09.json",
+  "turns": [
+    {
+      "utterance": "When does the new family guy season come out?",
+      "chunks": [
+        {
+          "text": "When does the",
+          "atMs": 1200
+        },
+        {
+          "text": "new family guy season",
+          "atMs": 2800
+        },
+        {
+          "text": "come out?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Say that in two bullets.",
+      "chunks": [
+        {
+          "text": "Say that in",
+          "atMs": 1200
+        },
+        {
+          "text": "two bullets.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

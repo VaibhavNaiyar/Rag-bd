@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_14",
+  "family": "suppression",
+  "sample_id": "6366045689787365015",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the song lean on me come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "song lean on me",
+          "atMs": 2800
+        },
+        {
+          "text": "come out?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Summarize what you just said.",
+      "chunks": [
+        {
+          "text": "Summarize what you",
+          "atMs": 1200
+        },
+        {
+          "text": "just said.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

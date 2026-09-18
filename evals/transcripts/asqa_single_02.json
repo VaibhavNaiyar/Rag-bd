@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_02",
+  "family": "single",
+  "sample_id": "-8110325890451609363",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the Spanish version of Christina Aguilera's Genie in a Bottle come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Spanish version of Christina",
+          "atMs": 2800
+        },
+        {
+          "text": "Aguilera's Genie in a Bottle",
+          "atMs": 4800
+        },
+        {
+          "text": "come out?",
+          "atMs": 5600
+        }
+      ],
+      "speech_end_ms": 5600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850
+    }
+  ]
+}

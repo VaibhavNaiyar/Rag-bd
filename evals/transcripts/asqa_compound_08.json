@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_08",
+  "family": "compound",
+  "sample_id": "3880667713687536806",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who was the first person who discovered electricity?",
+      "chunks": [
+        {
+          "text": "Who was the",
+          "atMs": 1200
+        },
+        {
+          "text": "first person who discovered",
+          "atMs": 2800
+        },
+        {
+          "text": "electricity?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

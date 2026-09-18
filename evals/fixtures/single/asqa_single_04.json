@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_04",
+  "corpus": "asqa",
+  "sample_id": "-8184134749620599612",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_04.json",
+  "turns": [
+    {
+      "utterance": "When did the Great Fire of London start?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Great Fire of London",
+          "atMs": 2800
+        },
+        {
+          "text": "start?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did the Great Fire of London start?"
+        ],
+        "gold_passages": [
+          "The Great Fire started at the bakery (or baker's house) of Thomas Farriner (or Farynor) on Pudding Lane shortly after midnight on Sunday, 2 September, and spread rapidly west across the City of London. The major firefighting technique of the time was to create firebreaks by means of demolition; this was critically delayed owing to the indecisiveness of Lord Mayor of London Sir Thomas Bloodworth. By the time large-scale demolitions were ordered on Sunday night, the wind had already fanned the bakery fire into a firestorm that defeated such measures. The fire pushed north on Monday into the heart of the City."
+        ],
+        "gold_answers": [
+          "Sunday , 2 September"
+        ]
+      }
+    }
+  ]
+}

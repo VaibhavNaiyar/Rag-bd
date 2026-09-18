@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_29",
+  "family": "compound",
+  "sample_id": "9184423694390444844",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What's the most points scored in an nba game?",
+      "chunks": [
+        {
+          "text": "What's the most",
+          "atMs": 1200
+        },
+        {
+          "text": "points scored in an",
+          "atMs": 2800
+        },
+        {
+          "text": "nba game?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

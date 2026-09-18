@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_12",
+  "family": "suppression",
+  "sample_id": "-2447485837780724019",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where was it came from outer space filmed?",
+      "chunks": [
+        {
+          "text": "Where was it",
+          "atMs": 1200
+        },
+        {
+          "text": "came from outer space",
+          "atMs": 2800
+        },
+        {
+          "text": "filmed?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Repeat that more slowly.",
+      "chunks": [
+        {
+          "text": "Repeat that more",
+          "atMs": 1200
+        },
+        {
+          "text": "slowly.",
+          "atMs": 1600
+        }
+      ],
+      "speech_end_ms": 1600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850
+    }
+  ]
+}

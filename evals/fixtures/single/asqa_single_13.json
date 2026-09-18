@@ -1,0 +1,41 @@
+{
+  "id": "asqa_single_13",
+  "corpus": "asqa",
+  "sample_id": "765055097611749335",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_13.json",
+  "turns": [
+    {
+      "utterance": "Where is the tv show the ranch filmed?",
+      "chunks": [
+        {
+          "text": "Where is the",
+          "atMs": 1200
+        },
+        {
+          "text": "tv show the ranch",
+          "atMs": 2800
+        },
+        {
+          "text": "filmed?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where is the tv show the ranch filmed?"
+        ],
+        "gold_passages": [
+          "While the opening sequence shows scenes from Norwood and Ouray, Colorado and surrounding Ouray and San Miguel Counties, \"The Ranch\" is filmed on a sound stage in front of a live audience in Burbank, California. Each season consists of 20 episodes broken up into two parts, each containing 10 episodes, the episodes are approximately 30 minutes in length. All episodes are named after American country music songs, predominantly Kenny Chesney in part one, George Strait in part two, Tim McGraw in part three, Garth Brooks in part four, Dolly Parton in part five, Alabama in part six, and Brad Paisley in part seven."
+        ],
+        "gold_answers": [
+          "Burbank, California",
+          "sound stage"
+        ]
+      }
+    }
+  ]
+}

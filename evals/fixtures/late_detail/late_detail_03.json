@@ -1,0 +1,23 @@
+{
+  "id": "late_detail_03",
+  "corpus": "demo",
+  "description": "Venue for a workshop, then the group turns out to need external catering.",
+  "turns": [
+    {
+      "utterance": "Which Pune venue should I book for a hands-on workshop with 24 people?",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "But we also want to bring in an outside caterer.",
+      "expect": {
+        "mode": "refine",
+        "gold_docs": [
+          "catering_guidelines.md",
+          "pune_workshop_venues.md"
+        ]
+      }
+    }
+  ]
+}

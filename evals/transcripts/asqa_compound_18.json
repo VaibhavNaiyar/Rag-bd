@@ -1,0 +1,25 @@
+{
+  "id": "asqa_compound_18",
+  "family": "compound",
+  "sample_id": "-6082358069944180451",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who won the men's french open title?",
+      "chunks": [
+        {
+          "text": "Who won the",
+          "atMs": 1200
+        },
+        {
+          "text": "men's french open title?",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

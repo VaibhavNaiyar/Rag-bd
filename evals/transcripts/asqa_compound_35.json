@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_35",
+  "family": "compound",
+  "sample_id": "-4943218915122663292",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Ok google who won the world cup soccer?",
+      "chunks": [
+        {
+          "text": "Ok google who",
+          "atMs": 1200
+        },
+        {
+          "text": "won the world cup",
+          "atMs": 2800
+        },
+        {
+          "text": "soccer?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

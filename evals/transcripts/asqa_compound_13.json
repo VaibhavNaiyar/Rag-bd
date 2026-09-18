@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_13",
+  "family": "compound",
+  "sample_id": "-2427005357321258325",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who did the virginia plan give more power to?",
+      "chunks": [
+        {
+          "text": "Who did the",
+          "atMs": 1200
+        },
+        {
+          "text": "virginia plan give more",
+          "atMs": 2800
+        },
+        {
+          "text": "power to?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

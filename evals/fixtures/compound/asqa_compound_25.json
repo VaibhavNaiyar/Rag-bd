@@ -1,0 +1,46 @@
+{
+  "id": "asqa_compound_25",
+  "corpus": "asqa",
+  "sample_id": "4129054433505407523",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_25.json",
+  "turns": [
+    {
+      "utterance": "When did the first cassette tape come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "first cassette tape come",
+          "atMs": 2800
+        },
+        {
+          "text": "out?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When was the first compact cassette tape invented and introduced in Europe?",
+          "When did the first large cassette tape that failed come out?",
+          "When did the first compact cassette tape get introduced to the United States?"
+        ],
+        "gold_passages": [
+          "By 1953, 1 million U.S. homes had tape machines. In 1958, following four years of development, RCA Victor introduced the stereo, quarter-inch, reversible, reel-to-reel RCA tape cartridge. However, it was a large cassette (5 × 7 in, or 13 × 18 cm), and offered few pre-recorded tapes. Despite the multiple versions, it failed. Later the similar Elcaset also failed in the market.",
+          "In 1962, Philips invented the Compact Cassette medium for audio storage, introducing it in Europe on 30 August 1963 at the Berlin Radio Show, and in the United States (under the \"Norelco\" brand) in November 1964, with the trademark name \"Compact Cassette\". The team at Philips was led by Lou Ottens in Hasselt, Belgium."
+        ],
+        "gold_answers": [
+          "1958",
+          "30 August 1963",
+          "November 1964",
+          "September 1963"
+        ]
+      }
+    }
+  ]
+}

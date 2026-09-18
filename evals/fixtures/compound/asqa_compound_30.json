@@ -1,0 +1,43 @@
+{
+  "id": "asqa_compound_30",
+  "corpus": "asqa",
+  "sample_id": "3295950051782609129",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_30.json",
+  "turns": [
+    {
+      "utterance": "When was the song as time goes by written?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "song as time goes",
+          "atMs": 2800
+        },
+        {
+          "text": "by written?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When was the song \"As Time Goes By\" written by Herman Hupfeld?",
+          "When was the song 'As Time Goes By' (as performed by Hiroko Shimabukuro) written?"
+        ],
+        "gold_passages": [
+          "\"As Time Goes By\" is a song written by Herman Hupfeld in 1931. It became famous when it was featured in the 1942 Warner Bros. film \"Casablanca\" performed by Dooley Wilson as Sam. The song was voted No. 2 on the AFI's 100 Years...100 Songs special, commemorating the best songs in film (only surpassed by \"Over the Rainbow\" by Judy Garland). The song has since become the signature tune of Warner Bros. and used as such in the production logos at the beginning of many Warner Bros. films since 1999, as well as the closing logos to most Warner Bros. Television shows since 2003. It was also the title and theme song of the 1990s British romantic comedy series \"As Time Goes By\".",
+          "She made her official solo debut in 1999 with the single \"As Time Goes By\", which sold 800,000 copies in Japan."
+        ],
+        "gold_answers": [
+          "1931",
+          "1999"
+        ]
+      }
+    }
+  ]
+}

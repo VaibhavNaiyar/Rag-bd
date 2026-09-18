@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_07",
+  "corpus": "asqa",
+  "sample_id": "778739607777147662",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_07.json",
+  "turns": [
+    {
+      "utterance": "How many years did deion sanders play mlb baseball?",
+      "chunks": [
+        {
+          "text": "How many years",
+          "atMs": 1200
+        },
+        {
+          "text": "did deion sanders play",
+          "atMs": 2800
+        },
+        {
+          "text": "mlb baseball?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "How many years did deion sanders play mlb baseball?"
+        ],
+        "gold_passages": [
+          "Deion Luwynn Sanders Sr. (; born August 9, 1967), nicknamed \"Prime Time\" and \"Neon Deion\", is an American former professional football and baseball player who is a sports analyst. He played 14 seasons in the National Football League (NFL) with the Atlanta Falcons, San Francisco 49ers, Dallas Cowboys, Washington Redskins, and the Baltimore Ravens. He also had a part-time career in baseball as an outfielder for nine seasons in Major League Baseball (MLB), where he played professionally for the New York Yankees, the Atlanta Braves, the Cincinnati Reds, and the San Francisco Giants. Sanders won two Super Bowl titles and made one World Series appearance in 1992, making him the only individual to appear in both a Super Bowl and a World Series."
+        ],
+        "gold_answers": [
+          "nine"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "asqa_late_detail_15",
+  "corpus": "asqa",
+  "sample_id": "855112674459593256",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('for Nintendo Switch').",
+  "transcript": "evals/transcripts/asqa_late_detail_15.json",
+  "turns": [
+    {
+      "utterance": "Release date of south park fractured but whole?",
+      "chunks": [
+        {
+          "text": "Release date of",
+          "atMs": 1200
+        },
+        {
+          "text": "south park fractured but",
+          "atMs": 2800
+        },
+        {
+          "text": "whole?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Oh wait, I meant for Nintendo Switch.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant for Nintendo Switch.",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "As a promotional item, the team designed and created the Nosulus Rift, a parody of the Oculus Rift, which appeared at the PAX West event in September 2016. Developed internally at Ubisoft as a joke about a fake prop the team would promote as real, the team decided to develop the item. Nosulus Rift, which was not released for sale publicly, would release a fart smell to create an olfactory-immersive experience. Ubisoft ran the worldwide \"I am the fart\" competition in October 2017; the jury, which included British flatulist Mr. Methane, judged videos of entrants farting and selected an overall winner, who would be flown to Ubisoft San Francisco to record their fart sound for inclusion into \"The Fractured but Whole\". A twelve-character series of collectible figures based on \"The Fractured but Whole\" cast was also released. A Nintendo Switch version, adapted by Ubisoft Pune, was released on April 24, 2018."
+        ],
+        "gold_answers": [
+          "April 24, 2018"
+        ],
+        "refined_question": "Release date of south park fractured but whole for Nintendo Switch?",
+        "condition": "for Nintendo Switch"
+      }
+    }
+  ]
+}

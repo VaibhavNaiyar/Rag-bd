@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_31",
+  "family": "compound",
+  "sample_id": "-1497265519640583477",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who landed the first quad jump in figure skating?",
+      "chunks": [
+        {
+          "text": "Who landed the",
+          "atMs": 1200
+        },
+        {
+          "text": "first quad jump in",
+          "atMs": 2800
+        },
+        {
+          "text": "figure skating?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

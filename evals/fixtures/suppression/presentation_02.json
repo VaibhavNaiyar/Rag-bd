@@ -1,0 +1,19 @@
+{
+  "id": "presentation_02",
+  "corpus": "demo",
+  "description": "Shorten the previous answer.",
+  "turns": [
+    {
+      "utterance": "How much annual leave do full-time employees get and how many days carry over?",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Can you make that shorter?",
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

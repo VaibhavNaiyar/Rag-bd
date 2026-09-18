@@ -1,0 +1,43 @@
+{
+  "id": "asqa_compound_40",
+  "corpus": "asqa",
+  "sample_id": "-1227379877123735381",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_40.json",
+  "turns": [
+    {
+      "utterance": "Who played the older dottie in a league of their own?",
+      "chunks": [
+        {
+          "text": "Who played the",
+          "atMs": 1200
+        },
+        {
+          "text": "older dottie in a",
+          "atMs": 2800
+        },
+        {
+          "text": "league of their own?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who plays the older Dottie in the TV series A League of Their Own?",
+          "Who plays the older Dottie in the movie A League of Their Own?"
+        ],
+        "gold_passages": [
+          "Carey Lowell (born February 11, 1961)[1] is an American actress and former model.",
+          "Lynn Cartwright (February 27, 1927 – January 2, 2004) was an American character actress known for her performance as the older version of Geena Davis' character, Dottie Hinson, in the 1992 film \"A League of Their Own\"."
+        ],
+        "gold_answers": [
+          "Carey Lowell",
+          "Lynn Cartwright"
+        ]
+      }
+    }
+  ]
+}

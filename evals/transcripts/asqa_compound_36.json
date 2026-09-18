@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_36",
+  "family": "compound",
+  "sample_id": "1207438646958939540",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where did they film the movie in the heat of the night?",
+      "chunks": [
+        {
+          "text": "Where did they",
+          "atMs": 1200
+        },
+        {
+          "text": "film the movie in",
+          "atMs": 2800
+        },
+        {
+          "text": "the heat of the night?",
+          "atMs": 4800
+        }
+      ],
+      "speech_end_ms": 4800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5050
+    }
+  ]
+}

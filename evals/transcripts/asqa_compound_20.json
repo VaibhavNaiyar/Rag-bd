@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_20",
+  "family": "compound",
+  "sample_id": "-8636176444481722834",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who acted as harley quinn in suicide squad?",
+      "chunks": [
+        {
+          "text": "Who acted as",
+          "atMs": 1200
+        },
+        {
+          "text": "harley quinn in suicide",
+          "atMs": 2800
+        },
+        {
+          "text": "squad?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

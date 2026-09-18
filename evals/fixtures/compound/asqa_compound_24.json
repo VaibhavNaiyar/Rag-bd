@@ -1,0 +1,45 @@
+{
+  "id": "asqa_compound_24",
+  "corpus": "asqa",
+  "sample_id": "1402203654099218009",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_24.json",
+  "turns": [
+    {
+      "utterance": "Who wrote the national anthem trinidad and tobago?",
+      "chunks": [
+        {
+          "text": "Who wrote the",
+          "atMs": 1200
+        },
+        {
+          "text": "national anthem trinidad and",
+          "atMs": 2800
+        },
+        {
+          "text": "tobago?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who wrote the lyrics for the national anthem of trinidad and tobago?",
+          "Who wrote the music for the national anthem of trinidad and tobago?"
+        ],
+        "gold_passages": [
+          "Patrick S. Castagne composed the words and music of the National Anthem in 1962. Mr Castagne, a renowned West Indian songwriter, was employed at the Trinidad and Tobago Commission in London. One of his compositions, called \"A Song for the Islands\" or \"A Song for Federation\", was submitted to the West Indies Federation as a possible anthem.",
+          "Patrick Stanislaus \"Pat\" Castagne (3 October 1916 – 5 May 2000) was a Guyanese-born Trinidadian composer, best known for composing \"Forged from the Love of Liberty\", the national anthem of Trinidad and Tobago."
+        ],
+        "gold_answers": [
+          "Castagne",
+          "Patrick Castagne",
+          "Patrick S. Castagne",
+          "Patrick Stanislaus \"Pat\" Castagne"
+        ]
+      }
+    }
+  ]
+}

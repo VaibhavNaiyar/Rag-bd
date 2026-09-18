@@ -1,0 +1,22 @@
+{
+  "id": "late_detail_02",
+  "corpus": "demo",
+  "description": "Hotel limits, then the destination is narrowed.",
+  "turns": [
+    {
+      "utterance": "What are the hotel limits for business travel?",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Actually the trip is to Seoul.",
+      "expect": {
+        "mode": "refine",
+        "gold_docs": [
+          "per_diem_schedule.md"
+        ]
+      }
+    }
+  ]
+}

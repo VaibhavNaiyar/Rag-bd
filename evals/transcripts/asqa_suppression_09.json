@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_09",
+  "family": "suppression",
+  "sample_id": "-7856526841607636298",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When does the new family guy season come out?",
+      "chunks": [
+        {
+          "text": "When does the",
+          "atMs": 1200
+        },
+        {
+          "text": "new family guy season",
+          "atMs": 2800
+        },
+        {
+          "text": "come out?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Say that in two bullets.",
+      "chunks": [
+        {
+          "text": "Say that in",
+          "atMs": 1200
+        },
+        {
+          "text": "two bullets.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

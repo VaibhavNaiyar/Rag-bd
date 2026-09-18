@@ -1,0 +1,61 @@
+{
+  "id": "asqa_late_detail_14",
+  "corpus": "asqa",
+  "sample_id": "454536280675091191",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('from the West End musical Pickwick').",
+  "transcript": "evals/transcripts/asqa_late_detail_14.json",
+  "turns": [
+    {
+      "utterance": "Who wrote the song if i ruled the world?",
+      "chunks": [
+        {
+          "text": "Who wrote the",
+          "atMs": 1200
+        },
+        {
+          "text": "song if i ruled",
+          "atMs": 2800
+        },
+        {
+          "text": "the world?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Sorry, I mean from the West End musical Pickwick.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "from the West End",
+          "atMs": 2800
+        },
+        {
+          "text": "musical Pickwick.",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "\"If I Ruled the World\" is a popular song, composed by Leslie Bricusse and Cyril Ornadel, which was originally from the 1963 West End musical \"Pickwick\" (based on Charles Dickens's \"The Pickwick Papers\"). In the context of the stage musical, the song is sung by Samuel Pickwick, when he is mistaken for an election candidate and called on by the crowd to give his manifesto. Ornadel and Bricusse received the 1963 Ivor Novello award for Best Song Musically and Lyrically."
+        ],
+        "gold_answers": [
+          "Leslie Bricusse and Cyril Ornadel"
+        ],
+        "refined_question": "Who wrote the song \"If I Ruled the World\" from the West End musical Pickwick?",
+        "condition": "from the West End musical Pickwick"
+      }
+    }
+  ]
+}

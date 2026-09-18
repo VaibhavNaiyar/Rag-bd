@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_32",
+  "family": "compound",
+  "sample_id": "5278020544239312824",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who said the power of the pen is mightier than the sword?",
+      "chunks": [
+        {
+          "text": "Who said the",
+          "atMs": 1200
+        },
+        {
+          "text": "power of the pen",
+          "atMs": 2800
+        },
+        {
+          "text": "is mightier than the sword?",
+          "atMs": 4800
+        }
+      ],
+      "speech_end_ms": 4800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5050
+    }
+  ]
+}

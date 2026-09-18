@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.git/
+data/index/
+data/index_asqa/
+data/corpus/
+data/traces/
+tests/
+docs/BENCHMARK_REPORT.md
+*.egg-info/
+freeze.txt

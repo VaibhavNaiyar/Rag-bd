@@ -1,0 +1,49 @@
+{
+  "id": "asqa_compound_29",
+  "corpus": "asqa",
+  "sample_id": "9184423694390444844",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_29.json",
+  "turns": [
+    {
+      "utterance": "What's the most points scored in an nba game?",
+      "chunks": [
+        {
+          "text": "What's the most",
+          "atMs": 1200
+        },
+        {
+          "text": "points scored in an",
+          "atMs": 2800
+        },
+        {
+          "text": "nba game?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What's the most points scored in an nba game by combined team?",
+          "What's the most points scored in an nba game by a single team?",
+          "What's the most points scored in an nba game by an individual?",
+          "What is the highest amount of points scored by a single team in regular season NBA games?",
+          "What is the highest amount of points scored by a single team in regular season games in regulation?",
+          "What is the highest amount of points scored by a single team in playoff games?"
+        ],
+        "gold_passages": [
+          "The highest-scoring regular season game in NBA history is the triple-overtime game between the Detroit Pistons and the Denver Nuggets on December 13, 1983. The two teams combined to score 370 points, with the Pistons defeating the Nuggets 186–184. The two teams also set several other NBA records, including the most points scored by one team (186 points), the most points scored by a losing team (184), the most field goals by two teams (142), most field goals by one team (74) and most assists by two teams (93). The highest-scoring regular season game in regulation was between the Golden State Warriors and the Denver Nuggets on November 2, 1990. In that game, Golden State defeated Denver 162–158...The highest-scoring playoff game is the double-overtime game between the Portland Trail Blazers and the Phoenix Suns on May 11, 1992. The two teams combined to score 304 points, with the Trail Blazers defeating the Suns 153–151…Another notable high scoring regular season game is a March 2, 1962 game between the Philadelphia Warriors and the New York Knicks. In that game, the Warriors' Wilt Chamberlain scored an NBA-record 100 points."
+        ],
+        "gold_answers": [
+          "100",
+          "153",
+          "162",
+          "186",
+          "370"
+        ]
+      }
+    }
+  ]
+}

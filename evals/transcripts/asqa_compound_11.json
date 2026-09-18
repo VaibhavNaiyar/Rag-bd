@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_11",
+  "family": "compound",
+  "sample_id": "6400044644383700926",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who was the mother of dragons married to?",
+      "chunks": [
+        {
+          "text": "Who was the",
+          "atMs": 1200
+        },
+        {
+          "text": "mother of dragons married",
+          "atMs": 2800
+        },
+        {
+          "text": "to?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

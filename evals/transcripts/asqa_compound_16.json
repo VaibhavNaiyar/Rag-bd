@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_16",
+  "family": "compound",
+  "sample_id": "8528837736505993111",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who is the winner of 2018 royal rumble?",
+      "chunks": [
+        {
+          "text": "Who is the",
+          "atMs": 1200
+        },
+        {
+          "text": "winner of 2018 royal",
+          "atMs": 2800
+        },
+        {
+          "text": "rumble?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

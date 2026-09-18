@@ -1,0 +1,21 @@
+{
+  "id": "compound_03",
+  "corpus": "demo",
+  "description": "Two needs joined by 'and also'.",
+  "turns": [
+    {
+      "utterance": "Can you tell me how far in advance a venue has to be booked, and also which external caterers are approved for Baner Tech Hub?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "venue booking lead time",
+          "approved external caterers for Baner Tech Hub"
+        ],
+        "gold_docs": [
+          "pune_workshop_venues.md",
+          "vendor_directory.jsonl"
+        ]
+      }
+    }
+  ]
+}

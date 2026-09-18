@@ -1,0 +1,47 @@
+{
+  "id": "asqa_compound_28",
+  "corpus": "asqa",
+  "sample_id": "5730743033148160819",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_28.json",
+  "turns": [
+    {
+      "utterance": "Who sings the song stuck in the middle with you?",
+      "chunks": [
+        {
+          "text": "Who sings the",
+          "atMs": 1200
+        },
+        {
+          "text": "song stuck in the",
+          "atMs": 2800
+        },
+        {
+          "text": "middle with you?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who originally sang \"Stuck in the Middle With You\"?",
+          "Who sang \"Stuck in the Middle with You\" on the album Can't Explain?",
+          "Who sang \"Stuck in the Middle With You\" on the album Old Flame?"
+        ],
+        "gold_passages": [
+          "\"Stuck in the Middle with You\" (sometimes known as \"Stuck in the Middle\") is a song written by Scottish musicians Gerry Rafferty and Joe Egan and originally performed by their band Stealers Wheel.",
+          "Juice Newton recorded a version for her 1985 album, \"Old Flame.\"",
+          "Leif Garrett released a version of the song on his 1980 album, \"Can't Explain\"."
+        ],
+        "gold_answers": [
+          "Juice Newton",
+          "Leif Garrett",
+          "Stealers Wheel",
+          "Stealers Wheel ."
+        ]
+      }
+    }
+  ]
+}

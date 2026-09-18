@@ -1,0 +1,57 @@
+{
+  "id": "asqa_late_detail_09",
+  "corpus": "asqa",
+  "sample_id": "5407802673882771425",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('the British series').",
+  "transcript": "evals/transcripts/asqa_late_detail_09.json",
+  "turns": [
+    {
+      "utterance": "Who sang the theme tune to dear john?",
+      "chunks": [
+        {
+          "text": "Who sang the",
+          "atMs": 1200
+        },
+        {
+          "text": "theme tune to dear",
+          "atMs": 2800
+        },
+        {
+          "text": "john?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Oh wait, I meant the British series.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant the British series.",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "As with his other series, the title music was composed by the series' writer, John Sullivan. It was arranged by Ronnie Hazlehurst, the composer of music used in many BBC comedies and light entertainment programmes, Joan Baxter provided the vocals."
+        ],
+        "gold_answers": [
+          "Joan Baxter"
+        ],
+        "refined_question": "Who sang the theme tune to the British series, dear john?",
+        "condition": "the British series"
+      }
+    }
+  ]
+}

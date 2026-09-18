@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_06",
+  "corpus": "asqa",
+  "sample_id": "1763501929942667006",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('the original version').",
+  "transcript": "evals/transcripts/asqa_late_detail_06.json",
+  "turns": [
+    {
+      "utterance": "Who is the singer of main tera boyfriend?",
+      "chunks": [
+        {
+          "text": "Who is the",
+          "atMs": 1200
+        },
+        {
+          "text": "singer of main tera",
+          "atMs": 2800
+        },
+        {
+          "text": "boyfriend?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Oh wait, I meant the original version.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant the original version.",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "It is a revamped version of J Star's 2015 chartbuster track \"Na Na Na Na\".",
+          "This track was originally created by J Star."
+        ],
+        "gold_answers": [
+          "J Star"
+        ],
+        "refined_question": "Who is the singer of the original version of main tera boyfriend?",
+        "condition": "the original version"
+      }
+    }
+  ]
+}

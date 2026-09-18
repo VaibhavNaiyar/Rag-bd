@@ -1,0 +1,53 @@
+{
+  "id": "asqa_compound_27",
+  "corpus": "asqa",
+  "sample_id": "4469900475790977237",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_27.json",
+  "turns": [
+    {
+      "utterance": "Who plays the voice of darth vader in star wars?",
+      "chunks": [
+        {
+          "text": "Who plays the",
+          "atMs": 1200
+        },
+        {
+          "text": "voice of darth vader",
+          "atMs": 2800
+        },
+        {
+          "text": "in star wars?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who plays the voice of darth vader in star wars Episodes III–VI, IX, and Rebels?",
+          "Who plays the voice of darth vader in star wars for vocal effects?",
+          "Who plays the voice of darth vader in the star wars radio series?",
+          "Who plays the voice of darth vader in star wars Episodes III–VI, IX, Rogue One, Rebels?",
+          "Who plays the vocal effect of darth vader in star wars?",
+          "Who plays the voice of darth vader in star wars radio drama?"
+        ],
+        "gold_passages": [
+          "Anakin has also been voiced by Mat Lucas for the 2003 micro-series \"\", and by Matt Lanter in the CGI animated film \"\", the and for Anakin's small roles in the animated series \"Rebels\" and \"Forces of Destiny\". James Earl Jones reprised the voice role for Vader's appearances in \"Rebels\". Both Lanter and Jones contributed their voices for the second-season finale of \"Rebels\", at times with identical dialogue spoken by both actors blended together in different ways.",
+          "Benjamin Burtt Jr. (born July 12, 1948) is an American sound designer, film editor, director, screenwriter, and voice actor.",
+          "Brock Peters (born George Fisher; July 2, 1927 – August 23, 2005) was an American actor and singer, best known for playing the role of Tom Robinson in the 1962 film To Kill a Mockingbird and for his role as the villainous \"Crown\" in the 1959 film version of Porgy and Bess.",
+          "Darth Vader is a fictional character in the Star Wars franchise...The sound of the respirator function of Vader's mask was created by Ben Burtt using modified recordings of scuba breathing apparatus used by divers."
+        ],
+        "gold_answers": [
+          "Ben Burtt",
+          "Benjamin Burtt Jr.",
+          "Brock G. Peters",
+          "Brock Peters",
+          "George Fisher",
+          "James Earl Jones"
+        ]
+      }
+    }
+  ]
+}

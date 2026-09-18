@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_07",
+  "corpus": "asqa",
+  "sample_id": "1242985061682002762",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('first').",
+  "transcript": "evals/transcripts/asqa_late_detail_07.json",
+  "turns": [
+    {
+      "utterance": "When did the king size bed come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "king size bed come",
+          "atMs": 2800
+        },
+        {
+          "text": "out?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Actually, I meant first.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "first.",
+          "atMs": 1600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "The sizes of mattresses use non-numeric labels such as a \"king\" or \"full\", but are defined in inches. Historically most beds were \"twins\" or \"doubles\" but in the mid-1940s larger mattresses were introduced by manufacturers. These were later standardised as \"queen\" and \"king\", and first made a significant impact on the market in the 1950s and 60s. Standard mattress depth ranges from the \"standard\" size of to \"high contour\" of up to . Below are the standard ISPA widths and heights in the United States and Canada. U.S. bed sizes usually have a length of either , while UK bed sizes usually have a length of either . Widths also differ between the U.S. and UK standards."
+        ],
+        "gold_answers": [
+          "mid 1940s",
+          "mid-1940s"
+        ],
+        "refined_question": "When did the king size bed first come out?",
+        "condition": "first"
+      }
+    }
+  ]
+}

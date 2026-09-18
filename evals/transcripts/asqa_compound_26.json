@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_26",
+  "family": "compound",
+  "sample_id": "-3344541168958463110",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who fought with an angel in the bible?",
+      "chunks": [
+        {
+          "text": "Who fought with",
+          "atMs": 1200
+        },
+        {
+          "text": "an angel in the",
+          "atMs": 2800
+        },
+        {
+          "text": "bible?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_13",
+  "family": "suppression",
+  "sample_id": "4757523269455004982",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who played zorro son in the legend of zorro?",
+      "chunks": [
+        {
+          "text": "Who played zorro",
+          "atMs": 1200
+        },
+        {
+          "text": "son in the legend",
+          "atMs": 2800
+        },
+        {
+          "text": "of zorro?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Read the last answer again.",
+      "chunks": [
+        {
+          "text": "Read the last",
+          "atMs": 1200
+        },
+        {
+          "text": "answer again.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

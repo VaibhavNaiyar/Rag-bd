@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_33",
+  "family": "compound",
+  "sample_id": "-3225724984379691389",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where was the count of monte cristo published?",
+      "chunks": [
+        {
+          "text": "Where was the",
+          "atMs": 1200
+        },
+        {
+          "text": "count of monte cristo",
+          "atMs": 2800
+        },
+        {
+          "text": "published?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

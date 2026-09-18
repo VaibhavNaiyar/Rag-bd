@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_12",
+  "family": "compound",
+  "sample_id": "-5116644172939113883",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who raps in the gorillaz song clint eastwood?",
+      "chunks": [
+        {
+          "text": "Who raps in",
+          "atMs": 1200
+        },
+        {
+          "text": "the gorillaz song clint",
+          "atMs": 2800
+        },
+        {
+          "text": "eastwood?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

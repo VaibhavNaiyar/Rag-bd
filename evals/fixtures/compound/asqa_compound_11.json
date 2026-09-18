@@ -1,0 +1,47 @@
+{
+  "id": "asqa_compound_11",
+  "corpus": "asqa",
+  "sample_id": "6400044644383700926",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_11.json",
+  "turns": [
+    {
+      "utterance": "Who was the mother of dragons married to?",
+      "chunks": [
+        {
+          "text": "Who was the",
+          "atMs": 1200
+        },
+        {
+          "text": "mother of dragons married",
+          "atMs": 2800
+        },
+        {
+          "text": "to?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who was the mother of dragons first married to?",
+          "Who was the mother of dragons married to second?",
+          "What leader of Dothraki is the mother of dragons married to?",
+          "What Ghiscari noble is the mother of dragons married to?"
+        ],
+        "gold_passages": [
+          "Daenerys is taken to Khal Moro, the leader of the Dothraki horde. Learning that she is the widow of Khal Drogo, Moro tells her she must live out her days among the widows of the Dosh Khaleen in Vaes Dothrak. Once there, Daenerys is told that she is to be judged by the khals for defying tradition and going out into the world following Drogo's death. During the meeting with the khals, Daenerys declares that only she has enough ambition to lead the Dothraki; when the outraged khals threaten to gang-rape her, Daenerys sets fire to the temple, killing everyone inside but emerging unscathed. Awed, the Dothraki accept her as their Khaleesi. After discovering that Jorah, who had followed her to Vaes Dothrak with Daario, is infected with the terminal disease greyscale, Daenerys orders him to find a cure and return to her services, before marching on Meereen with Drogon, Daario, and the Dothraki.",
+          "Her advisers suggest she marry Hizdahr zo Loraq to bring peace, and she agrees, although she takes Daario as a lover.",
+          "She remains dependent on her abusive older brother, Viserys, and is forced to marry Dothraki horselord Khal Drogo in exchange for an army for Viserys, who wishes to return to Westeros and recapture the Iron Throne."
+        ],
+        "gold_answers": [
+          "Drogo",
+          "Hizdahr zo Loraq",
+          "Khal Drogo"
+        ]
+      }
+    }
+  ]
+}

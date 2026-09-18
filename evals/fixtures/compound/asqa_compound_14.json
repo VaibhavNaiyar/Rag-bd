@@ -1,0 +1,56 @@
+{
+  "id": "asqa_compound_14",
+  "corpus": "asqa",
+  "sample_id": "-3243271997177308524",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_14.json",
+  "turns": [
+    {
+      "utterance": "What are the 3 types of enzymes in digestion?",
+      "chunks": [
+        {
+          "text": "What are the",
+          "atMs": 1200
+        },
+        {
+          "text": "3 types of enzymes",
+          "atMs": 2800
+        },
+        {
+          "text": "in digestion?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What are the types of enzymes in digestion that split fatty acids?",
+          "What are the types of enzymes in digestion that split proteins?",
+          "What are the types of enzymes in digestion that split carbohydrates?",
+          "What are the types of enzymes in digestion that split nucleic acids?"
+        ],
+        "gold_passages": [
+          "Digestive enzymes are classified based on their target substrates: Amylases split carbohydrates such as starch and sugars into simple sugars such as glucose.",
+          "Digestive enzymes are classified based on their target substrates: Lipases split fatty acids off of fats and oils.",
+          "Digestive enzymes are classified based on their target substrates: Lipases split fatty acids off of fats and oils. Proteases and peptidases split proteins into small peptides and amino acids. Amylases split carbohydrates such as starch and sugars into simple sugars such as glucose. Nucleases split nucleic acids into nucleotides.",
+          "Digestive enzymes are classified based on their target substrates: Nucleases split nucleic acids into nucleotides.",
+          "Digestive enzymes are classified based on their target substrates: Proteases and peptidases split proteins into small peptides and amino acids.",
+          "Pancreatic juice, composed of the secretions of both ductal and acinar cells, contains the following digestive enzymes: Several nucleases that degrade nucleic acids, like DNAase and RNAase",
+          "Pancreatic juices are a liquid secreted by the pancreas,[1] which contains a variety of enzymes, including trypsinogen, chymotrypsinogen, elastase, carboxypeptidase, pancreatic lipase, nucleases and amylase."
+        ],
+        "gold_answers": [
+          "Amylases",
+          "Lipases",
+          "Nucleases",
+          "Proteases",
+          "nucleodepolymerase",
+          "peptidases",
+          "polynucleotidase",
+          "proteinase"
+        ]
+      }
+    }
+  ]
+}

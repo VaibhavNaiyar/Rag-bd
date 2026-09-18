@@ -1,0 +1,51 @@
+{
+  "id": "asqa_compound_17",
+  "corpus": "asqa",
+  "sample_id": "3533953411437464656",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_17.json",
+  "turns": [
+    {
+      "utterance": "According to 2011 census the literacy rate of india is?",
+      "chunks": [
+        {
+          "text": "According to 2011",
+          "atMs": 1200
+        },
+        {
+          "text": "census the literacy rate",
+          "atMs": 2800
+        },
+        {
+          "text": "of india is?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "According to the 2011 census the combined literacy rate of India is?",
+          "According to the 2011 census the male literacy rate of India is?",
+          "According to the 2011 census the female literacy rate of India is?",
+          "According to the 2001 census the combined literacy rate of India is?",
+          "According to the 2001 census the male literacy rate of India is?",
+          "According to the 2001 census the female literacy rate of India is?"
+        ],
+        "gold_passages": [
+          "Presently Tripura has the third highest literacy rate in India . According to the 2011 census, literacy level was 93.91 percent in Kerala and 91.58 percent in Mizoram, among the most literate states in the country. The national literacy rate, according to the 2011 census, was 74.04 percent.",
+          "The large proportion of illiterate females is another reason for the low literacy rate in India. Inequality based on gender differences resulted in female literacy rates being lower at 65.46% than that of their male counterparts at 82.14%. Due to strong stereotyping of female and male roles, Sons are thought of to be more useful and hence are educated. Females are pulled to help out on agricultural farms at home as they are increasingly replacing the males on such activities which require no formal education. Fewer than 2% of girls who engaged in agriculture work attended school."
+        ],
+        "gold_answers": [
+          "53.67%",
+          "64.83%",
+          "65.46%",
+          "74.04%",
+          "75.26%",
+          "82.14%"
+        ]
+      }
+    }
+  ]
+}

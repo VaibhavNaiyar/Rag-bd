@@ -1,0 +1,23 @@
+{
+  "id": "compound_02",
+  "corpus": "demo",
+  "description": "Three unrelated needs across three policies.",
+  "turns": [
+    {
+      "utterance": "What is the daily per diem in Tokyo, how many days of sick leave do employees get, and what should I do if my laptop is stolen?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "per diem rate for Tokyo",
+          "number of paid sick leave days",
+          "steps to take when a laptop is stolen"
+        ],
+        "gold_docs": [
+          "per_diem_schedule.md",
+          "leave_policy.md",
+          "laptop_security_policy.md"
+        ]
+      }
+    }
+  ]
+}

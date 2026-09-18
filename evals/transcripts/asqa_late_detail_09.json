@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_09",
+  "family": "late_detail",
+  "sample_id": "5407802673882771425",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who sang the theme tune to dear john?",
+      "chunks": [
+        {
+          "text": "Who sang the",
+          "atMs": 1200
+        },
+        {
+          "text": "theme tune to dear",
+          "atMs": 2800
+        },
+        {
+          "text": "john?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Oh wait, I meant the British series.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant the British series.",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

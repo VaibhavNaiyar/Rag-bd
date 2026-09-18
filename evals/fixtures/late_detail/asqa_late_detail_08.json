@@ -1,0 +1,57 @@
+{
+  "id": "asqa_late_detail_08",
+  "corpus": "asqa",
+  "sample_id": "8020759438851523056",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('Direct').",
+  "transcript": "evals/transcripts/asqa_late_detail_08.json",
+  "turns": [
+    {
+      "utterance": "When did the federal student loan program start?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "federal student loan program",
+          "atMs": 2800
+        },
+        {
+          "text": "start?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Sorry, I mean Direct.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "Direct.",
+          "atMs": 1600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "President George H. W. Bush authorized a pilot version of the Direct Loan program, by signing into law the 1992 Reauthorization of the Higher Education Act of 1965."
+        ],
+        "gold_answers": [
+          "1992"
+        ],
+        "refined_question": "When did the Federal Direct Student Loan Program start?",
+        "condition": "Direct"
+      }
+    }
+  ]
+}

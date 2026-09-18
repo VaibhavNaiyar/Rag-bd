@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_12",
+  "family": "single",
+  "sample_id": "-1127816860972970035",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the royal flying doctor service start as the AIM Aerial Medical Service?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "royal flying doctor service",
+          "atMs": 2800
+        },
+        {
+          "text": "start as the AIM Aerial",
+          "atMs": 4800
+        },
+        {
+          "text": "Medical Service?",
+          "atMs": 5600
+        }
+      ],
+      "speech_end_ms": 5600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_04",
+  "corpus": "asqa",
+  "sample_id": "-7582650876403615860",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('originally').",
+  "transcript": "evals/transcripts/asqa_late_detail_04.json",
+  "turns": [
+    {
+      "utterance": "Who sang still crazy after all these years?",
+      "chunks": [
+        {
+          "text": "Who sang still",
+          "atMs": 1200
+        },
+        {
+          "text": "crazy after all these",
+          "atMs": 2800
+        },
+        {
+          "text": "years?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Actually, I meant originally.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "originally.",
+          "atMs": 1600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "\"Still Crazy After All These Years\" is a song by the American singer-songwriter Paul Simon.",
+          "Still Crazy After All These Years is the fourth solo studio album by Paul Simon. Recorded and released in 1975, the album produced four U.S. Top 40 hits: \"50 Ways to Leave Your Lover\" (#1), \"Gone at Last\" (#23), \"My Little Town\" (#9, credited to Simon & Garfunkel), and the title track (#40)."
+        ],
+        "gold_answers": [
+          "Paul Simon"
+        ],
+        "refined_question": "Who originally sang still crazy after all these years?",
+        "condition": "originally"
+      }
+    }
+  ]
+}

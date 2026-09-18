@@ -1,0 +1,22 @@
+# Optional OTLP collector, enabled with `docker compose --profile observability up`.
+# The engine's own record is the JSONL trace; this is here for judges who want the
+# turn stream in a dashboard, and is deliberately off the one-command path.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch: {}
+
+exporters:
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]

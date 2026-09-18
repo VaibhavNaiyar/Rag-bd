@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_13",
+  "family": "single",
+  "sample_id": "765055097611749335",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where is the tv show the ranch filmed?",
+      "chunks": [
+        {
+          "text": "Where is the",
+          "atMs": 1200
+        },
+        {
+          "text": "tv show the ranch",
+          "atMs": 2800
+        },
+        {
+          "text": "filmed?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

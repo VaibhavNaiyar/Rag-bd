@@ -1,0 +1,19 @@
+{
+  "id": "single_01",
+  "corpus": "demo",
+  "description": "One information need; must yield exactly one sub-query.",
+  "turns": [
+    {
+      "utterance": "What is the cancellation policy for workshop venues?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What is the cancellation policy for workshop venues?"
+        ],
+        "gold_docs": [
+          "venue_cancellation_policy.md"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "single_03",
+  "corpus": "demo",
+  "description": "One information need; must yield exactly one sub-query.",
+  "turns": [
+    {
+      "utterance": "What is the per diem rate and hotel limit when travelling to London for work?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What is the per diem rate and hotel limit when travelling to London for work?"
+        ],
+        "gold_docs": [
+          "per_diem_schedule.md"
+        ]
+      }
+    }
+  ]
+}

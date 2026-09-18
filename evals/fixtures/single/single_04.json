@@ -1,0 +1,19 @@
+{
+  "id": "single_04",
+  "corpus": "demo",
+  "description": "One information need; must yield exactly one sub-query.",
+  "turns": [
+    {
+      "utterance": "How long do I have to submit an expense claim after a business trip ends?",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "How long do I have to submit an expense claim after a business trip ends?"
+        ],
+        "gold_docs": [
+          "travel_reimbursement_policy.md"
+        ]
+      }
+    }
+  ]
+}

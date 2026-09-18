@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_04",
+  "family": "single",
+  "sample_id": "-8184134749620599612",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the Great Fire of London start?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Great Fire of London",
+          "atMs": 2800
+        },
+        {
+          "text": "start?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

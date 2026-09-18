@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_16",
+  "corpus": "asqa",
+  "sample_id": "2162316589148294435",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_16.json",
+  "turns": [
+    {
+      "utterance": "How many jimmy john's are there plans for in the world?",
+      "chunks": [
+        {
+          "text": "How many jimmy",
+          "atMs": 1200
+        },
+        {
+          "text": "john's are there plans",
+          "atMs": 2800
+        },
+        {
+          "text": "for in the world?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "How many jimmy john's are there plans for in the world?"
+        ],
+        "gold_passages": [
+          "As of March 2017, Jimmy John's has almost 3,000 stores with plans for expansion up to 5,000 and beyond."
+        ],
+        "gold_answers": [
+          "5,000 and beyond"
+        ]
+      }
+    }
+  ]
+}

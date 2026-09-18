@@ -1,0 +1,44 @@
+{
+  "id": "asqa_compound_13",
+  "corpus": "asqa",
+  "sample_id": "-2427005357321258325",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_13.json",
+  "turns": [
+    {
+      "utterance": "Who did the virginia plan give more power to?",
+      "chunks": [
+        {
+          "text": "Who did the",
+          "atMs": 1200
+        },
+        {
+          "text": "virginia plan give more",
+          "atMs": 2800
+        },
+        {
+          "text": "power to?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Which members of the Union did the Virginia Plan give more power to?",
+          "Which branch did the Virginia Plan give more power to?"
+        ],
+        "gold_passages": [
+          "2. This would provide large states, like Virginia, more representation than they had under the Articles of Confederation, which gave each state equal representation regardless of population. For this reason, the plan was called the \"large-state plan\".[13]",
+          "Additionally, the plan proposed that the legislative branch would have the power to veto state laws if they were deemed incompatible with the articles of union, or the states were deemed incompetent."
+        ],
+        "gold_answers": [
+          "Large States",
+          "larger states",
+          "legislative branch"
+        ]
+      }
+    }
+  ]
+}

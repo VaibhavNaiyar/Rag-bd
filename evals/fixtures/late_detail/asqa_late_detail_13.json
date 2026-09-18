@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_13",
+  "corpus": "asqa",
+  "sample_id": "2416330318995122750",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('since 2012').",
+  "transcript": "evals/transcripts/asqa_late_detail_13.json",
+  "turns": [
+    {
+      "utterance": "What is the name of the tower big ben is in?",
+      "chunks": [
+        {
+          "text": "What is the",
+          "atMs": 1200
+        },
+        {
+          "text": "name of the tower",
+          "atMs": 2800
+        },
+        {
+          "text": "big ben is in?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Actually, I meant since 2012.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "since 2012.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "Big Ben is the nickname for the Great Bell of the striking clock at the north end of the Palace of Westminster in London and is usually extended to refer to both the clock and the clock tower. The official name of the tower in which Big Ben is located was originally the Clock Tower, but it was renamed Elizabeth Tower in 2012 to mark the Diamond Jubilee of Elizabeth II."
+        ],
+        "gold_answers": [
+          "Elizabeth Tower",
+          "The Elizabeth Tower"
+        ],
+        "refined_question": "What is the name of the tower big ben is in since 2012?",
+        "condition": "since 2012"
+      }
+    }
+  ]
+}

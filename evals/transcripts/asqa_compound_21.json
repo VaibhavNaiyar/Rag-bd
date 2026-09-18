@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_21",
+  "family": "compound",
+  "sample_id": "3103857971526342341",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who did raven marry in that's so raven?",
+      "chunks": [
+        {
+          "text": "Who did raven",
+          "atMs": 1200
+        },
+        {
+          "text": "marry in that's so",
+          "atMs": 2800
+        },
+        {
+          "text": "raven?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

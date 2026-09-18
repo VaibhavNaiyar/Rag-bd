@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_14",
+  "family": "single",
+  "sample_id": "-6301438413612247126",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What part of the the shoulder does flat iron cut of meat come from?",
+      "chunks": [
+        {
+          "text": "What part of",
+          "atMs": 1200
+        },
+        {
+          "text": "the the shoulder does",
+          "atMs": 2800
+        },
+        {
+          "text": "flat iron cut of meat",
+          "atMs": 4800
+        },
+        {
+          "text": "come from?",
+          "atMs": 5600
+        }
+      ],
+      "speech_end_ms": 5600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850
+    }
+  ]
+}

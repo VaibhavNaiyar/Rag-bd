@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_17",
+  "corpus": "asqa",
+  "sample_id": "-3141829133091032540",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_17.json",
+  "turns": [
+    {
+      "utterance": "Which character is the girl from brenda's got a baby video?",
+      "chunks": [
+        {
+          "text": "Which character is",
+          "atMs": 1200
+        },
+        {
+          "text": "the girl from brenda's",
+          "atMs": 2800
+        },
+        {
+          "text": "got a baby video?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Which character is the girl from brenda's got a baby video?"
+        ],
+        "gold_passages": [
+          "\"Brenda's Got a Baby\" is the second single by Tupac Shakur from his debut album \"2Pacalypse Now\". The song, which features R&B singer Dave Hollister singing background vocals with Roniece Levias, is about a 12-year-old girl named Brenda who lives in a ghetto and has a baby she can't support. The song explores the issue of teen pregnancy and its effect on young mothers and their families. Like many of Shakur's songs, \"Brenda's Got a Baby\" draws from the plight of the impoverished. Using Brenda to represent young mothers in general, Shakur criticises the low level of support from the baby's father, the government, and society in general. Shakur wrote the song while filming the feature film Juice, after reading a newspaper article about a 12-year-old girl who became pregnant by her cousin and threw the baby into a trash compactor."
+        ],
+        "gold_answers": [
+          "Brenda"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "asqa_compound_07",
+  "corpus": "asqa",
+  "sample_id": "-5420316056765632266",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_07.json",
+  "turns": [
+    {
+      "utterance": "Who is in charge of the hollywood walk of fame?",
+      "chunks": [
+        {
+          "text": "Who is in",
+          "atMs": 1200
+        },
+        {
+          "text": "charge of the hollywood",
+          "atMs": 2800
+        },
+        {
+          "text": "walk of fame?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who administers the hollywood walk of fame?",
+          "Who maintains the hollywood walk of fame?",
+          "Who is in charge of choosing celebrities for the hollywood walk of fame?"
+        ],
+        "gold_passages": [
+          "Each year an average of 200 nominations are submitted to the Hollywood Chamber of Commerce Walk of Fame selection committee.",
+          "The Walk of Fame is administered by the Hollywood Chamber of Commerce and maintained by the self-financing Hollywood Historic Trust."
+        ],
+        "gold_answers": [
+          "Hollywood Chamber of Commerce",
+          "Hollywood Chamber of Commerce Walk of Fame selection committee",
+          "Hollywood Historic Trust",
+          "selection committee"
+        ]
+      }
+    }
+  ]
+}

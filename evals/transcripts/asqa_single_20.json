@@ -1,0 +1,41 @@
+{
+  "id": "asqa_single_20",
+  "family": "single",
+  "sample_id": "5953706990230666060",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who was the president of indian national congress when india became free due to the Indian Independence Act 1947 being passed?",
+      "chunks": [
+        {
+          "text": "Who was the",
+          "atMs": 1200
+        },
+        {
+          "text": "president of indian national",
+          "atMs": 2800
+        },
+        {
+          "text": "congress when india became free",
+          "atMs": 4800
+        },
+        {
+          "text": "due to the",
+          "atMs": 6000
+        },
+        {
+          "text": "Indian Independence Act 1947",
+          "atMs": 7600
+        },
+        {
+          "text": "being passed?",
+          "atMs": 8400
+        }
+      ],
+      "speech_end_ms": 8400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 8650
+    }
+  ]
+}

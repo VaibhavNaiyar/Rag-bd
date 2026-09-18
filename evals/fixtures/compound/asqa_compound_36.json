@@ -1,0 +1,51 @@
+{
+  "id": "asqa_compound_36",
+  "corpus": "asqa",
+  "sample_id": "1207438646958939540",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_36.json",
+  "turns": [
+    {
+      "utterance": "Where did they film the movie in the heat of the night?",
+      "chunks": [
+        {
+          "text": "Where did they",
+          "atMs": 1200
+        },
+        {
+          "text": "film the movie in",
+          "atMs": 2800
+        },
+        {
+          "text": "the heat of the night?",
+          "atMs": 4800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5050,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where did they film most of the movie in the heat of the night?",
+          "Where in Tennesse did they film part of the movie in the heat of the night?",
+          "Where did they film the chase scene in the movie in the heat of the night?",
+          "Where did they film the Compton's diner scenes in the movie in the heat of the night?"
+        ],
+        "gold_passages": [
+          "Although the film was set in the fictional Mississippi town of Sparta (with supposedly no connection to the real Sparta, Mississippi), most of the movie was filmed in Sparta, Illinois, where many of the film's landmarks can still be seen. The quote \"They call me \"Mister Tibbs!\" was listed as number 16 on the American Film Institute's \"100 Years...100 Movie Quotes\", a list of top film quotes. In 2002, the film was selected for preservation in the United States National Film Registry by the Library of Congress as being \"culturally, historically, or aesthetically significant\".",
+          "Jewison, Poitier, and Steiger worked together and got along well during the filming, but Jewison had problems with the Southern authorities, and Poitier had reservations about coming south of the Mason–Dixon line for filming. However, despite their reservations, Jewison decided to film part of the film in Dyersburg and Union City, Tennessee, anyway while the rest was filmed in Sparta, Chester (Harvey Oberst chase scene), and Freeburg (Compton's diner), Illinois."
+        ],
+        "gold_answers": [
+          "Chest",
+          "Chester, Illinois",
+          "Dyersburg",
+          "Dyersburg and Union City, Tennessee",
+          "Freeburg",
+          "Freeburg, Illinoi",
+          "Sparta, Illinois",
+          "Union City"
+        ]
+      }
+    }
+  ]
+}

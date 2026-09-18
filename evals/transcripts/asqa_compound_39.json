@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_39",
+  "family": "compound",
+  "sample_id": "7762371215419027025",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did india win the cricket world cup?",
+      "chunks": [
+        {
+          "text": "When did india",
+          "atMs": 1200
+        },
+        {
+          "text": "win the cricket world",
+          "atMs": 2800
+        },
+        {
+          "text": "cup?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_03",
+  "corpus": "asqa",
+  "sample_id": "2460950840947172152",
+  "description": "A normal ASQA question, then a presentation-only follow-up that must not retrieve.",
+  "transcript": "evals/transcripts/asqa_suppression_03.json",
+  "turns": [
+    {
+      "utterance": "Who's won the most premierships in afl?",
+      "chunks": [
+        {
+          "text": "Who's won the",
+          "atMs": 1200
+        },
+        {
+          "text": "most premierships in afl?",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Put that in one sentence.",
+      "chunks": [
+        {
+          "text": "Put that in",
+          "atMs": 1200
+        },
+        {
+          "text": "one sentence.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

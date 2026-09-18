@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_03",
+  "family": "compound",
+  "sample_id": "-5490514120728766150",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where does the new fallout game take place?",
+      "chunks": [
+        {
+          "text": "Where does the",
+          "atMs": 1200
+        },
+        {
+          "text": "new fallout game take",
+          "atMs": 2800
+        },
+        {
+          "text": "place?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

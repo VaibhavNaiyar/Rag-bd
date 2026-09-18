@@ -1,0 +1,49 @@
+{
+  "id": "asqa_compound_32",
+  "corpus": "asqa",
+  "sample_id": "5278020544239312824",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_32.json",
+  "turns": [
+    {
+      "utterance": "Who said the power of the pen is mightier than the sword?",
+      "chunks": [
+        {
+          "text": "Who said the",
+          "atMs": 1200
+        },
+        {
+          "text": "power of the pen",
+          "atMs": 2800
+        },
+        {
+          "text": "is mightier than the sword?",
+          "atMs": 4800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5050,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who first said the exact phrase the power of the pen is mightier than the sword?",
+          "Who first said a phrase similar the power of the pen is mightier than the sword?",
+          "Who said the first known version of the phrase the power of the pen is mightier than the sword?",
+          "Who first said \"the pen is mightier than the sword\"?"
+        ],
+        "gold_passages": [
+          "\"The pen is mightier than the sword\" is a metonymic adage, penned by English author Edward Bulwer-Lytton in 1839, indicating that communication (particularly written language), or in some interpretations, administrative power or advocacy of an independent press, is a more effective tool than direct violence.",
+          "Assyrian sage Ahiqar, who reputedly lived during the early 7th century BCE, coined the first known version of this phrase. One copy of the Teachings of Ahiqar, dating to about 500 BCE, states, \"The word is mightier than the sword.\"",
+          "Edward George Earle Lytton Bulwer-Lytton, 1st Baron Lytton, PC (25 May 1803 – 18 January 1873) was an English writer and politician.",
+          "The sentence was coined by English author Edward Bulwer-Lytton in 1839 for his play Richelieu; Or the Conspiracy"
+        ],
+        "gold_answers": [
+          "Ahiqar",
+          "Edward Bulwer-Lytton",
+          "Edward George Earle Lytton Bulwer-Lytton",
+          "Edward George Earle Lytton Bulwer-Lytton, 1st Baron Lytton, PC"
+        ]
+      }
+    }
+  ]
+}

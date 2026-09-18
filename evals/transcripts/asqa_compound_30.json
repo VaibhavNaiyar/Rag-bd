@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_30",
+  "family": "compound",
+  "sample_id": "3295950051782609129",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When was the song as time goes by written?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "song as time goes",
+          "atMs": 2800
+        },
+        {
+          "text": "by written?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

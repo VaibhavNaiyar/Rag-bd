@@ -1,0 +1,36 @@
+{
+  "id": "asqa_single_18",
+  "corpus": "asqa",
+  "sample_id": "-7928734433655034282",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_18.json",
+  "turns": [
+    {
+      "utterance": "When was the Louisiana Purchase Treaty signed?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "Louisiana Purchase Treaty signed?",
+          "atMs": 2800
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When was the Louisiana Purchase Treaty signed?"
+        ],
+        "gold_passages": [
+          "The Louisiana Purchase Treaty was signed on April 30, 1803, by Robert Livingston, James Monroe, and François Barbé-Marbois at the Hôtel Tubeuf in Paris. Jefferson announced the treaty to the American people on July 4. After the signing Livingston made this famous statement, \"We have lived long, but this is the noblest work of our whole lives... From this day the United States take their place among the powers of the first rank.\""
+        ],
+        "gold_answers": [
+          "April 30, 1803"
+        ]
+      }
+    }
+  ]
+}

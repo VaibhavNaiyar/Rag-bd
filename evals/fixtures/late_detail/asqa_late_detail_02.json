@@ -1,0 +1,59 @@
+{
+  "id": "asqa_late_detail_02",
+  "corpus": "asqa",
+  "sample_id": "19984783779385550",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('first').",
+  "transcript": "evals/transcripts/asqa_late_detail_02.json",
+  "turns": [
+    {
+      "utterance": "What season is the plane crash greys anatomy?",
+      "chunks": [
+        {
+          "text": "What season is",
+          "atMs": 1200
+        },
+        {
+          "text": "the plane crash greys",
+          "atMs": 2800
+        },
+        {
+          "text": "anatomy?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Sorry, I mean first.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "first.",
+          "atMs": 1600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "\"Flight\" is the twenty-fourth episode and the season finale of the eighth season of the American television medical drama Grey's Anatomy, and the show's 172nd episode overall."
+        ],
+        "gold_answers": [
+          "Season 8",
+          "eighth season",
+          "the eighth season"
+        ],
+        "refined_question": "What season is the first plane crash greys anatomy?",
+        "condition": "first"
+      }
+    }
+  ]
+}

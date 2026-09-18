@@ -1,0 +1,62 @@
+{
+  "id": "asqa_compound_05",
+  "corpus": "asqa",
+  "sample_id": "-9141149438582194391",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_05.json",
+  "turns": [
+    {
+      "utterance": "Who has scored the highest number of runs in test cricket?",
+      "chunks": [
+        {
+          "text": "Who has scored",
+          "atMs": 1200
+        },
+        {
+          "text": "the highest number of",
+          "atMs": 2800
+        },
+        {
+          "text": "runs in test cricket?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who has scored the highest number of runs in a career in test cricket?",
+          "Who has scored the highest number of runs in test cricket in a single match?",
+          "Who has scored the highest number of runs in test cricket in a series?",
+          "Who has scored the highest number of runs in test cricket in a calendar year?",
+          "Who has scored the highest number of runs in test cricket between successive dismissals?",
+          "Who has scored the highest number of runs in test cricket in an over?"
+        ],
+        "gold_passages": [
+          "Adam Charles Voges OAM (/ˈvoʊdʒɪz/, born 4 October 1979) is an Australian cricket coach and former cricketer who played for the Australian national team at Test, One Day International (ODI), and Twenty20 International (T20I) level, and also captained Western Australia and Perth Scorchers in domestic cricket.",
+          "Australian Donald Bradman, widely considered the greatest batsman of all time, holds several personal and partnership records. He scored the most runs in a series, has the most double centuries and was a part of the record 5th wicket partnership. His most significant record is his batting average of 99.94. One of cricket's most famous statistics, it stands almost 40 runs higher than any other batsman's average. Don Bradman is the only player in the world to have scored 5000 runs against a single opposition: 5028 runs against England.",
+          "Graham Alan Gooch, OBE, DL (born 23 July 1953) is a former English first-class cricketer who captained Essex and England.",
+          "In the Manchester Test of 1956, England spin bowler Jim Laker took 19 wickets for 90 runs (19–90) which set not only the Test record for best match figures but also the first-class one. In taking 10–53 in the second innings he became the first bowler to capture all ten wickets in a Test match innings, and his analysis remains the best innings figures. Indian leg spinner Anil Kumble is the only other bowler to have taken 10 wickets in an innings, claiming 10–74 against Pakistan in 1999. West Indies batsman Brian Lara has the highest individual score in Test cricket: he scored 400 not out against England in 2004 to surpass the innings of 380 by Matthew Hayden six months earlier. Lara had held the record before Hayden, with a score of 375 against England 10 years earlier. Pakistan's Misbah-ul-Haq holds the record of the fastest Test half century, scoring 50 runs from 21 balls. The record for the fastest Test century is held by New Zealand's Brendon McCullum, who scored 100 runs from 54 balls in his final Test match.",
+          "Sachin Ramesh Tendulkar (/ˌsʌtʃɪn tɛnˈduːlkər/ (About this soundlisten); born 24 April 1973) is an Indian former international cricketer who served as captain of the Indian national team."
+        ],
+        "gold_answers": [
+          "Adam Voges",
+          "Bradman",
+          "Brian Lara",
+          "Brian Lara, George Bailey, and Keshav Maharaj",
+          "Donald Bradman",
+          "George Bailey",
+          "Gooch",
+          "Graham Gooch",
+          "Keshav Maharaj",
+          "Mohammad Yousuf",
+          "Sachin Tendulkar",
+          "Tendulkar",
+          "Voges",
+          "Yousuf"
+        ]
+      }
+    }
+  ]
+}

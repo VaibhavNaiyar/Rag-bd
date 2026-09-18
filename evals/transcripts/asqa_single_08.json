@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_08",
+  "family": "single",
+  "sample_id": "5818337347612986915",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who sang i fooled around and fell in love in 1976?",
+      "chunks": [
+        {
+          "text": "Who sang i",
+          "atMs": 1200
+        },
+        {
+          "text": "fooled around and fell",
+          "atMs": 2800
+        },
+        {
+          "text": "in love in 1976?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

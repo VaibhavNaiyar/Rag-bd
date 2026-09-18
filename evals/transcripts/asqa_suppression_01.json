@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_01",
+  "family": "suppression",
+  "sample_id": "7797208395147217894",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did west germany win the world cup?",
+      "chunks": [
+        {
+          "text": "When did west",
+          "atMs": 1200
+        },
+        {
+          "text": "germany win the world",
+          "atMs": 2800
+        },
+        {
+          "text": "cup?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Say that in two bullets.",
+      "chunks": [
+        {
+          "text": "Say that in",
+          "atMs": 1200
+        },
+        {
+          "text": "two bullets.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_03",
+  "family": "late_detail",
+  "sample_id": "-6491913195208307840",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When was crude oil first discovered in nigeria?",
+      "chunks": [
+        {
+          "text": "When was crude",
+          "atMs": 1200
+        },
+        {
+          "text": "oil first discovered in",
+          "atMs": 2800
+        },
+        {
+          "text": "nigeria?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Oh wait, I meant non-commercial amounts.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant non-commercial amounts.",
+          "atMs": 2400
+        }
+      ],
+      "speech_end_ms": 2400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2650
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_07",
+  "family": "late_detail",
+  "sample_id": "1242985061682002762",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the king size bed come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "king size bed come",
+          "atMs": 2800
+        },
+        {
+          "text": "out?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Actually, I meant first.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "first.",
+          "atMs": 1600
+        }
+      ],
+      "speech_end_ms": 1600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850
+    }
+  ]
+}

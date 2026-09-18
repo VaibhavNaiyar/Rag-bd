@@ -1,0 +1,49 @@
+{
+  "id": "asqa_late_detail_14",
+  "family": "late_detail",
+  "sample_id": "454536280675091191",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who wrote the song if i ruled the world?",
+      "chunks": [
+        {
+          "text": "Who wrote the",
+          "atMs": 1200
+        },
+        {
+          "text": "song if i ruled",
+          "atMs": 2800
+        },
+        {
+          "text": "the world?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Sorry, I mean from the West End musical Pickwick.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "from the West End",
+          "atMs": 2800
+        },
+        {
+          "text": "musical Pickwick.",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

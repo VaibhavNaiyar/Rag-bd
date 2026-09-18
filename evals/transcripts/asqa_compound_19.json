@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_19",
+  "family": "compound",
+  "sample_id": "223527143081061606",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where are most of your taste buds located on your tounge?",
+      "chunks": [
+        {
+          "text": "Where are most",
+          "atMs": 1200
+        },
+        {
+          "text": "of your taste buds",
+          "atMs": 2800
+        },
+        {
+          "text": "located on your tounge?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

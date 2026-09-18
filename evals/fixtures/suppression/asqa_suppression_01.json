@@ -1,0 +1,49 @@
+{
+  "id": "asqa_suppression_01",
+  "corpus": "asqa",
+  "sample_id": "7797208395147217894",
+  "description": "A normal ASQA question, then a presentation-only follow-up that must not retrieve.",
+  "transcript": "evals/transcripts/asqa_suppression_01.json",
+  "turns": [
+    {
+      "utterance": "When did west germany win the world cup?",
+      "chunks": [
+        {
+          "text": "When did west",
+          "atMs": 1200
+        },
+        {
+          "text": "germany win the world",
+          "atMs": 2800
+        },
+        {
+          "text": "cup?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Say that in two bullets.",
+      "chunks": [
+        {
+          "text": "Say that in",
+          "atMs": 1200
+        },
+        {
+          "text": "two bullets.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

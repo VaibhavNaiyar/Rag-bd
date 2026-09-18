@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_25",
+  "family": "compound",
+  "sample_id": "4129054433505407523",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did the first cassette tape come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "first cassette tape come",
+          "atMs": 2800
+        },
+        {
+          "text": "out?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

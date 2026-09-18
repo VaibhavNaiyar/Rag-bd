@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_01",
+  "family": "late_detail",
+  "sample_id": "-3346585405026933671",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What is the meaning of the latin word camera obscura?",
+      "chunks": [
+        {
+          "text": "What is the",
+          "atMs": 1200
+        },
+        {
+          "text": "meaning of the latin",
+          "atMs": 2800
+        },
+        {
+          "text": "word camera obscura?",
+          "atMs": 4000
+        }
+      ],
+      "speech_end_ms": 4000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250
+    },
+    {
+      "text": "Actually, I meant literal.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "literal.",
+          "atMs": 1600
+        }
+      ],
+      "speech_end_ms": 1600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850
+    }
+  ]
+}

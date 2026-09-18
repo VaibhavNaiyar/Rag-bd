@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_10",
+  "family": "compound",
+  "sample_id": "-8671730800953225881",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who played flash gordon in the tv series?",
+      "chunks": [
+        {
+          "text": "Who played flash",
+          "atMs": 1200
+        },
+        {
+          "text": "gordon in the tv",
+          "atMs": 2800
+        },
+        {
+          "text": "series?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

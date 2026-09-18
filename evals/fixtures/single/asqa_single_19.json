@@ -1,0 +1,48 @@
+{
+  "id": "asqa_single_19",
+  "corpus": "asqa",
+  "sample_id": "7984291459252949510",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_19.json",
+  "turns": [
+    {
+      "utterance": "Who portrayed the character who dies in season 9 from injuries sustained in the plane crash on Grey's?",
+      "chunks": [
+        {
+          "text": "Who portrayed the",
+          "atMs": 1200
+        },
+        {
+          "text": "character who dies in",
+          "atMs": 2800
+        },
+        {
+          "text": "season 9 from injuries sustained",
+          "atMs": 4800
+        },
+        {
+          "text": "in the plane",
+          "atMs": 6000
+        },
+        {
+          "text": "crash on Grey's?",
+          "atMs": 7200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 7450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who portrayed the character who dies in season 9 from injuries sustained in the plane crash on Grey's?"
+        ],
+        "gold_passages": [
+          "The season follows the characters dealing with the aftermath of the season eight plane crash that claimed the life of Lexie Grey (Chyler Leigh) and upon rescue Mark Sloan (Eric Dane), who dies after sustaining injuries from the crash. Derek Shepherd (Patrick Dempsey) finds his surgical career in doubt after badly damaging his hand but Callie Torres (Sara Ramirez) ultimately manages to save his hand. The show's protagonist Meredith Grey (Ellen Pompeo) deals with the loss of her half-sister Lexie and later discovers that she is pregnant. Cristina Yang (Sandra Oh) who is severely traumatized upon rescue and later decides to take up her fellowship in Minnesota. Arizona Robbins (Jessica Capshaw) another survivor of the plane crash upon return realizes that her leg has to be amputated to save her life, reacts badly to this, becoming bitter and blaming her wife Callie and her former friend Alex Karev (Justin Chambers). To prevent the doctors' court case from being thrown out, Owen Hunt (Kevin McKidd) decides to divorce Yang, but the two agree to start again. The hospital itself becomes liable for the crash, putting its future in extreme doubt prompting the four crash survivors and Torres to purchase the hospital. Miranda Bailey (Chandra Wilson) marries her partner Ben Warren (Jason George), April Kepner (Sarah Drew) returns home to Ohio, but is brought back by Hunt to rejoin the hospital and she restarts her relationship with Jackson Avery (Jesse Williams)."
+        ],
+        "gold_answers": [
+          "Eric Dane"
+        ]
+      }
+    }
+  ]
+}

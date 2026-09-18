@@ -1,0 +1,49 @@
+{
+  "id": "asqa_compound_34",
+  "corpus": "asqa",
+  "sample_id": "-7552544848676354758",
+  "description": "ASQA ambiguous question with 5 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_34.json",
+  "turns": [
+    {
+      "utterance": "Where does raymond live in everybody loves raymond?",
+      "chunks": [
+        {
+          "text": "Where does raymond",
+          "atMs": 1200
+        },
+        {
+          "text": "live in everybody loves",
+          "atMs": 2800
+        },
+        {
+          "text": "raymond?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What is the city and state where Raymond lives in Everybody Loves Raymond?",
+          "Where does Raymond live in Everybody Loves Raymond, in relation to other people?",
+          "In what region does Raymond live in Everybody Loves Raymond?",
+          "In what city does Raymond live in Everybody Loves Raymond?",
+          "Where does Raymond live in Everybody Loves Raymond, in terms of other people?"
+        ],
+        "gold_passages": [
+          "He lives in Lynbrook, Long Island with his wife, Debra, and their three children Alexandra (\"Ally\"), Geoffrey, and Michael.",
+          "Long Island is a densely populated island in the southeast part of the U.S. state of New York, contained within the New York metropolitan area.",
+          "The show is centered on the life of an Italian-American everyman named Raymond Barone, a sportswriter for Newsday living with his family on Long Island."
+        ],
+        "gold_answers": [
+          "Long Island",
+          "Lynbrook, Long Island",
+          "Lynbrook, NY",
+          "across the street from his parents"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "asqa_compound_33",
+  "corpus": "asqa",
+  "sample_id": "-3225724984379691389",
+  "description": "ASQA ambiguous question with 5 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_33.json",
+  "turns": [
+    {
+      "utterance": "Where was the count of monte cristo published?",
+      "chunks": [
+        {
+          "text": "Where was the",
+          "atMs": 1200
+        },
+        {
+          "text": "count of monte cristo",
+          "atMs": 2800
+        },
+        {
+          "text": "published?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where was first edition in book form of The Count of Monte Cristo published?",
+          "Where was The Count of Monte Cristo originally published?",
+          "Where was The Count of Monte Cristo English translation first published?",
+          "Where was The Count of Monte Cristo's Japanese translation published?",
+          "What country was the Count of Monte Cristo comic book published in?"
+        ],
+        "gold_passages": [
+          "\"The Count of Monte Cristo\" was originally published in the \"Journal des Débats\" in eighteen parts. Serialization ran from 28 August 1844 to 15 January 1846. The first edition in book form was published in Paris by \"Pétion\" in 18 volumes with the first two issued in 1844 and the remaining sixteen in 1845. Most of the Belgian pirated editions, the first Paris edition and many others up to the \"Lécrivain et Toubon\" illustrated edition of 1860 feature a misspelling of the title with \"Christo\" used instead of \"Cristo\". The first edition to feature the correct spelling was the \"L'Écho des Feuilletons\" illustrated edition, Paris 1846. This edition featured plates by Paul Gavarni and Tony Johannot and was said to be \"revised\" and \"corrected\", although only the chapter structure appears to have been altered with an additional chapter entitled \"La Maison des Allées de Meilhan\" having been created by splitting \"Le Départ\" into two.",
+          "The first Japanese translation by Kuroiwa Shūroku was entitled \"Shigai Shiden Gankutsu-ou\" (史外史伝巌窟王, \"a historical story from outside history, the King of the Cavern\"), and serialized from 1901–1902 in the Yorozu Chouhou newspaper, and released in book form in four volumes by publisher Aoki Suusandou in 1905. Though later translations use the title \"Monte Cristo-haku\" (モンテ・クリスト伯, the Count of Monte Cristo), the \"Gankutsu-ou\" title remains highly associated with the novel and is often used as an alternative. As of March 2016, all movie adaptations of the novel brought to Japan used the title \"Gankutsu-ou\", with the exception of the 2002 film, which has it as a subtitle (with the title itself simply being \"Monte Cristo\").",
+          "The first appearance of \"The Count of Monte Cristo\" in English was the first part of a serialization by W. Francis Ainsworth in volume VII of \"Ainsworth's Magazine\" published in 1845, although this was an abridged summary of the first part of the novel only and was entitled \"The Prisoner of If\". Ainsworth translated the remaining chapters of the novel, again in abridged form, and issued these in volumes VIII and IX of the magazine in 1845 and 1846 respectively. Another abridged serialization appeared in \"The London Journal\" between 1846 and 1847.",
+          "The success of \"The Count of Monte Cristo\" coincides with France's Second Empire. In the book, Dumas tells of the 1815 return of Napoleon I, and alludes to contemporary events when the governor at the Château d'If is promoted to a position at the castle of Ham. The attitude of Dumas towards \"bonapartisme\" was conflicted. His father, Thomas-Alexandre Dumas, a Haitian of mixed descent, became a successful general during the French Revolution. New racial-discrimination laws were applied in 1802. The general was consequently dismissed from the army and became profoundly bitter toward Napoleon. In 1840, the body of Napoleon I was brought to France and became an object of veneration in the church of Les Invalides, renewing popular patriotic support for the Bonaparte family."
+        ],
+        "gold_answers": [
+          "France",
+          "Journal del Debats",
+          "Journal des Débats",
+          "Paris, France",
+          "United States",
+          "Volume VII of Ainsworth's Magazine",
+          "Yorozu Chouhou",
+          "the Journal des Débats"
+        ]
+      }
+    }
+  ]
+}

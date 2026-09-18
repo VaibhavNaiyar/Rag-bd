@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_08",
+  "corpus": "asqa",
+  "sample_id": "5818337347612986915",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_08.json",
+  "turns": [
+    {
+      "utterance": "Who sang i fooled around and fell in love in 1976?",
+      "chunks": [
+        {
+          "text": "Who sang i",
+          "atMs": 1200
+        },
+        {
+          "text": "fooled around and fell",
+          "atMs": 2800
+        },
+        {
+          "text": "in love in 1976?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who sang i fooled around and fell in love in 1976?"
+        ],
+        "gold_passages": [
+          "Bishop does not sing lead vocals on the track; feeling that his gravelly voice wouldn't do the song justice, he invited vocalist Mickey Thomas, who was a background singer in his band at the time, to sing it. The song peaked at #3 on the \"Billboard\" Hot 100 singles chart in May 1976. The record was certified gold by the Recording Industry Association of America on June 23, 1976. In Canada, the song reached number 22 on the singles chart and number 8 on the Adult Contemporary chart. The single reached number 3 in the New Zealand Singles Chart."
+        ],
+        "gold_answers": [
+          "Mickey Thomas"
+        ]
+      }
+    }
+  ]
+}

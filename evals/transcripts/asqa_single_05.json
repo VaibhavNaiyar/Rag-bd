@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_05",
+  "family": "single",
+  "sample_id": "8583207657424207460",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Which Stanley Cup was the new york rangers last win of the stanley cup?",
+      "chunks": [
+        {
+          "text": "Which Stanley Cup",
+          "atMs": 1200
+        },
+        {
+          "text": "was the new york",
+          "atMs": 2800
+        },
+        {
+          "text": "rangers last win of the",
+          "atMs": 4800
+        },
+        {
+          "text": "stanley cup?",
+          "atMs": 5600
+        }
+      ],
+      "speech_end_ms": 5600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850
+    }
+  ]
+}

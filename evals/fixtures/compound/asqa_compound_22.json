@@ -1,0 +1,43 @@
+{
+  "id": "asqa_compound_22",
+  "corpus": "asqa",
+  "sample_id": "-8749546022725061810",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_22.json",
+  "turns": [
+    {
+      "utterance": "Who plays the skin changer in the hobbit?",
+      "chunks": [
+        {
+          "text": "Who plays the",
+          "atMs": 1200
+        },
+        {
+          "text": "skin changer in the",
+          "atMs": 2800
+        },
+        {
+          "text": "hobbit?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who plays the role of skin changer in Peter Jackson's hobbit?",
+          "Who plays the voice of the skin changer in the hobbit 2003 video game?"
+        ],
+        "gold_passages": [
+          "After Gandalf sends Bilbo to Bard's unit, Bilbo meets Lianna, who tells him he must find Beorn (Michael Gough), a \"skin changer\" currently in the form of a bear, as Beorn is the only one who can defeat Bolg. Bilbo does so, and Beorn kills Bolg. The stunned goblin army rally, but as they do an army of eagles appears on the horizon. At this point, Bilbo is knocked unconscious by a rock. He awakens to find the battle over, with the goblins defeated, whilst men, elves and dwarves have united to face any future dangers. However, Thorin has been mortally wounded. On his deathbed, he apologizes to Bilbo, saying he wishes he had lived his own life more like the Hobbit. As Lake-town begins to rebuild from Smaug's attack, Bilbo takes two small chests of gold and heads back to the Shire, accompanied by Gandalf.",
+          "Swedish actor Mikael Persbrandt portrays Beorn in Peter Jackson's \"\" and in its sequel \".\" In the film, he indicates that his people once lived in the Misty Mountains, but were conquered by the Orcs under Azog, who captured and tortured his people for sport and killed them until only one remained. Beorn eventually escaped, but still carries a chain around his wrist from his imprisonment. In the extended edition, Beorn tells Gandalf of the alliance between the Orcs of Moria and the Necromancer of Dol Guldur, and he also inquires about the nine, who have been seen wandering near the High Fells of Rhudaur. Beorn arrives to the Battle of the Five Armies atop a Great Eagle rather than on foot and does not slay Bolg, who is killed by Legolas in the film adaptation (the Orc commander was also changed to be Azog himself, but Thorin, instead of Beorn, kills Azog in single combat). In the DVD commentary, the production team explained that they normally take great care that characters only speak with accents which were historically present in the British Isles, but they made a major exception for Beorn by letting Persbrandt use his natural Swedish accent. They reasoned that Beorn should logically have a very distinctive and foreign-sounding accent, given that he is the last survivor of an isolated race which had little contact with people from regions such as Gondor or the Shire."
+        ],
+        "gold_answers": [
+          "Michael Gough",
+          "Mikael Persbrandt"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "asqa_compound_06",
+  "corpus": "asqa",
+  "sample_id": "5058743055169917398",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_06.json",
+  "turns": [
+    {
+      "utterance": "Where does the federal reserve get its authority?",
+      "chunks": [
+        {
+          "text": "Where does the",
+          "atMs": 1200
+        },
+        {
+          "text": "federal reserve get its",
+          "atMs": 2800
+        },
+        {
+          "text": "authority?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Which body does the federal reserve get its authority from originally?",
+          "Which body governs the federal reserve and its authority?",
+          "From which act does the federal reserve get its authority?"
+        ],
+        "gold_passages": [
+          "It is governed by the presidentially appointed board of governors or Federal Reserve Board (FRB).",
+          "The Federal Reserve System has a \"unique structure that is both public and private\" and is described as \"independent within the government\" rather than \"independent of government\". The System does not require public funding, and derives its authority and purpose from the Federal Reserve Act, which was passed by Congress in 1913 and is subject to Congressional modification or repeal. The four main components of the Federal Reserve System are (1) the board of governors, (2) the Federal Open Market Committee, (3) the twelve regional Federal Reserve Banks, and (4) the member banks throughout the country."
+        ],
+        "gold_answers": [
+          "Board of Governors of the Federal Reserve System",
+          "Congress",
+          "Federal Reserve Act",
+          "Federal Reserve Board",
+          "Federal Reserve Board of Governors",
+          "U.S. Congress",
+          "US Government",
+          "board of governors"
+        ]
+      }
+    }
+  ]
+}

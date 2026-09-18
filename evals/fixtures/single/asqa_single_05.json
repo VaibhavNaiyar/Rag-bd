@@ -1,0 +1,45 @@
+{
+  "id": "asqa_single_05",
+  "corpus": "asqa",
+  "sample_id": "8583207657424207460",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_05.json",
+  "turns": [
+    {
+      "utterance": "Which Stanley Cup was the new york rangers last win of the stanley cup?",
+      "chunks": [
+        {
+          "text": "Which Stanley Cup",
+          "atMs": 1200
+        },
+        {
+          "text": "was the new york",
+          "atMs": 2800
+        },
+        {
+          "text": "rangers last win of the",
+          "atMs": 4800
+        },
+        {
+          "text": "stanley cup?",
+          "atMs": 5600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Which Stanley Cup was the new york rangers last win of the stanley cup?"
+        ],
+        "gold_passages": [
+          "The 1993–94 season was a successful one for Rangers fans, as Mike Keenan led the Rangers to their first Stanley Cup championship in 54 years. Two years prior, they picked up center Mark Messier, a part of the Edmonton Oilers' Cup-winning teams. Other ex-Oilers on the Rangers included Adam Graves, Kevin Lowe, Jeff Beukeboom, Esa Tikkanen, Craig MacTavish and Glenn Anderson. Graves set a team record with 52 goals, breaking the prior record of 50 held by Vic Hadfield. The Rangers clinched the Presidents' Trophy by finishing with the best record in the NHL at 52–24–8, setting a franchise record with 112 points earned."
+        ],
+        "gold_answers": [
+          "1993–94",
+          "1994 Stanley Cup Finals"
+        ]
+      }
+    }
+  ]
+}

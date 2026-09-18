@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streaming-live-rag"
+version = "0.2.0"
+description = "Streaming Live RAG engine — Samsung PRISM GenAI Hackathon, Theme 04"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "pydantic==2.10.4",
+  "numpy==2.1.3",
+  "scipy==1.14.1",
+  "rank-bm25==0.2.2",
+  "openai==1.59.7",
+  "pypdf==5.1.0",
+  "sentence-transformers==3.3.1",
+  "transformers==4.47.1",
+  "python-dotenv==1.0.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.4", "pytest-asyncio==0.25.0", "httpx==0.28.1"]
+# Only evals/build_dataset.py needs this, and only to refresh the vendored sample.
+dataset = ["datasets==3.2.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+slr = ["api/static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["src", "."]

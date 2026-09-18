@@ -1,0 +1,19 @@
+{
+  "id": "presentation_03",
+  "corpus": "demo",
+  "description": "Rephrase request.",
+  "turns": [
+    {
+      "utterance": "What happens if a company laptop is lost?",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Could you rephrase that in simpler words please?",
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

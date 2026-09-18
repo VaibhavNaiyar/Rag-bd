@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_04",
+  "family": "compound",
+  "sample_id": "4214526319411191996",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who played the chicago cubs in the world series last year?",
+      "chunks": [
+        {
+          "text": "Who played the",
+          "atMs": 1200
+        },
+        {
+          "text": "chicago cubs in the",
+          "atMs": 2800
+        },
+        {
+          "text": "world series last year?",
+          "atMs": 4400
+        }
+      ],
+      "speech_end_ms": 4400,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650
+    }
+  ]
+}

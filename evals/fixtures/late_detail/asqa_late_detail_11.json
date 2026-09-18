@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_11",
+  "corpus": "asqa",
+  "sample_id": "767737324563716850",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('a single season').",
+  "transcript": "evals/transcripts/asqa_late_detail_11.json",
+  "turns": [
+    {
+      "utterance": "Who has the most rbis in major league history?",
+      "chunks": [
+        {
+          "text": "Who has the",
+          "atMs": 1200
+        },
+        {
+          "text": "most rbis in major",
+          "atMs": 2800
+        },
+        {
+          "text": "league history?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Sorry, I mean a single season.",
+      "chunks": [
+        {
+          "text": "Sorry, I mean",
+          "atMs": 1200
+        },
+        {
+          "text": "a single season.",
+          "atMs": 2400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2650,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "Season Hack Wilson (1930) – 191"
+        ],
+        "gold_answers": [
+          "Hack Wilson",
+          "Wilson"
+        ],
+        "refined_question": "Who has the most rbis in a single season in major league history?",
+        "condition": "a single season"
+      }
+    }
+  ]
+}

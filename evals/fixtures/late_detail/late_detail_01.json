@@ -1,0 +1,22 @@
+{
+  "id": "late_detail_01",
+  "corpus": "demo",
+  "description": "Guide example 2: travel reimbursement, then the trip turns out to be international and late-booked.",
+  "turns": [
+    {
+      "utterance": "Summarize the travel reimbursement rule for an employee trip.",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "The trip was international and the booking was made after travel.",
+      "expect": {
+        "mode": "refine",
+        "gold_docs": [
+          "travel_reimbursement_policy.md"
+        ]
+      }
+    }
+  ]
+}

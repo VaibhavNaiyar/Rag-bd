@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_06",
+  "family": "suppression",
+  "sample_id": "-3833347389039773807",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When is season 14 of grey's anatomy coming back?",
+      "chunks": [
+        {
+          "text": "When is season",
+          "atMs": 1200
+        },
+        {
+          "text": "14 of grey's anatomy",
+          "atMs": 2800
+        },
+        {
+          "text": "coming back?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Summarize what you just said.",
+      "chunks": [
+        {
+          "text": "Summarize what you",
+          "atMs": 1200
+        },
+        {
+          "text": "just said.",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

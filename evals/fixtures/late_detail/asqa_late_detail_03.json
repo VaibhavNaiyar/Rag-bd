@@ -1,0 +1,57 @@
+{
+  "id": "asqa_late_detail_03",
+  "corpus": "asqa",
+  "sample_id": "-6491913195208307840",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('non-commercial amounts').",
+  "transcript": "evals/transcripts/asqa_late_detail_03.json",
+  "turns": [
+    {
+      "utterance": "When was crude oil first discovered in nigeria?",
+      "chunks": [
+        {
+          "text": "When was crude",
+          "atMs": 1200
+        },
+        {
+          "text": "oil first discovered in",
+          "atMs": 2800
+        },
+        {
+          "text": "nigeria?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Oh wait, I meant non-commercial amounts.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant non-commercial amounts.",
+          "atMs": 2400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2650,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "The history of oil exploration in Nigeria dates back to 1903 when Nigerian Bitumen Corporation conducted exploratory work in the country, at the onset of World War I the firm's operation were stopped. Due to the lack of technological and financial resources by small oil companies, large oil companies took over the exploration of commercial oil in the country. Thereafter, licenses were given to D'Arcy Exploration Company and Whitehall Petroleum but neither company found oil of commercial value and they returned their licenses in 1923. A new license covering was given to Shell D'arcy Petroleum Development Company of Nigeria, a consortium of Shell and British Petroleum (then known as Anglo-Iranian). The company began exploratory work in 1937. The consortium was granted license to explore oil all over the territory of Nigeria but the acreage allotted to the company in the original license was reduced in 1951 and then between 1955 and 1957. Drilling activities started in 1951 with the first test well drilled in Owerri area. Oil was discovered in non-commercial quantities at Akata, near Eket in 1953. Prior to the Akata find, the company had spent around 6 million pounds on exploratory activities in the country. Shell-BP in the pursuit of commercially available petroleum found oil in Oloibiri, Nigeria in 1956. Other important oil wells discovered during the period were Afam and Bomu in Ogoni territory. Production of crude oil began in 1957 and in 1960, a total of 847,000 tonnes of crude oil was exported. Towards the end of the 1950s, non-British firms were granted license to explore for oil: Mobil in 1955, Tenneco in 1960, Gulf Oil and later Chevron in 1961, Agip in 1962, and Elf in 1962. Prior to the discovery of oil, Nigeria (like many other African countries) strongly relied on agricultural exports to other countries to supply their economy. Many Nigerians thought the developers were looking for palm oil. But after nearly 50 years searching for oil in the country, Shell-BP discovered the oil at Oloibiri in the Niger Delta. The first oil field began production in 1958."
+        ],
+        "gold_answers": [
+          "1953"
+        ],
+        "refined_question": "When was non-commercial amounts of crude oil first discovered in nigeria?",
+        "condition": "non-commercial amounts"
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_10",
+  "family": "late_detail",
+  "sample_id": "-8286966211355378010",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What is the objective of tour de france?",
+      "chunks": [
+        {
+          "text": "What is the",
+          "atMs": 1200
+        },
+        {
+          "text": "objective of tour de",
+          "atMs": 2800
+        },
+        {
+          "text": "france?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Actually, I meant current.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "current.",
+          "atMs": 1600
+        }
+      ],
+      "speech_end_ms": 1600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850
+    }
+  ]
+}

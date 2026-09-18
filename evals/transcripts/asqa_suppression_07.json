@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_07",
+  "family": "suppression",
+  "sample_id": "8787064710466316665",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "How many houses are in the british parliament?",
+      "chunks": [
+        {
+          "text": "How many houses",
+          "atMs": 1200
+        },
+        {
+          "text": "are in the british",
+          "atMs": 2800
+        },
+        {
+          "text": "parliament?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Say that again as a numbered list.",
+      "chunks": [
+        {
+          "text": "Say that again",
+          "atMs": 1200
+        },
+        {
+          "text": "as a numbered list.",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

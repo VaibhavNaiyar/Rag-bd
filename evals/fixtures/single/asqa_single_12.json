@@ -1,0 +1,44 @@
+{
+  "id": "asqa_single_12",
+  "corpus": "asqa",
+  "sample_id": "-1127816860972970035",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_12.json",
+  "turns": [
+    {
+      "utterance": "When did the royal flying doctor service start as the AIM Aerial Medical Service?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "royal flying doctor service",
+          "atMs": 2800
+        },
+        {
+          "text": "start as the AIM Aerial",
+          "atMs": 4800
+        },
+        {
+          "text": "Medical Service?",
+          "atMs": 5600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did the royal flying doctor service start as the AIM Aerial Medical Service?"
+        ],
+        "gold_passages": [
+          "The Reverend John Flynn had worked in rural and remote areas of Victoria and was commissioned by the Presbyterian Church to look at the needs of Outback people. His report to the Presbyterian Assembly in 1912 resulted in the establishment of the Australian Inland Mission (AIM), of which he was appointed Superintendent. In 1928, he formed the AIM Aerial Medical Service, a one-year experiment based in Cloncurry, Queensland. This experiment later became The Royal Flying Doctor Service."
+        ],
+        "gold_answers": [
+          "1928"
+        ]
+      }
+    }
+  ]
+}

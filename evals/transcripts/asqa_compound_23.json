@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_23",
+  "family": "compound",
+  "sample_id": "169673493218699735",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What religion are they in call the midwife?",
+      "chunks": [
+        {
+          "text": "What religion are",
+          "atMs": 1200
+        },
+        {
+          "text": "they in call the",
+          "atMs": 2800
+        },
+        {
+          "text": "midwife?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "asqa_compound_39",
+  "corpus": "asqa",
+  "sample_id": "7762371215419027025",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_39.json",
+  "turns": [
+    {
+      "utterance": "When did india win the cricket world cup?",
+      "chunks": [
+        {
+          "text": "When did india",
+          "atMs": 1200
+        },
+        {
+          "text": "win the cricket world",
+          "atMs": 2800
+        },
+        {
+          "text": "cup?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did india win the cricket world cup in the 1980s?",
+          "When did india win the cricket world cup in the 2010s?"
+        ],
+        "gold_passages": [
+          "In addition to winning the 1983 Cricket World Cup, they triumphed over Sri Lanka in the 2011 Cricket World Cup on home soil."
+        ],
+        "gold_answers": [
+          "1983",
+          "2011"
+        ]
+      }
+    }
+  ]
+}

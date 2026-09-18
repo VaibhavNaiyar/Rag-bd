@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_15",
+  "family": "late_detail",
+  "sample_id": "855112674459593256",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Release date of south park fractured but whole?",
+      "chunks": [
+        {
+          "text": "Release date of",
+          "atMs": 1200
+        },
+        {
+          "text": "south park fractured but",
+          "atMs": 2800
+        },
+        {
+          "text": "whole?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Oh wait, I meant for Nintendo Switch.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant for Nintendo Switch.",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

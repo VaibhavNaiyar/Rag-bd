@@ -1,0 +1,44 @@
+{
+  "id": "asqa_single_03",
+  "corpus": "asqa",
+  "sample_id": "-4536457655385125693",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_03.json",
+  "turns": [
+    {
+      "utterance": "Where did they film the family farm scenes in places in the heart?",
+      "chunks": [
+        {
+          "text": "Where did they",
+          "atMs": 1200
+        },
+        {
+          "text": "film the family farm",
+          "atMs": 2800
+        },
+        {
+          "text": "scenes in places in the",
+          "atMs": 4800
+        },
+        {
+          "text": "heart?",
+          "atMs": 5200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where did they film the family farm scenes in places in the heart?"
+        ],
+        "gold_passages": [
+          "Places in the Heart is a 1984 American drama film written and directed by Robert Benton about a Depression-era Texas widow who tries to save her family farm with the help of a blind white man and a poor black man. The film stars Sally Field, Lindsay Crouse, Ed Harris, Ray Baker, Amy Madigan, John Malkovich, Danny Glover, Jerry Haynes and Terry O'Quinn. It was filmed in Waxahachie, Texas, on Jack Davis' farm. Field won her second Academy Award for Best Actress for her performance."
+        ],
+        "gold_answers": [
+          "Jack Davis' farm"
+        ]
+      }
+    }
+  ]
+}

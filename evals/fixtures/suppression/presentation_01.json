@@ -1,0 +1,19 @@
+{
+  "id": "presentation_01",
+  "corpus": "demo",
+  "description": "Guide example 3: re-present the previous answer as two bullets.",
+  "turns": [
+    {
+      "utterance": "What is the venue cancellation policy?",
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Please repeat your last answer in two bullets.",
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "asqa_compound_38",
+  "corpus": "asqa",
+  "sample_id": "-2460031680453256643",
+  "description": "ASQA ambiguous question with 6 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_38.json",
+  "turns": [
+    {
+      "utterance": "Who did kobe bryant beat in the finals?",
+      "chunks": [
+        {
+          "text": "Who did kobe",
+          "atMs": 1200
+        },
+        {
+          "text": "bryant beat in the",
+          "atMs": 2800
+        },
+        {
+          "text": "finals?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who did kobe bryant beat in the 2002 finals?",
+          "Who did kobe bryant beat in the 2001 finals?",
+          "Who did kobe bryant beat in the 2000 finals?",
+          "Who did kobe bryant beat in the 2009 finals?",
+          "Who did Kobe Bryant beat in the 2010 NBA Finals?",
+          "Who did Kobe Bryant beat in the Olympic finals in 2012?"
+        ],
+        "gold_passages": [
+          "Bryant was sidelined for six weeks prior to the start of the 1999–2000 season due to a hand injury that he had incurred during a preseason game against the Washington Wizards. When Bryant was back and playing over 38 minutes a game, he had an increase in all statistical categories during the 1999–2000 season. This included leading the team in assists per game and steals per game. The duo of O'Neal and Bryant backed with a strong bench led to the Lakers winning 67 games, tied for fifth-most in NBA history. This followed with O'Neal winning the MVP and Bryant being named to the All-NBA Team Second Team and All-NBA Defensive Team for the first time in his career (the youngest player ever to receive defensive honors). While playing second fiddle to O'Neal in the playoffs, Bryant had some clutch performances including a 25-point, 11 rebound, 7 assist, 4 block game in game 7 of the Western Conference finals against the Portland Trail Blazers. He also threw an alley-oop pass to O'Neal to clinch the game and the series. In the 2000 Finals against the Indiana Pacers, Bryant injured his ankle in the second quarter of Game 2 after landing on the Pacers' Jalen Rose's foot. Rose later admitted he placed his foot under Bryant intentionally. Bryant did not return to the game, and he also missed Game 3 due to the injury. In Game 4, Bryant scored 22 points in the second half and led the team to an OT victory as O'Neal fouled out of the game. Bryant scored the winning shot to put the Lakers ahead 120–118. With a 116–111 Game 6 victory, the Lakers won their first championship since 1988.",
+          "The 2001 NBA Finals was the championship round of the National Basketball Association (NBA)'s 2000–01 season. The Western Conference champion Los Angeles Lakers took on the Eastern Conference champion Philadelphia 76ers for the championship, with the Lakers holding home-court advantage in a best-of-seven format.",
+          "The 2009 NBA Finals was the National Basketball Association (NBA)'s championship series for the 2008–09 season. The best-of-seven playoff was contested between the Western Conference champion Los Angeles Lakers (who were also the defending Western Conference champions), and the Eastern Conference champion Orlando Magic. The Lakers defeated the Magic, four games to one, to win the franchise's 15th NBA championship. The 63rd edition of the championship series was played between June 4 and June 14 and was broadcast on U.S. television on ABC.",
+          "The 2010 NBA Finals was the National Basketball Association (NBA)'s championship series for the 2009–10 season. The best-of-seven playoff was contested between the Western Conference champion Los Angeles Lakers (who were also defending NBA champions), and the Eastern Conference champion Boston Celtics. The Lakers defeated the Celtics, four games to three, to win the franchise's 16th NBA championship. The 64th edition of the championship series was played between June 3 and June 17, was broadcast on ABC, and was watched by an average of 18.1 million people.",
+          "The Olympics' own daily preview of the 2012 rematch said it would \"likely take a great game from Spain and an off-day from the USA to cause an upset\". The Americans had been tested only once against Lithuania, and they had dominated opponents in points off turnovers (198–77) and fast-break points (175–55). In a game that was close until the final minutes, the USA defeated Spain 107–100. The Americans led the Spanish by only one point after three quarters, but James scored on a dunk and then a three-point basket for a 102–93 lead with 1:59 to play. James had 19 points in the game, joining Michael Jordan as the only players to win the NBA regular-season Most Valuable Player (MVP) award, NBA championship, NBA Finals MVP, and Olympic gold in the same year. Durant added 30 points, the first 30-point game in an Olympic final in US history. Spain was led by Pau Gasol with 24 points, including his team's first 13 points in the second half to give them a 71–70 lead halfway into the third quarter. Gasol added eight rebounds and seven assists in the game.",
+          "The road to the Finals would prove a lot tougher than the record run the Lakers had the previous year. While the Lakers swept the Blazers and defeated the Spurs 4–1 in the first two rounds of the playoffs, the Lakers did not have home court advantage against the Sacramento Kings. The series would stretch to seven games, the first time this happened to the Lakers since the 2000 Western Conference Finals. However, the Lakers were able to beat their division rivals and make their third consecutive NBA Finals appearance. In the 2002 Finals against the New Jersey Nets, Bryant averaged 26.8 points, 51.4% shooting, 5.8 rebounds, 5.3 assists per game, which included scoring a quarter of the team's points. At age 23, Bryant became the youngest player to win three championships. Bryant's play was notable and praised for his performance in the fourth quarter of games, specifically the last two rounds of the playoffs. This cemented Bryant's reputation as a \"clutch player\"."
+        ],
+        "gold_answers": [
+          "Boston Celtics",
+          "Indiana",
+          "Indiana Pacers",
+          "New Jersey Nets",
+          "Orlando Magic",
+          "Philadelphia",
+          "Philadelphia 76ers",
+          "Spain",
+          "the Nets"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "compound_04",
+  "corpus": "demo",
+  "description": "Two needs, no punctuation, as an ASR stream would deliver them.",
+  "turns": [
+    {
+      "utterance": "how much is the hotel limit for business trips in New York and what is the catering budget per attendee for a customer workshop",
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "hotel limit for New York business travel",
+          "catering budget per attendee for a customer workshop"
+        ],
+        "gold_docs": [
+          "per_diem_schedule.md",
+          "catering_guidelines.md"
+        ]
+      }
+    }
+  ]
+}

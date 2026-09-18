@@ -1,0 +1,43 @@
+{
+  "id": "asqa_compound_37",
+  "corpus": "asqa",
+  "sample_id": "449370609603105131",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_37.json",
+  "turns": [
+    {
+      "utterance": "Who sings better than i in joseph king of dreams?",
+      "chunks": [
+        {
+          "text": "Who sings better",
+          "atMs": 1200
+        },
+        {
+          "text": "than i in joseph",
+          "atMs": 2800
+        },
+        {
+          "text": "king of dreams?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who is the character that sings better than i in joseph king of dreams?",
+          "Who is the artist that sings better than i in joseph king of dreams?"
+        ],
+        "gold_passages": [
+          "Campbell appeared in \"Les Misérables\", \"South Pacific\", and \"Guys and Dolls\"and in \"Hey, Mr. Producer!\". In 2000, he provided the singing voice for the character Joseph in DreamWorks' animated film \"\".",
+          "In June 2014, David released \"David Campbell Sings John Bucchino\", recorded in Australia in May 2014 featuring John Bucchino playing piano."
+        ],
+        "gold_answers": [
+          "David Campbell",
+          "Joseph"
+        ]
+      }
+    }
+  ]
+}

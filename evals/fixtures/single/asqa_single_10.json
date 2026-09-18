@@ -1,0 +1,40 @@
+{
+  "id": "asqa_single_10",
+  "corpus": "asqa",
+  "sample_id": "-8740256160840936877",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_10.json",
+  "turns": [
+    {
+      "utterance": "When did the American show lie to me end?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "American show lie to",
+          "atMs": 2800
+        },
+        {
+          "text": "me end?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did the American show lie to me end?"
+        ],
+        "gold_passages": [
+          "Lie to Me (stylized as Lie to me*) is an American crime drama television series. It originally ran on the Fox network from January 21, 2009 to January 31, 2011. In the show, Dr. Cal Lightman (Tim Roth) and his colleagues in The Lightman Group accept assignments from third parties (commonly local and federal law enforcement), and assist in investigations, reaching the truth through applied psychology: interpreting microexpressions, through the Facial Action Coding System, and body language. In May 2009, the show was renewed for a second season consisting of 13 episodes; season two premiered on September 28, 2009. On November 24, 2009, Fox ordered an extra nine episodes for season two, bringing the season order to 22 episodes."
+        ],
+        "gold_answers": [
+          "January 31, 2011"
+        ]
+      }
+    }
+  ]
+}

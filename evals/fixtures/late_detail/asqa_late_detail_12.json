@@ -1,0 +1,60 @@
+{
+  "id": "asqa_late_detail_12",
+  "corpus": "asqa",
+  "sample_id": "-1839582389367643155",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('younger').",
+  "transcript": "evals/transcripts/asqa_late_detail_12.json",
+  "turns": [
+    {
+      "utterance": "Who played alice in a league of their own?",
+      "chunks": [
+        {
+          "text": "Who played alice",
+          "atMs": 1200
+        },
+        {
+          "text": "in a league of",
+          "atMs": 2800
+        },
+        {
+          "text": "their own?",
+          "atMs": 3600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Oh wait, I meant younger.",
+      "chunks": [
+        {
+          "text": "Oh wait, I",
+          "atMs": 1200
+        },
+        {
+          "text": "meant younger.",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "Renée Coleman (born January 8, 1962) is a Canadian actress who has appeared in several TV shows and movies.",
+          "Renée Coleman (credited as Renee Coleman) – Alice \"Skeeter\" Gaspers (#18, left field/center field/catcher) Shirley Burkovich as Older Alice"
+        ],
+        "gold_answers": [
+          "Coleman",
+          "Renee Coleman",
+          "Renée Coleman"
+        ],
+        "refined_question": "Who played younger alice in a league of their own?",
+        "condition": "younger"
+      }
+    }
+  ]
+}

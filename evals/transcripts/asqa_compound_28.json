@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_28",
+  "family": "compound",
+  "sample_id": "5730743033148160819",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who sings the song stuck in the middle with you?",
+      "chunks": [
+        {
+          "text": "Who sings the",
+          "atMs": 1200
+        },
+        {
+          "text": "song stuck in the",
+          "atMs": 2800
+        },
+        {
+          "text": "middle with you?",
+          "atMs": 4000
+        }
+      ],
+      "speech_end_ms": 4000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250
+    }
+  ]
+}

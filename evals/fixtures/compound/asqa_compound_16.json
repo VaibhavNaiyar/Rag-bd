@@ -1,0 +1,44 @@
+{
+  "id": "asqa_compound_16",
+  "corpus": "asqa",
+  "sample_id": "8528837736505993111",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_16.json",
+  "turns": [
+    {
+      "utterance": "Who is the winner of 2018 royal rumble?",
+      "chunks": [
+        {
+          "text": "Who is the",
+          "atMs": 1200
+        },
+        {
+          "text": "winner of 2018 royal",
+          "atMs": 2800
+        },
+        {
+          "text": "rumble?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who won the Women's 2018 royal rumble?",
+          "Who won the Men's 2018 royal rumble?",
+          "Who won the women's Royal Rumble match in 2018?",
+          "Who won the men's Royal Rumble match in 2018?"
+        ],
+        "gold_passages": [
+          "Nine matches were contested at the event, including three on the Kickoff pre-show. In the main event, Asuka won the first-ever women's Royal Rumble match, which was also the second women's match to main event a WWE pay-per-view, and the first to main event one of WWE's \"Big Four\" pay-per-views. The men's Royal Rumble match was won by Shinsuke Nakamura. Other prominent matches included Brock Lesnar retaining the Universal Championship in a triple threat match against Braun Strowman and Kane, and AJ Styles retained the WWE Championship against Kevin Owens and Sami Zayn in a handicap match. The event was also notable for the surprise debut of former UFC star Ronda Rousey following the women's match, officially confirming that she had signed full-time with WWE."
+        ],
+        "gold_answers": [
+          "Asuka",
+          "Shinsuke Nakamura"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_27",
+  "family": "compound",
+  "sample_id": "4469900475790977237",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who plays the voice of darth vader in star wars?",
+      "chunks": [
+        {
+          "text": "Who plays the",
+          "atMs": 1200
+        },
+        {
+          "text": "voice of darth vader",
+          "atMs": 2800
+        },
+        {
+          "text": "in star wars?",
+          "atMs": 4000
+        }
+      ],
+      "speech_end_ms": 4000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250
+    }
+  ]
+}

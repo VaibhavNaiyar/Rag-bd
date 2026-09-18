@@ -1,0 +1,25 @@
+{
+  "id": "asqa_single_18",
+  "family": "single",
+  "sample_id": "-7928734433655034282",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When was the Louisiana Purchase Treaty signed?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "Louisiana Purchase Treaty signed?",
+          "atMs": 2800
+        }
+      ],
+      "speech_end_ms": 2800,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3050
+    }
+  ]
+}

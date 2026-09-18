@@ -1,0 +1,58 @@
+{
+  "id": "asqa_late_detail_01",
+  "corpus": "asqa",
+  "sample_id": "-3346585405026933671",
+  "description": "Ambiguous question, then the disambiguating condition from ASQA's annotation ('literal').",
+  "transcript": "evals/transcripts/asqa_late_detail_01.json",
+  "turns": [
+    {
+      "utterance": "What is the meaning of the latin word camera obscura?",
+      "chunks": [
+        {
+          "text": "What is the",
+          "atMs": 1200
+        },
+        {
+          "text": "meaning of the latin",
+          "atMs": 2800
+        },
+        {
+          "text": "word camera obscura?",
+          "atMs": 4000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Actually, I meant literal.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "literal.",
+          "atMs": 1600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850,
+      "expect": {
+        "mode": "refine",
+        "gold_passages": [
+          "A camera obscura (plural camerae obscurae or camera obscuras, from Latin camera obscūra, \"dark chamber\")[1] is a darkened room with a small hole or lens at one side through which an image is projected onto a wall[2][3] or table[4] opposite the hole.[2][3]",
+          "The word camera comes from camera obscura, which means \"dark chamber\" and is the Latin name of the original device for projecting an image of external reality onto a flat surface. The modern photographic camera evolved from the camera obscura."
+        ],
+        "gold_answers": [
+          "dark chamber"
+        ],
+        "refined_question": "What is the literal meaning of the latin word camera obscura?",
+        "condition": "literal"
+      }
+    }
+  ]
+}

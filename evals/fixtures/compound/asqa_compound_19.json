@@ -1,0 +1,46 @@
+{
+  "id": "asqa_compound_19",
+  "corpus": "asqa",
+  "sample_id": "223527143081061606",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_19.json",
+  "turns": [
+    {
+      "utterance": "Where are most of your taste buds located on your tounge?",
+      "chunks": [
+        {
+          "text": "Where are most",
+          "atMs": 1200
+        },
+        {
+          "text": "of your taste buds",
+          "atMs": 2800
+        },
+        {
+          "text": "located on your tounge?",
+          "atMs": 4400
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4650,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where on your tongue do you find the taste buds?",
+          "Where can you find your taste buds on your tongue?"
+        ],
+        "gold_passages": [
+          "Taste buds contain the taste receptor cells, which are also known as gustatory cells.[1] The taste receptors are located around the small structures known as papillae found on the upper surface of the tongue, soft palate, upper esophagus, the cheek, and epiglottis.",
+          "Taste buds contain the taste receptor cells, which are also known as gustatory cells.[1] The taste receptors are located around the small structures known as papillae found on the upper surface of the tongue, soft palate, upper esophagus, the cheek, and epiglottis. These structures are involved in detecting the five elements of taste perception: saltiness, sourness, bitterness, sweetness and umami.",
+          "The taste buds on the tongue sit on raised protrusions of the tongue surface called papillae."
+        ],
+        "gold_answers": [
+          "Upper surface of the tongue",
+          "papillae",
+          "small structures known as papillae",
+          "the upper surface of the tongue"
+        ]
+      }
+    }
+  ]
+}

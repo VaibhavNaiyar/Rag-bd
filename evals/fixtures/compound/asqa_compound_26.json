@@ -1,0 +1,42 @@
+{
+  "id": "asqa_compound_26",
+  "corpus": "asqa",
+  "sample_id": "-3344541168958463110",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_26.json",
+  "turns": [
+    {
+      "utterance": "Who fought with an angel in the bible?",
+      "chunks": [
+        {
+          "text": "Who fought with",
+          "atMs": 1200
+        },
+        {
+          "text": "an angel in the",
+          "atMs": 2800
+        },
+        {
+          "text": "bible?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What is the man's name before he fights with an angel in the bible?",
+          "What is the man's name after he fights with an angel in the bible?"
+        ],
+        "gold_passages": [
+          "In the Genesis narrative, Jacob spent the night alone on a riverside during his journey back to Canaan. He encounters a \"man\" who proceeds to wrestle with him until daybreak. In the end, Jacob is given the name \"Israel\" and blessed, while the \"man\" refuses to give his own name. Jacob then names the place where they wrestled \"Penuel\" ( \"face of God\" or \"facing God\")."
+        ],
+        "gold_answers": [
+          "Israel",
+          "Jacob"
+        ]
+      }
+    }
+  ]
+}

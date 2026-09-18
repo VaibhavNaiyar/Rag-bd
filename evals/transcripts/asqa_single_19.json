@@ -1,0 +1,37 @@
+{
+  "id": "asqa_single_19",
+  "family": "single",
+  "sample_id": "7984291459252949510",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who portrayed the character who dies in season 9 from injuries sustained in the plane crash on Grey's?",
+      "chunks": [
+        {
+          "text": "Who portrayed the",
+          "atMs": 1200
+        },
+        {
+          "text": "character who dies in",
+          "atMs": 2800
+        },
+        {
+          "text": "season 9 from injuries sustained",
+          "atMs": 4800
+        },
+        {
+          "text": "in the plane",
+          "atMs": 6000
+        },
+        {
+          "text": "crash on Grey's?",
+          "atMs": 7200
+        }
+      ],
+      "speech_end_ms": 7200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 7450
+    }
+  ]
+}

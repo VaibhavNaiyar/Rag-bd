@@ -1,0 +1,43 @@
+{
+  "id": "asqa_compound_09",
+  "corpus": "asqa",
+  "sample_id": "-6631842452804060768",
+  "description": "ASQA ambiguous question with 2 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_09.json",
+  "turns": [
+    {
+      "utterance": "When was the city of new york founded?",
+      "chunks": [
+        {
+          "text": "When was the",
+          "atMs": 1200
+        },
+        {
+          "text": "city of new york",
+          "atMs": 2800
+        },
+        {
+          "text": "founded?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When was the city of new york founded by the Dutch and initially called New Amsterdam?",
+          "When was the city of new york under English control and renamed to New York?"
+        ],
+        "gold_passages": [
+          "A permanent European presence in New Netherland began in 1624 – making New York the 12th oldest continuously occupied European-established settlement in the continental United States – with the founding of a Dutch fur trading settlement on Governors Island. In 1625, construction was started on a citadel and Fort Amsterdam, later called \"Nieuw Amsterdam\" (New Amsterdam), on present-day Manhattan Island. The colony of New Amsterdam was centered at the site which would eventually become Lower Manhattan. It extended from the lower tip of Manhattan to modern day Wall Street,where a 12-foot wooden stockade was built in 1653 to protect against Native American and British Raids. In 1626, the Dutch colonial Director-General Peter Minuit, acting as charged by the Dutch West India Company, purchased the island of Manhattan from the \"Canarsie\", a small Lenape band, for \"the value of 60 guilders\" (about $900 in 2018). A disproved legend claims that Manhattan was purchased for $24 worth of glass beads.",
+          "New York City traces its origins to a trading post founded by colonists from the Dutch Republic in 1624 on Lower Manhattan; the post was named New Amsterdam in 1626. The city and its surroundings came under English control in 1664 and were renamed \"New York\" after King Charles II of England granted the lands to his brother, the Duke of York. New York was the capital of the United States from 1785 until 1790, and has been the largest US city since 1790. The Statue of Liberty greeted millions of immigrants as they came to the U.S. by ship in the late 19th and early 20th centuries and is an international symbol of the U.S. and its ideals of liberty and peace. In the 21st century, New York has emerged as a global node of creativity and entrepreneurship, social tolerance, and environmental sustainability, and as a symbol of freedom and cultural diversity. In 2019, New York was voted the greatest city in the world per a survey of over 30,000 people from 48 cities worldwide, citing its cultural diversity."
+        ],
+        "gold_answers": [
+          "1624",
+          "1664"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "asqa_late_detail_04",
+  "family": "late_detail",
+  "sample_id": "-7582650876403615860",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who sang still crazy after all these years?",
+      "chunks": [
+        {
+          "text": "Who sang still",
+          "atMs": 1200
+        },
+        {
+          "text": "crazy after all these",
+          "atMs": 2800
+        },
+        {
+          "text": "years?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    },
+    {
+      "text": "Actually, I meant originally.",
+      "chunks": [
+        {
+          "text": "Actually, I meant",
+          "atMs": 1200
+        },
+        {
+          "text": "originally.",
+          "atMs": 1600
+        }
+      ],
+      "speech_end_ms": 1600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 1850
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_15",
+  "family": "compound",
+  "sample_id": "-1553526002861565167",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who plays cat in beauty and the beast?",
+      "chunks": [
+        {
+          "text": "Who plays cat",
+          "atMs": 1200
+        },
+        {
+          "text": "in beauty and the",
+          "atMs": 2800
+        },
+        {
+          "text": "beast?",
+          "atMs": 3200
+        }
+      ],
+      "speech_end_ms": 3200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450
+    }
+  ]
+}

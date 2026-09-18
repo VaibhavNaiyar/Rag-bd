@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_06",
+  "family": "single",
+  "sample_id": "3934158776553957496",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "In what book is the shema found in the torah?",
+      "chunks": [
+        {
+          "text": "In what book",
+          "atMs": 1200
+        },
+        {
+          "text": "is the shema found",
+          "atMs": 2800
+        },
+        {
+          "text": "in the torah?",
+          "atMs": 4000
+        }
+      ],
+      "speech_end_ms": 4000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 4250
+    }
+  ]
+}

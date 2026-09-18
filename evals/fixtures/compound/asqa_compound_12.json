@@ -1,0 +1,51 @@
+{
+  "id": "asqa_compound_12",
+  "corpus": "asqa",
+  "sample_id": "-5116644172939113883",
+  "description": "ASQA ambiguous question with 5 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_12.json",
+  "turns": [
+    {
+      "utterance": "Who raps in the gorillaz song clint eastwood?",
+      "chunks": [
+        {
+          "text": "Who raps in",
+          "atMs": 1200
+        },
+        {
+          "text": "the gorillaz song clint",
+          "atMs": 2800
+        },
+        {
+          "text": "eastwood?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Who raps in the original gorillaz song clint eastwood?",
+          "Who raps in the alternate version of gorillaz song clint eastwood?",
+          "Who raps in the live version of gorillaz song clint eastwood?",
+          "What is the given name of the rapper who does the rapping in the Gorillaz song \"Clint Eastwood\"?",
+          "What is the alternative rap name of the rapper in the Gorillaz song \"Clint Eastwood\"?"
+        ],
+        "gold_passages": [
+          "For some live performances of the song, alternative rappers are used. For the 2005 Demon Days tour, a version of the song featuring De La Soul and Bootie Brown, who have also appeared in \"Feel Good Inc.\", \"Superfast Jellyfish\" and \"Dirty Harry\", was written and recorded. This version was released on the CD single of \"DARE\". During the Escape to Plastic Beach World Tour, a third version of the track, featuring British rapper Tinie Tempah, was written and performed. During July 2010, when Tempah was unable to make tour performances, a fourth version of the song, featuring Tempah's verses performed by British grime MC's Kano & Bashy, was devised. Snoop Dogg also performed a rap during the group's 2010 Glastonbury performance. During the group's Asian tour dates, a fifth version of the song, featuring all new verses from Lebanese-Syrian rapper Eslam Jawaad, was performed.",
+          "Some of the single releases featured an alternative version of the song which featured British hip hop group Phi Life Cypher, who also feature on the group's B-side \"The Sounder\".",
+          "Teren Delvon Jones (born August 12, 1972),[1] better known by his stage name Del the Funky Homosapien (sometimes stylized as Del tha Funkee Homosapien) or Sir DZL, is an American rapper, singer, songwriter, and record producer."
+        ],
+        "gold_answers": [
+          "De La Soul and Bootie Brown",
+          "Del Tha Funkee Homosapien",
+          "Del the Funky Homosapien",
+          "Phi Life Cypher",
+          "Sir DZL",
+          "Teren Delvon Jones"
+        ]
+      }
+    }
+  ]
+}

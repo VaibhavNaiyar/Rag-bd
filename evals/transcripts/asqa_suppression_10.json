@@ -1,0 +1,45 @@
+{
+  "id": "asqa_suppression_10",
+  "family": "suppression",
+  "sample_id": "-8374334863981745899",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When did alabama became a right to work state?",
+      "chunks": [
+        {
+          "text": "When did alabama",
+          "atMs": 1200
+        },
+        {
+          "text": "became a right to",
+          "atMs": 2800
+        },
+        {
+          "text": "work state?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    },
+    {
+      "text": "Can you make that shorter?",
+      "chunks": [
+        {
+          "text": "Can you make",
+          "atMs": 1200
+        },
+        {
+          "text": "that shorter?",
+          "atMs": 2000
+        }
+      ],
+      "speech_end_ms": 2000,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250
+    }
+  ]
+}

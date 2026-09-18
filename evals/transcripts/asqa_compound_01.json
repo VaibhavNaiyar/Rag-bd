@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_01",
+  "family": "compound",
+  "sample_id": "-196855123397981737",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Who took control of the italian government in 1922?",
+      "chunks": [
+        {
+          "text": "Who took control",
+          "atMs": 1200
+        },
+        {
+          "text": "of the italian government",
+          "atMs": 2800
+        },
+        {
+          "text": "in 1922?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

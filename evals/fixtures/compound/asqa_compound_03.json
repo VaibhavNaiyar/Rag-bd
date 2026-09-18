@@ -1,0 +1,51 @@
+{
+  "id": "asqa_compound_03",
+  "corpus": "asqa",
+  "sample_id": "-5490514120728766150",
+  "description": "ASQA ambiguous question with 3 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_03.json",
+  "turns": [
+    {
+      "utterance": "Where does the new fallout game take place?",
+      "chunks": [
+        {
+          "text": "Where does the",
+          "atMs": 1200
+        },
+        {
+          "text": "new fallout game take",
+          "atMs": 2800
+        },
+        {
+          "text": "place?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "Where does the fallout 76 game take place?",
+          "Where does the fallout 4 game take place?",
+          "Where does the fallout shelter game take place?"
+        ],
+        "gold_passages": [
+          "\"Fallout 4\", developed by Bethesda Game Studios, was released on November 10, 2015. On June 3, 2015 the game's website went live revealing the game along with its box art, platforms, and the first trailer. The game was released for Microsoft Windows, PlayStation 4 and Xbox One and takes place in Boston, Massachusetts, of the in-game New England Commonwealth and features voiced protagonists. The Xbox One version has been confirmed to have mods . Bethesda also confirmed mods for PlayStation 4, after lengthy negotiations with Sony. A virtual reality version of the game was released on December 11, 2017.\"Fallout 4\" takes place in the year 2287, ten years after the events of \"Fallout 3\". \"Fallout 4\"s story begins on the day the bombs dropped: October 23, 2077. The player's character (voiced by either Brian T. Delaney or Courtenay Taylor), dubbed as the Sole Survivor, takes shelter in Vault 111, emerging 210 years later, after being subjected to suspended animation. The Sole Survivor goes on a search for their son who was taken away in the Vault.",
+          "\"Fallout Shelter\" is a simulation game for Microsoft Windows, iOS, Android, Xbox One, PlayStation 4 and Nintendo Switch. The player acts as the Overseer, building and managing their Vault and its dwellers, sending them into the Wasteland on scouting missions and defending the Vault from attacks. Unlike the main entries in the franchise, this game has no ending and mostly revolves around attempting to keep the people who live in you vault, an intricate fallout shelter, alive. The game was heavy on microtransactions, a form of in game purchases, that took the form of nuka-cola quantum, the game's \"premium\" currency, lunch boxes, an item that would give you a random mixture of in game items, pet carriers, something that would contain a pet, which can boost a single dweller's stats, and \"mister handys\", a robot who could harvest the games materials or be assigned to outside the vault to harvest bottle caps, the games currency. \"Fallout Shelter\" was released for iOS on June 14, 2015, Android on August 13, 2015, and for PC on July 15, 2016. On February 7, 2017, Bethesda launched \"Fallout Shelter\" on Xbox One. On June 10, 2018, Bethesda announced and launched \"Fallout Shelter\" on Nintendo Switch and PlayStation 4.",
+          "In 1839 Washington Irving proposed to rename the United States \"Alleghania\" or \"Appalachia\" in place of America, since the name belonged to Latin America too. Edgar Allan Poe later took up the idea, and considered Appalachia a much better name than America or Alleghania; he thought it better defined the United States as a distinct geographical entity, separate from the rest of the Americas, and he also thought it did honor to both Irving and the natives who the Appalachian Mountains had been named after. At the time, however, the United States had already reached far beyond the greater Appalachian region, but the \"magnificence\" of Appalachia Poe considered enough to rechristen the nation with a name that would be unique to its own character. However, Poe's popular influence only grew decades after his death, and so the name was never seriously considered."
+        ],
+        "gold_answers": [
+          "\"Appalachia\"",
+          "\"The Commonwealth\"",
+          "Massachusetts",
+          "Vault",
+          "a representation of West Virginia",
+          "city of Boston",
+          "fallout shelter",
+          "wasteland"
+        ]
+      }
+    }
+  ]
+}

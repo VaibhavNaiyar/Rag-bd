@@ -1,0 +1,44 @@
+{
+  "id": "asqa_single_02",
+  "corpus": "asqa",
+  "sample_id": "-8110325890451609363",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_02.json",
+  "turns": [
+    {
+      "utterance": "When did the Spanish version of Christina Aguilera's Genie in a Bottle come out?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Spanish version of Christina",
+          "atMs": 2800
+        },
+        {
+          "text": "Aguilera's Genie in a Bottle",
+          "atMs": 4800
+        },
+        {
+          "text": "come out?",
+          "atMs": 5600
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5850,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did the Spanish version of Christina Aguilera's Genie in a Bottle come out?"
+        ],
+        "gold_passages": [
+          "In 2000, Aguilera recorded a Spanish version of \"Genie in a Bottle\" entitled \"Genio Atrapado\" for her second studio album, \"Mi Reflejo\". The song's lyrics were translated from English to Spanish by Cuban-American producer Rudy Pérez. \"Genio Atrapado\" peaked at number 13 on the \"Billboard\" Hot Latin Songs chart. The song received a Latin Grammy Award nomination for Best Female Pop Vocal Performance at the Latin Grammy Awards of 2000, which was awarded to Shakira for \"Ojos Así\". A music video for the song was directed by Diane Martel, who also directed the visual for \"Genie in a Bottle\"."
+        ],
+        "gold_answers": [
+          "2000"
+        ]
+      }
+    }
+  ]
+}

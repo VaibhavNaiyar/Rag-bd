@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_03",
+  "family": "single",
+  "sample_id": "-4536457655385125693",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "Where did they film the family farm scenes in places in the heart?",
+      "chunks": [
+        {
+          "text": "Where did they",
+          "atMs": 1200
+        },
+        {
+          "text": "film the family farm",
+          "atMs": 2800
+        },
+        {
+          "text": "scenes in places in the",
+          "atMs": 4800
+        },
+        {
+          "text": "heart?",
+          "atMs": 5200
+        }
+      ],
+      "speech_end_ms": 5200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450
+    }
+  ]
+}

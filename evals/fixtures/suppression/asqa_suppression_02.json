@@ -1,0 +1,49 @@
+{
+  "id": "asqa_suppression_02",
+  "corpus": "asqa",
+  "sample_id": "-8037310406937474618",
+  "description": "A normal ASQA question, then a presentation-only follow-up that must not retrieve.",
+  "transcript": "evals/transcripts/asqa_suppression_02.json",
+  "turns": [
+    {
+      "utterance": "Song at the end of who dat boy?",
+      "chunks": [
+        {
+          "text": "Song at the",
+          "atMs": 1200
+        },
+        {
+          "text": "end of who dat",
+          "atMs": 2800
+        },
+        {
+          "text": "boy?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve"
+      }
+    },
+    {
+      "utterance": "Can you make that shorter?",
+      "chunks": [
+        {
+          "text": "Can you make",
+          "atMs": 1200
+        },
+        {
+          "text": "that shorter?",
+          "atMs": 2000
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 2250,
+      "expect": {
+        "mode": "suppress"
+      }
+    }
+  ]
+}

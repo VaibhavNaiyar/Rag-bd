@@ -1,0 +1,29 @@
+{
+  "id": "asqa_single_07",
+  "family": "single",
+  "sample_id": "778739607777147662",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "How many years did deion sanders play mlb baseball?",
+      "chunks": [
+        {
+          "text": "How many years",
+          "atMs": 1200
+        },
+        {
+          "text": "did deion sanders play",
+          "atMs": 2800
+        },
+        {
+          "text": "mlb baseball?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "asqa_compound_23",
+  "corpus": "asqa",
+  "sample_id": "169673493218699735",
+  "description": "ASQA ambiguous question with 4 gold sub-questions.",
+  "transcript": "evals/transcripts/asqa_compound_23.json",
+  "turns": [
+    {
+      "utterance": "What religion are they in call the midwife?",
+      "chunks": [
+        {
+          "text": "What religion are",
+          "atMs": 1200
+        },
+        {
+          "text": "they in call the",
+          "atMs": 2800
+        },
+        {
+          "text": "midwife?",
+          "atMs": 3200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What Christian denomination are the characters in Call the Midwife?",
+          "What is the religion in Call the Midwife?",
+          "What Christian denomination are the nuns in Call the Midwife?",
+          "What religion are the nuns in Call the Midwife?"
+        ],
+        "gold_passages": [
+          "Christian apologetics aims to present a rational basis for Christianity. The word \"apologetic\" (Greek: ἀπολογητικός \"apologētikos\") comes from the Greek verb ἀπολογέομαι \"apologeomai\", meaning \"(I) speak in defense of\". Christian apologetics has taken many forms over the centuries, starting with Paul the Apostle. The philosopher Thomas Aquinas presented five arguments for God's existence in the \"Summa Theologica\", while his \"Summa contra Gentiles\" was a major apologetic work. Another famous apologist, G. K. Chesterton, wrote in the early twentieth century about the benefits of religion and, specifically, Christianity. Famous for his use of paradox, Chesterton explained that while Christianity had the most mysteries, it was the most practical religion. He pointed to the advance of Christian civilizations as proof of its practicality. The physicist and priest John Polkinghorne, in his \"Questions of Truth\", discusses the subject of religion and science, a topic that other Christian apologists such as Ravi Zacharias, John Lennox, and William Lane Craig have engaged, with the latter two men opining that the inflationary Big Bang model is evidence for the existence of God.",
+          "The series was created by Heidi Thomas, originally based on the memoirs of Jennifer Worth who worked with the Community of St. John the Divine, an Anglican religious order, at their convent in the East End in London. The order was founded as a nursing order in 1849. The show has extended beyond the memoirs to include new, historically sourced material. For the most part it depicts the day-to-day lives of the midwives and those in their local neighbourhood of Poplar, with certain historical events of the era having a direct or indirect effect on the characters and storylines.",
+          "There is a diversity of doctrines and liturgical practices among groups calling themselves Christian. These groups may vary ecclesiologically in their views on a classification of Christian denominations. The Nicene Creed (325), however, is typically accepted as authoritative by most Christians, including the Catholic, Eastern Orthodox, Oriental Orthodox, and major Protestant, including Anglican, denominations."
+        ],
+        "gold_answers": [
+          "Anglican",
+          "Christian",
+          "They follow the Anglican religious order.",
+          "an Anglican religious order"
+        ]
+      }
+    }
+  ]
+}

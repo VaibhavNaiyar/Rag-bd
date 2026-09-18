@@ -1,0 +1,44 @@
+{
+  "id": "asqa_single_11",
+  "corpus": "asqa",
+  "sample_id": "-931393027586080080",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_11.json",
+  "turns": [
+    {
+      "utterance": "When is the date did the redskins go to the superbowl in 1992?",
+      "chunks": [
+        {
+          "text": "When is the",
+          "atMs": 1200
+        },
+        {
+          "text": "date did the redskins",
+          "atMs": 2800
+        },
+        {
+          "text": "go to the superbowl in",
+          "atMs": 4800
+        },
+        {
+          "text": "1992?",
+          "atMs": 5200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When is the date did the redskins go to the superbowl in 1992?"
+        ],
+        "gold_passages": [
+          "The 1991 season started with a franchise-record 11 straight victories. Also during the season, the Hogs allowed a league low and club record nine sacks — the third lowest total in NFL history. After posting a 14–2 record, the Redskins made and dominated the playoffs, beating the Falcons and Lions by a combined score of 64–17. On January 26, 1992, the Redskins won Super Bowl XXVI by defeating the Buffalo Bills 37–24. After the Super Bowl, the Redskins set another club record by sending eight players to the Pro Bowl. Helping the Redskins accomplish this achievement was a trio of wide receivers known as the Posse: Art Monk, Gary Clark, and Ricky Sanders. The trio averaged 210 catches for per season in the late 1980s and early 1990s. Super Bowl XXVI showcased the receivers’ talents, with Clark recording seven catches for and a touchdown and Monk with seven catches for ."
+        ],
+        "gold_answers": [
+          "January 26, 1992"
+        ]
+      }
+    }
+  ]
+}

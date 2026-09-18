@@ -1,0 +1,46 @@
+{
+  "id": "asqa_single_01",
+  "corpus": "asqa",
+  "sample_id": "7652576904728829439",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_01.json",
+  "turns": [
+    {
+      "utterance": "When did the Royal New Zealand Yacht Squadron win its first America's Cup?",
+      "chunks": [
+        {
+          "text": "When did the",
+          "atMs": 1200
+        },
+        {
+          "text": "Royal New Zealand Yacht",
+          "atMs": 2800
+        },
+        {
+          "text": "Squadron win its first America's",
+          "atMs": 4800
+        },
+        {
+          "text": "Cup?",
+          "atMs": 5200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "When did the Royal New Zealand Yacht Squadron win its first America's Cup?"
+        ],
+        "gold_passages": [
+          "In 1995, the Royal New Zealand Yacht Squadron syndicate Team New Zealand, skippered by Russell Coutts, first won the challenger series in \"NZL 32\", dubbed \"Black Magic\" because of her black hull and uncanny speed. Black Magic then easily defeated Dennis Connor's Stars & Stripes team, 5–0, to win the cup for New Zealand. Although team Young America's cup candidate yacht \"USA-36\" was defeated in defender trials by Stars & Stripes' \"USA-34\", the San Diego Yacht Club elected to defend the cup with \"USA-36\" crewed by Stars & Stripes. The run-up to the 1995 Cup was notable for the televised sinking of \"oneAustralia\" during the fourth round robin of the Louis Vuitton challenger selection series, with all hands escaping uninjured. The 1995 defender selection series also had the first mostly female (with one man) crew sailing the yacht \"USA-43\", nicknamed \"Mighty Mary\"."
+        ],
+        "gold_answers": [
+          "1995",
+          "29th America's Cup",
+          "6–13 May 1995"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "asqa_single_11",
+  "family": "single",
+  "sample_id": "-931393027586080080",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "When is the date did the redskins go to the superbowl in 1992?",
+      "chunks": [
+        {
+          "text": "When is the",
+          "atMs": 1200
+        },
+        {
+          "text": "date did the redskins",
+          "atMs": 2800
+        },
+        {
+          "text": "go to the superbowl in",
+          "atMs": 4800
+        },
+        {
+          "text": "1992?",
+          "atMs": 5200
+        }
+      ],
+      "speech_end_ms": 5200,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 5450
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "asqa_compound_14",
+  "family": "compound",
+  "sample_id": "-3243271997177308524",
+  "wpm": 150,
+  "ms_per_word": 400,
+  "turns": [
+    {
+      "text": "What are the 3 types of enzymes in digestion?",
+      "chunks": [
+        {
+          "text": "What are the",
+          "atMs": 1200
+        },
+        {
+          "text": "3 types of enzymes",
+          "atMs": 2800
+        },
+        {
+          "text": "in digestion?",
+          "atMs": 3600
+        }
+      ],
+      "speech_end_ms": 3600,
+      "end_pause_ms": 250,
+      "utterance_end_ms": 3850
+    }
+  ]
+}

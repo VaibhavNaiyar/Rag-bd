@@ -1,0 +1,48 @@
+{
+  "id": "asqa_single_09",
+  "corpus": "asqa",
+  "sample_id": "-4879828696940526525",
+  "description": "One ASQA disambiguated sub-question: a single-intent control for over-fragmentation. ASQA has no samples with a single qa_pair, so the control is built from one sub-question.",
+  "transcript": "evals/transcripts/asqa_single_09.json",
+  "turns": [
+    {
+      "utterance": "What play has the line it is a tale told by an idiot full of sound and fury?",
+      "chunks": [
+        {
+          "text": "What play has",
+          "atMs": 1200
+        },
+        {
+          "text": "the line it is",
+          "atMs": 2800
+        },
+        {
+          "text": "a tale told by an",
+          "atMs": 4800
+        },
+        {
+          "text": "idiot full of",
+          "atMs": 6000
+        },
+        {
+          "text": "sound and fury?",
+          "atMs": 7200
+        }
+      ],
+      "end_pause_ms": 250,
+      "utterance_end_ms": 7450,
+      "expect": {
+        "mode": "retrieve",
+        "gold_sub_intents": [
+          "What play has the line it is a tale told by an idiot full of sound and fury?"
+        ],
+        "gold_passages": [
+          "Macbeth (; full title The Tragedy of Macbeth) is a tragedy by William Shakespeare; it is thought to have been first performed in 1606. It dramatises the damaging physical and psychological effects of political ambition on those who seek power for its own sake. Of all the plays that Shakespeare wrote during the reign of James I, who was patron of Shakespeare's acting company, \"Macbeth\" most clearly reflects the playwright's relationship with his sovereign. It was first published in the Folio of 1623, possibly from a prompt book, and is Shakespeare's shortest tragedy."
+        ],
+        "gold_answers": [
+          "Macbeth"
+        ]
+      }
+    }
+  ]
+}
