@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import json
 
 import pytest
 from fastapi.testclient import TestClient
 
-from slr.contracts import validate_event
+from tests.test_agui import check_stream
 
 
 @pytest.fixture(scope="module")
@@ -50,72 +51,125 @@ def test_trace_endpoints_expose_the_record(client):
     assert client.get("/trace/nope_not_a_turn").status_code == 404
 
 
+def _until(ws, kind: str) -> list[dict]:
+    """Read AG-UI frames up to and including the first of ``kind``."""
+    seen = []
+    while True:
+        event = ws.receive_json()
+        seen.append(event)
+        if event["type"] == kind:
+            return seen
+
+
+def _session(ws) -> str:
+    """The opening run: RUN_STARTED, the session's STATE_SNAPSHOT, RUN_FINISHED."""
+    opening = _until(ws, "RUN_FINISHED")
+    assert [e["type"] for e in opening] == ["RUN_STARTED", "STATE_SNAPSHOT", "RUN_FINISHED"]
+    return opening[1]["snapshot"]["session"]["id"]
+
+
 def test_unknown_client_events_are_rejected_not_crashed(client):
     with client.websocket_connect("/stream") as ws:
-        assert ws.receive_json()["type"] == "session.ready"
+        _session(ws)
         ws.send_json({"type": "nonsense"})
-        assert ws.receive_json()["code"] == "bad_request"
+        assert ws.receive_json() == {"type": "RUN_ERROR", "message": "unknown client event", "code": "bad_request"}
         ws.send_text("{not json")
         assert ws.receive_json()["code"] == "bad_json"
 
 
-def test_websocket_streams_a_turn_end_to_end(client):
+def test_websocket_streams_a_turn_as_ag_ui(client):
     with client.websocket_connect("/stream") as ws:
-        ready = ws.receive_json()
-        assert ready["type"] == "session.ready" and ready["sessionId"]
-
+        opening = _until(ws, "RUN_FINISHED")
         ws.send_json({"type": "utterance.start"})
         for piece in ["What is the", "venue cancellation", "policy for workshops?"]:
             ws.send_json({"type": "utterance.chunk", "text": piece})
         ws.send_json({"type": "utterance.end"})
+        events = opening + _until(ws, "RUN_FINISHED")
 
-        seen: list[dict] = []
-        while True:
-            event = ws.receive_json()
-            validate_event(event)
-            seen.append(event)
-            if event["type"] == "turn.complete":
-                break
-
-        kinds = [e["type"] for e in seen]
-        assert kinds.count("transcript.chunk") == 3
-        assert "controller.decision" in kinds and "utterance.end" in kinds
-        assert "subqueries" in kinds and "fusion.final" in kinds
-        assert "answer.version" in kinds
-        answer = "".join(e["text"] for e in seen if e["type"] == "answer.token")
+        state = check_stream(events)
+        turn = next(iter(state["turns"].values()))
+        assert len(turn["transcript"]) == 3
+        assert turn["decisions"] and turn["utteranceEndMs"] is not None
+        assert turn["subQueries"] and turn["fusion"]["hits"]
+        assert turn["versions"]["1"]["fabricatedCitations"] == 0
+        answer = "".join(e["delta"] for e in events if e["type"] == "TEXT_MESSAGE_CONTENT")
         assert "[Doc_" in answer, "the streamed answer carried no citation"
-
-        version = [e for e in seen if e["type"] == "answer.version"][-1]
-        assert version["fabricatedCitations"] == 0
 
 
 def test_new_session_clears_state(client):
     with client.websocket_connect("/stream") as ws:
-        first = ws.receive_json()["sessionId"]
+        first = _session(ws)
         ws.send_json({"type": "session.new"})
-        while True:
-            event = ws.receive_json()
-            if event["type"] == "session.ready":
-                assert event["sessionId"] != first
-                break
+        assert _session(ws) != first
 
 
 def test_replay_drives_the_same_path_as_a_live_utterance(client):
     with client.websocket_connect("/stream") as ws:
-        ws.receive_json()
+        _session(ws)
         ws.send_json({"type": "replay", "fixture": "single_01", "speed": 20})
-        kinds = set()
-        while "turn.complete" not in kinds:
-            kinds.add(ws.receive_json()["type"])
-        assert {"turn.start", "transcript.chunk", "controller.decision", "retrieval.started"} <= kinds
+        kinds = {e["type"] for e in _until(ws, "RUN_FINISHED")}
+        assert {"RUN_STARTED", "STEP_STARTED", "STATE_DELTA", "TOOL_CALL_START", "TEXT_MESSAGE_CONTENT"} <= kinds
 
 
 def test_an_unknown_fixture_is_an_error_not_a_crash(client):
     with client.websocket_connect("/stream") as ws:
-        ws.receive_json()
+        _session(ws)
         ws.send_json({"type": "replay", "fixture": "../../etc/passwd"})
-        event = ws.receive_json()
-        assert event["type"] == "error"
+        assert ws.receive_json()["type"] == "RUN_ERROR"
         # the socket still works afterwards
         ws.send_json({"type": "utterance.start"})
-        assert ws.receive_json()["type"] == "turn.start"
+        assert ws.receive_json()["type"] == "RUN_STARTED"
+
+
+def _sse(response) -> list[dict]:
+    return [json.loads(line[len("data: "):]) for line in response.text.splitlines() if line.startswith("data: ")]
+
+
+def test_agui_endpoint_serves_a_standard_client_over_sse(client):
+    run = {
+        "threadId": "thread-1",
+        "runId": "run-7",
+        "state": {},
+        "messages": [{"id": "m1", "role": "user", "content": "What is the venue cancellation policy?"}],
+        "tools": [],
+        "context": [],
+        "forwardedProps": {},
+    }
+    response = client.post("/agui", json=run, headers={"accept": "text/event-stream"})
+    assert response.status_code == 200 and response.headers["content-type"].startswith("text/event-stream")
+    events = _sse(response)
+    check_stream(events)
+    assert events[0] == {"type": "RUN_STARTED", "threadId": "thread-1", "runId": "run-7"}
+    assert events[1]["type"] == "STATE_SNAPSHOT"
+    assert events[-1]["type"] == "RUN_FINISHED" and events[-1]["runId"] == "run-7"
+
+
+def test_agui_endpoint_refines_with_earlier_messages_as_history(client):
+    run = {
+        "threadId": "thread-2",
+        "runId": "run-2",
+        "state": {},
+        "messages": [
+            {"id": "m1", "role": "user", "content": "Summarize the travel reimbursement rule for an employee trip."},
+            {"id": "a1", "role": "assistant", "content": "(earlier answer)"},
+            {"id": "m2", "role": "user", "content": "The trip was international and the booking was made after travel."},
+        ],
+        "tools": [],
+        "context": [],
+        "forwardedProps": {},
+    }
+    events = _sse(client.post("/agui", json=run))
+    state = check_stream(events)
+    assert [e["type"] for e in events].count("RUN_STARTED") == 1, "history replays silently"
+    latest = list(state["turns"].values())[-1]
+    assert latest["versions"]["2"]["parent"] == 1
+    assert latest["fusion"]["fullCorpusSearch"] is False
+
+
+def test_agui_endpoint_rejects_a_run_with_nothing_said(client):
+    run = {"threadId": "t", "runId": "r", "state": {}, "messages": [], "tools": [], "context": [], "forwardedProps": {}}
+    assert client.post("/agui", json=run).status_code == 422
+
+
+def test_agui_endpoint_rejects_a_body_that_is_not_run_input(client):
+    assert client.post("/agui", json={"hello": "world"}).status_code == 422

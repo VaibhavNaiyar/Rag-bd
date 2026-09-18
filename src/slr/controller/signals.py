@@ -18,7 +18,14 @@ from dataclasses import dataclass
 import numpy as np
 
 from slr.retrieval.store import Index
-from slr.text import REQUEST_WORDS, STOPWORDS, content_tokens, is_number, raw_words, tokens
+from slr.text import (
+    REQUEST_WORDS,
+    STOPWORDS,
+    content_tokens,
+    is_number,
+    raw_words,
+    tokens,
+)
 
 PRESENTATION_WORDS = frozenset(
     """repeat again shorter shorten short summarise summarize summary rephrase reword simplify simpler
@@ -26,17 +33,26 @@ PRESENTATION_WORDS = frozenset(
     concise tldr recap restate paragraph paragraphs sentence sentences line lines word words
     answer response reply last previous above earlier said version into in hindi french german
     spanish english language one two three four five six seven eight nine ten plain simple
-    words form way style longer expand read slowly back once more""".split()
+    words form way style longer expand read slowly back once more put write numbered bulleted simply
+    clearly less""".split()
 )
 PRESENTATION_PATTERNS = re.compile(
-    r"\b(repeat|again|shorten|shorter|summari[sz]e (that|it|this)|in (\w+ )?bullet|bullet points?|"
-    r"rephrase|reword|simplify|translate|as a (table|list)|say that|tl;?dr|condense|restate|recap|"
-    r"make (it|that) (shorter|brief|concise|simpler))\b",
+    r"\b(repeat|again|shorten|shorter|summari[sz]e (that|it|this|what you)|in (\w+ )?bullet|bullet points?|"
+    r"rephrase|reword|simplify|translate|as a (numbered |bulleted )?(table|list)|say that|tl;?dr|condense|"
+    r"restate|recap|make (it|that) (shorter|brief|concise|simpler)|(put|write|give) (it|that|this) (in|as|into)|"
+    r"in (one|a|two|three) (sentence|line|paragraph)s?)\b",
     re.I,
 )
 ANAPHORA = re.compile(
     r"\b(that|it|this|those|these|above|your (last|previous|earlier) (answer|response|reply)|"
     r"the (last|previous) (answer|response|one)|what you (just )?said)\b",
+    re.I,
+)
+#: The speaker correcting what they just asked. "I meant X" can only be about
+#: the previous request, so it needs no topical similarity to count.
+CORRECTION_CUES = re.compile(
+    r"\b(i meant|i mean|sorry|to be (more )?specific|specifically|to clarify|i should have said)\b"
+    r"|^\s*(no|correction)\b",
     re.I,
 )
 REFINE_CUES = re.compile(
@@ -137,8 +153,10 @@ def is_request(text: str) -> bool:
 def refinement(text: str, vec: np.ndarray | None, previous_vec: np.ndarray | None, tau: float) -> tuple[bool, dict]:
     """Is this a late constraint on the previous request, or a new one?
 
-    Three bars, by how much the sentence form already tells us:
+    Four bars, by how much the sentence form already tells us:
 
+    * a self-correction on a statement ("sorry, I meant the 2019 one") is
+      decisive whenever there is a previous request: it can only narrow it;
     * a modifier cue on a statement ("but we also want an outside caterer") is
       the strongest signal — a low similarity bar, because a constraint often
       shares little vocabulary with the request it narrows;
@@ -147,10 +165,13 @@ def refinement(text: str, vec: np.ndarray | None, previous_vec: np.ndarray | Non
 
     A bare new question is never a refinement, however similar it looks.
     """
-    cue = bool(REFINE_CUES.search(text))
+    correction = bool(CORRECTION_CUES.search(text))
+    cue = correction or bool(REFINE_CUES.search(text))
     cos = float(np.dot(vec, previous_vec)) if vec is not None and previous_vec is not None else 0.0
     request = is_request(text)
-    if cue and not request:
+    if correction and not request and previous_vec is not None:
+        bar = -1.0  # below any cosine: decided by the cue alone
+    elif cue and not request:
         bar = tau * 0.6
     elif cue:
         bar = tau * 0.9
@@ -159,7 +180,7 @@ def refinement(text: str, vec: np.ndarray | None, previous_vec: np.ndarray | Non
     else:
         bar = 2.0  # unreachable: a fresh question starts a new topic
     decided = cos >= bar
-    return decided, {"cue": cue, "cos_previous": round(cos, 3), "is_request": request, "bar": round(bar, 3)}
+    return decided, {"cue": cue, "correction": correction, "cos_previous": round(cos, 3), "is_request": request, "bar": round(bar, 3)}
 
 
 def retrieval_shape(text: str, carry: list[str] | None = None, limit: int = 12) -> str:

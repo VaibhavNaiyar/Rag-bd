@@ -12,6 +12,19 @@ controller is bypassed and early retrieval becomes unmeasurable. `/query` theref
 the text internally and runs the same turn loop; it is in the API for Swagger and for tests,
 not for the demo.
 
+### D1a — AG-UI on the wire, over the WebSocket; the input direction stays custom
+
+Everything the server sends is a standard AG-UI event: a turn is a run, the four pipeline
+stages are steps, each retrieval is a `corpus_search` tool call, the answer is a text message
+per version, and the trace is shared state (snapshot, then JSON-Patch deltas). A standard
+AG-UI client can read the console's stream, and `POST /agui` serves one over SSE. Chosen over
+AG-UI's usual HTTP shape (one POST, one SSE stream per run) because AG-UI's input is a single
+`RunAgentInput` sent at run start: it has no event for transcript chunks that arrive while the
+run is already retrieving. A POST per chunk would add a round-trip to every chunk and shrink
+the G2 lead. So the browser → server direction keeps three small input messages. The engine's
+own events are unchanged; `slr/api/agui.py` translates at the boundary, so the trace and the
+gates are measured exactly as before.
+
 ### D2 — Plain `asyncio`, no agent framework
 
 The theme grades architectural parsimony explicitly. A turn is two model calls and four

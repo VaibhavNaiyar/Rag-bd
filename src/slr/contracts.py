@@ -1,10 +1,12 @@
 """Shared types and the wire contract.
 
-Internal records are stdlib dataclasses. Everything that crosses the socket is
-built by a ``*_wire`` helper and checked by :func:`validate_event` against
-``WIRE_SCHEMA`` — a mirror of the frontend's ``src/types/events.ts``. An event
-missing a key, or carrying an unknown type, fails loudly in the engine rather
-than silently dropping a trace in the UI.
+Internal records are stdlib dataclasses. Every engine event is built by a
+``*_wire`` helper and checked by :func:`validate_event` against
+``WIRE_SCHEMA``: the engine's own event vocabulary, which the trace, the eval
+gates and ``slr.api.agui`` read. ``slr.api.agui`` is the only thing that turns
+these into what leaves the server (AG-UI events), so an event missing a key, or
+carrying an unknown type, fails loudly here rather than as a malformed frame
+in a client.
 """
 
 from __future__ import annotations
@@ -12,7 +14,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
-
 
 # --------------------------------------------------------------------------
 # Corpus
@@ -159,7 +160,7 @@ class AnswerVersion:
 
 
 # --------------------------------------------------------------------------
-# Wire contract — mirror of Samsung-fd/src/types/events.ts
+# Engine events — translated to AG-UI for clients by slr.api.agui
 # --------------------------------------------------------------------------
 
 #: required keys per server event type (optional keys listed separately)

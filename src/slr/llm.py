@@ -38,8 +38,15 @@ class ChatModel(Protocol):
     ) -> AsyncIterator[str]: ...
 
 
+#: Reasoning models (o-series, gpt-5 family) spend completion tokens on hidden
+#: reasoning before the answer, take no temperature, and cap output with
+#: max_completion_tokens. Their "-chat" variants are ordinary chat models.
+_REASONING = re.compile(r"^(o\d|gpt-5)(?!.*chat)")
+REASONING_HEADROOM = 2000
+
+
 class OpenAIChatModel:
-    def __init__(self, model: str, base_url: str = "", timeout: float = 30.0):
+    def __init__(self, model: str, base_url: str = "", timeout: float = 30.0, reasoning_effort: str = "low"):
         from openai import AsyncOpenAI
 
         kwargs = {"timeout": timeout, "max_retries": 1}
@@ -47,6 +54,13 @@ class OpenAIChatModel:
             kwargs["base_url"] = base_url
         self._client = AsyncOpenAI(**kwargs)
         self.name = model
+        self.reasoning = bool(_REASONING.match(model))
+        self.reasoning_effort = reasoning_effort
+
+    def _limits(self, max_tokens: int) -> dict:
+        if self.reasoning:
+            return {"max_completion_tokens": max_tokens + REASONING_HEADROOM, "reasoning_effort": self.reasoning_effort}
+        return {"temperature": 0, "max_tokens": max_tokens}
 
     async def complete(self, system, user, *, ledger, step, json_mode=False, max_tokens=600) -> str:
         started = time.perf_counter()
@@ -54,8 +68,7 @@ class OpenAIChatModel:
         resp = await self._client.chat.completions.create(
             model=self.name,
             messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-            temperature=0,
-            max_tokens=max_tokens,
+            **self._limits(max_tokens),
             **extra,
         )
         usage = resp.usage
@@ -75,8 +88,7 @@ class OpenAIChatModel:
             stream = await self._client.chat.completions.create(
                 model=self.name,
                 messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-                temperature=0,
-                max_tokens=max_tokens,
+                **self._limits(max_tokens),
                 stream=True,
                 stream_options={"include_usage": True},
             )
@@ -99,7 +111,9 @@ def build_chat_model(settings: Settings) -> ChatModel | None:
         return None
     if not has_key and not settings.llm_base_url:
         raise RuntimeError("SLR_LLM=openai but OPENAI_API_KEY is not set")
-    return OpenAIChatModel(settings.llm_model, settings.llm_base_url, settings.llm_timeout_s)
+    return OpenAIChatModel(
+        settings.llm_model, settings.llm_base_url, settings.llm_timeout_s, settings.llm_reasoning_effort
+    )
 
 
 # --------------------------------------------------------------------------

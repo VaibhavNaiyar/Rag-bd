@@ -3,7 +3,9 @@
 Over-fragmentation guard (guide pitfall #5):
 
 * at most ``max_subqueries``
-* any pair with cosine >= ``merge_cos`` is merged (the higher-confidence one wins)
+* any pair with cosine >= ``merge_cos`` is merged (the higher-confidence one wins),
+  unless the two differ in a number: '2014 winner' and '2018 winner' are two
+  readings of one question, not a duplicate
 * a single-intent utterance yields exactly one sub-query
 
 Without a model (no API key) or when the model call fails, a deterministic
@@ -24,7 +26,7 @@ from slr.llm import ChatModel, parse_json, render_prompt
 from slr.retrieval.embed import Embedder
 from slr.retrieval.store import Index
 from slr.telemetry.cost import UsageLedger
-from slr.text import REQUEST_WORDS, content_tokens
+from slr.text import REQUEST_WORDS, content_tokens, is_number, raw_words
 
 log = logging.getLogger(__name__)
 
@@ -128,6 +130,11 @@ async def _llm_split(
     return out
 
 
+def _numbers_differ(a: dict, b: dict) -> bool:
+    numbers = lambda item: {t for t in raw_words(item["text"]) if is_number(t)}  # noqa: E731
+    return numbers(a) != numbers(b)
+
+
 def guard(items: list[dict], embedder: Embedder, s: Settings) -> tuple[list[dict], int, int]:
     """Merge near-duplicates, then cap."""
     if len(items) <= 1:
@@ -137,7 +144,7 @@ def guard(items: list[dict], embedder: Embedder, s: Settings) -> tuple[list[dict
     merged = 0
     order = sorted(range(len(items)), key=lambda i: -items[i]["confidence"])
     for i in order:
-        if any(float(vecs[i] @ vecs[j]) >= s.merge_cos for j in keep):
+        if any(float(vecs[i] @ vecs[j]) >= s.merge_cos and not _numbers_differ(items[i], items[j]) for j in keep):
             merged += 1
             continue
         keep.append(i)

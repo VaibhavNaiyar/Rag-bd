@@ -57,12 +57,18 @@ class UsageLedger:
     @staticmethod
     def summarise(entries: list[dict[str, Any]]) -> dict[str, Any]:
         by_step: dict[str, float] = {}
+        by_model: dict[str, dict[str, int]] = {}
         tokens = 0
         for e in entries:
             by_step[e["step"]] = by_step.get(e["step"], 0.0) + e["usd"]
             tokens += e.get("prompt_tokens", 0) + e.get("completion_tokens", 0)
+            if e["kind"] == "llm":
+                counts = by_model.setdefault(e["model"], {"inputTokens": 0, "outputTokens": 0})
+                counts["inputTokens"] += e["prompt_tokens"]
+                counts["outputTokens"] += e["completion_tokens"]
         return {
             "turnUsd": round(sum(by_step.values()), 6),
             "turnTokens": tokens,
             "steps": [{"step": k, "usd": round(v, 6)} for k, v in by_step.items()],
+            "models": [{"model": k, **v} for k, v in by_model.items()],
         }

@@ -1,9 +1,9 @@
-"""Everything under evals/ is test data; src/ must not depend on it or contain it.
+"""Everything under evals/ is test data; src/ must not contain it.
 
-* No module under src/ imports from evals/.
-* No gold answer string from evals/gold.jsonl appears anywhere under src/,
-  including the built console bundle. That would mean an answer had been
-  written into the engine instead of retrieved.
+No gold answer string from evals/gold.jsonl appears anywhere under src/,
+including the built console bundle. That would mean an answer had been
+written into the engine instead of retrieved. (That src/ never imports
+evals/ is enforced in test_rules.py.)
 
 Answers are matched as whole-word sequences, case-insensitively. Only answers
 with at least two content words are checked. Single tokens such as "1908",
@@ -14,7 +14,6 @@ Plaza Theater" in src/ would be a real leak.
 
 from __future__ import annotations
 
-import ast
 import json
 import re
 from pathlib import Path
@@ -47,22 +46,6 @@ def _src_files() -> list[Path]:
         for p in SRC.rglob("*")
         if p.is_file() and "__pycache__" not in p.parts and p.suffix.lower() not in _BINARY
     ]
-
-
-def test_src_never_imports_evals():
-    offenders = []
-    for path in SRC.rglob("*.py"):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                names = [a.name for a in node.names]
-            elif isinstance(node, ast.ImportFrom) and node.level == 0:
-                names = [node.module or ""]
-            else:
-                continue
-            if any(n == "evals" or n.startswith("evals.") for n in names):
-                offenders.append(f"{path.relative_to(ROOT)}:{node.lineno}")
-    assert not offenders, f"src/ imports test data from evals/: {offenders}"
 
 
 @pytest.mark.skipif(not GOLD.exists(), reason="evals/gold.jsonl not built (make dataset)")

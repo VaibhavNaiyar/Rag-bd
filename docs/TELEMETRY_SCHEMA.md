@@ -4,7 +4,8 @@
 
 Two streams carry the same facts:
 
-- **Wire events** (`WS /stream`) — what the console renders, live, as a turn happens.
+- **Wire events** (`WS /stream`, `POST /agui`) — standard [AG-UI](https://docs.ag-ui.com)
+  events: what the console, or any AG-UI client, renders live as a turn happens.
 - **Trace records** (one JSON object per turn, appended to `SLR_TRACE_PATH`, served by
   `GET /trace`) — what the eval gates read.
 
@@ -69,35 +70,39 @@ citations from the previous version.
 
 ---
 
-## 2. Wire events
+## 2. Wire events (AG-UI)
 
-Server → client, in the order a turn produces them. This mirrors
-`Samsung-fd/src/types/events.ts`; `slr/contracts.py: WIRE_SCHEMA` validates every event
-before it is sent, so an event that drifts from the contract fails in the engine rather than
-silently vanishing in the UI.
+The engine emits its own event vocabulary (`slr/contracts.py: WIRE_SCHEMA`, validated before
+anything is sent). `slr/api/agui.py` is the one place those become what leaves the server:
+standard AG-UI events. `tests/test_agui.py` checks every stream is protocol-correct (runs and
+steps balanced, tool calls started before their results, every state patch applies), and the
+console validates each frame against `@ag-ui/core`'s schemas on arrival.
 
-| Event | Payload |
-|---|---|
-| `session.ready` | `{sessionId, corpus{docs, chunks, indexedAt}}` |
-| `turn.start` | `{turnId}` |
-| `transcript.chunk` | `{turnId, text, atMs}` |
-| `controller.decision` | `{turnId, decision, reason, atMs, confidence}` |
-| `retrieval.started` | `{turnId, subQueryId, trigger, atMs, query}` — **the G2 evidence** |
-| `retrieval.cancelled` | `{turnId, subQueryId, reason}` |
-| `utterance.end` | `{turnId, atMs}` — the line every lead is measured against |
-| `subqueries` | `{turnId, items[{id, text, source}]}` |
-| `retrieval.result` | `{turnId, subQueryId, candidates, kept[Hit], reused}` |
-| `fusion.final` | `{turnId, hits[Hit], quotaApplied, fullCorpusSearch}` |
-| `answer.token` | `{turnId, version, text}` — released only after the sentence validates |
-| `answer.version` | `{turnId, version, parent, claims, preserved, mutated, uncertainty, citationSupportRate, fabricatedCitations}` |
-| `turn.complete` | `{turnId, latencyMs, cost}` |
-| `error` | `{turnId?, code, message}` |
+| Engine event | AG-UI events | Payload |
+|---|---|---|
+| `session.ready` | `RUN_STARTED` · `STATE_SNAPSHOT` · `RUN_FINISHED` (a short run of its own) | shared state `{session{id, corpus}, turns{}}` |
+| `turn.start` | `RUN_STARTED` (`runId` = turn, `threadId` = session) · `STATE_DELTA` · `STEP_STARTED listen` | a blank turn at `/turns/<id>` |
+| `transcript.chunk` | `STATE_DELTA` | `/turns/<id>/transcript/-` ← `{text, atMs}` |
+| `controller.decision` | `STATE_DELTA` | `/turns/<id>/decisions/-` ← `{decision, reason, atMs, confidence}` |
+| `retrieval.started` | `TOOL_CALL_START corpus_search` · `ARGS {query, trigger, atMs}` · `END` | **the G2 evidence** |
+| `retrieval.cancelled` | `TOOL_CALL_RESULT` | `{cancelled: true, reason}` |
+| `utterance.end` | `STATE_DELTA` · `STEP_FINISHED listen` · `STEP_STARTED plan` | `/turns/<id>/utteranceEndMs`, the line every lead is measured against |
+| `subqueries` | `STATE_DELTA` · `STEP_STARTED retrieve` | `/turns/<id>/subQueries` ← `[{id, text, source}]` |
+| `retrieval.result` | `TOOL_CALL_RESULT` (a reused sub-query first gets its own START/ARGS `{query, reused}`/END) | `{candidates, kept[Hit], reused}` |
+| `fusion.final` | `STATE_DELTA` · `STEP_STARTED synthesise` | `/turns/<id>/fusion` ← `{hits[Hit], quotaApplied, fullCorpusSearch}` |
+| `answer.token` | `TEXT_MESSAGE_START` (once) · `TEXT_MESSAGE_CONTENT` | `messageId` = `<turnId>:v<n>`; released only after the sentence validates |
+| `answer.version` | `TEXT_MESSAGE_END` · `STATE_DELTA` · `STEP_FINISHED` | `/turns/<id>/versions/<n>` ← `{parent, claims, preserved, mutated, uncertainty, citationSupportRate, fabricatedCitations}` |
+| `turn.complete` | `STATE_DELTA` · `RUN_FINISHED` with `usage` | `/turns/<id>/latencyMs`, `/turns/<id>/cost`; `usage` = `TokenUsage` per model, absent when no model ran |
+| `error` | `RUN_ERROR` | `{code, message}` |
 
 `Hit` = `{chunkId, docId, section, text, score, branches, subQueryIds, citation, heading}`.
 `citation` is built server-side from the chunk record; the model never writes one.
 
-Client → server: `utterance.start`, `utterance.chunk{text}`, `utterance.end`,
-`replay{fixture, speed}`, `session.new`.
+Client → server (`WS /stream` only): `utterance.start`, `utterance.chunk{text}`,
+`utterance.end`, `replay{fixture, speed}`, `session.new`. These stay custom because AG-UI has
+no event for input arriving while a run is under way, which is what early retrieval needs.
+`POST /agui` takes a standard `RunAgentInput` instead: earlier user messages replay silently
+as earlier turns, and the last one is streamed back as one run.
 
 ---
 
@@ -113,7 +118,7 @@ system would have started work.
 | `complete_after_end` | time to the final answer version |
 | `first_token_abs`, `complete_abs` | the same instants relative to turn start |
 
-The wire event `turn.complete.latencyMs` carries `{firstRetrieval, firstToken, complete}` in
+The shared state's `turns/<id>/latencyMs` carries `{firstRetrieval, firstToken, complete}` in
 the same convention.
 
 ---

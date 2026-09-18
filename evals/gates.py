@@ -13,12 +13,11 @@ from typing import Any
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
+from evals.harness import RunResult, TurnRun
 from slr.retrieval.embed import Embedder
 from slr.retrieval.store import Index
 from slr.telemetry.trace import missing_fields
 from slr.text import content_tokens
-
-from evals.harness import RunResult, TurnRun
 
 MATCH_MIN = 0.75  # embedding similarity at which a predicted sub-query counts as a gold intent
 

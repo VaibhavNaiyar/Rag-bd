@@ -29,7 +29,12 @@ from slr.contracts import (
     TranscriptChunk,
     validate_event,
 )
-from slr.controller.base import Controller, ControllerVerdict, SessionView, UtteranceState
+from slr.controller.base import (
+    Controller,
+    ControllerVerdict,
+    SessionView,
+    UtteranceState,
+)
 from slr.controller.model import ModelController
 from slr.controller.rules import RuleController
 from slr.decompose.decomposer import decompose, heuristic_split
@@ -44,7 +49,13 @@ from slr.session.store import SessionStore, Topic
 from slr.stream.simulator import load_fixture, timed_chunks
 from slr.synthesis import generate as gen
 from slr.synthesis import refine as ref
-from slr.synthesis.grounding import Grounder, LexicalVerifier, SentenceStream, Verifier, load_nli
+from slr.synthesis.grounding import (
+    Grounder,
+    LexicalVerifier,
+    SentenceStream,
+    Verifier,
+    load_nli,
+)
 from slr.telemetry.cost import UsageLedger
 from slr.telemetry.trace import TraceSink, new_record
 from slr.text import content_tokens
@@ -249,7 +260,7 @@ class SessionRunner:
         if topic is None:
             return SessionView()
         return SessionView(
-            has_answer=self.store.has_answer,
+            has_answer=True,
             previous_utterance=topic.utterance,
             previous_vec=topic.utterance_vec,
             previous_answer_text=topic.answer.body,
@@ -733,11 +744,12 @@ class SessionRunner:
         e, s = self.engine, self.engine.s
         topic = self.store.topic
         if topic is None or not topic.answer.claims:
-            note = (
-                "No information request was detected, so nothing was retrieved."
-                if reason == "no_information_need"
-                else "There is no earlier answer in this session to reformat."
-            )
+            if reason == "no_information_need":
+                note = "No information request was detected, so nothing was retrieved."
+            elif topic is None:
+                note = "There is no earlier answer in this session to reformat."
+            else:
+                note = "The earlier answer had no verified facts to reformat, so nothing was retrieved."
             answer = AnswerVersion(1, None, (), (), (), (note,), False, body="")
             turn.record["answer"] = _answer_record(answer)
             await self._emit_version(turn, answer, None)

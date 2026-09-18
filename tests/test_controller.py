@@ -62,12 +62,24 @@ async def test_presentation_only_turn_is_suppressed_and_searches_nothing(control
         "Summarise that in one line.",
         "Could you rephrase that please?",
         "Repeat what you just said.",
+        "Put that in one sentence.",
+        "Say that again as a numbered list.",
+        "Summarize what you just said.",
+        "Can you rephrase that more simply?",
     ],
 )
 async def test_presentation_lexicon(controller, text):
     session = SessionView(has_answer=True, previous_utterance="cancellation policy", previous_answer_text=ANSWER)
     _, final, _ = await feed(controller, text, session)
     assert final.decision is Decision.SUPPRESS
+
+
+async def test_presentation_is_suppressed_even_when_the_last_answer_verified_nothing(controller):
+    """An answer whose every claim was withheld is still an answer: reformatting it must not search."""
+    session = SessionView(has_answer=True, previous_utterance="cancellation policy", previous_answer_text="")
+    verdicts, final, _ = await feed(controller, "Say that in two bullets.", session)
+    assert final.decision is Decision.SUPPRESS
+    assert not any(v.query for v in verdicts), "a presentation-only turn launched a search"
 
 
 async def test_new_content_defeats_suppression(controller):
@@ -88,6 +100,31 @@ async def test_late_detail_routes_to_refine(controller, index):
     _, final, _ = await feed(controller, "The trip was international and the booking was made after travel.", session)
     assert final.decision is Decision.REFINE
     assert final.reason == "late_constraint"
+
+
+async def test_a_self_correction_refines_even_with_little_overlap(controller, index):
+    """'Sorry, I meant X' can only narrow the previous request, whatever X shares with it."""
+    previous = "What is the venue cancellation policy?"
+    session = SessionView(
+        has_answer=True,
+        previous_utterance=previous,
+        previous_vec=index.embedder.embed([previous], kind="text")[0],
+        previous_answer_text=ANSWER,
+    )
+    _, final, _ = await feed(controller, "Sorry, I meant for the Pune one.", session)
+    assert final.decision is Decision.REFINE
+
+
+async def test_an_apology_before_a_new_question_is_not_a_refinement(controller, index):
+    previous = "What is the venue cancellation policy?"
+    session = SessionView(
+        has_answer=True,
+        previous_utterance=previous,
+        previous_vec=index.embedder.embed([previous], kind="text")[0],
+        previous_answer_text=ANSWER,
+    )
+    _, final, _ = await feed(controller, "Sorry, how many days of annual leave do employees get?", session)
+    assert final.decision is Decision.RETRIEVE
 
 
 async def test_a_new_question_is_not_a_refinement(controller, index):

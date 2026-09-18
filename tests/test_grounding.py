@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from slr.contracts import Chunk, Hit
+from slr.contracts import Chunk, Hit, SubQuery
 from slr.retrieval.context import EvidencePackage, assemble
-from slr.contracts import SubQuery
 from slr.synthesis.grounding import Grounder, LexicalVerifier, SentenceStream
 
 TEXT_A = (

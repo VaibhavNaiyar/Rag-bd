@@ -15,11 +15,10 @@ import statistics
 from dataclasses import dataclass
 from typing import Any
 
-from slr.config import Settings
-from slr.retrieval.store import Index
-
 from evals.gates import gate_g2, gate_g3, gate_g4
 from evals.harness import RunResult, build_engine, run
+from slr.config import Settings
+from slr.retrieval.store import Index
 
 
 @dataclass

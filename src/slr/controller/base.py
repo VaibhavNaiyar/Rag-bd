@@ -14,6 +14,8 @@ from slr.contracts import Decision, TranscriptChunk
 class SessionView:
     """The only session facts a controller may see. Read-only, this session only."""
 
+    #: an answer was given earlier this session, verified claims or not: "say that
+    #: in two bullets" is a presentation request even when every claim was withheld
     has_answer: bool = False
     previous_utterance: str = ""
     previous_vec: np.ndarray | None = None

@@ -16,12 +16,18 @@ import time
 from pathlib import Path
 from typing import Any
 
-from slr.config import get_settings, reset_settings
-
 from evals import report as report_mod
 from evals.ablations import run_ablations
 from evals.gates import all_gates, latency_and_cost
-from evals.harness import build_engine, ensure_asqa_corpus, ensure_index, load_fixtures, run, settings_for
+from evals.harness import (
+    build_engine,
+    ensure_asqa_corpus,
+    ensure_index,
+    load_fixtures,
+    run,
+    settings_for,
+)
+from slr.config import get_settings, reset_settings
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "evals" / "results"

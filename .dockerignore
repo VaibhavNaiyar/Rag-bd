@@ -10,3 +10,4 @@ tests/
 docs/BENCHMARK_REPORT.md
 *.egg-info/
 freeze.txt
+.env

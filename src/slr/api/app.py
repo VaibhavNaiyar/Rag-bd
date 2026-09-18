@@ -1,6 +1,8 @@
 """FastAPI surface.
 
-* ``WS  /stream``  — the demo and eval path: transcript chunks in, events out
+* ``WS  /stream``  — the demo path: transcript chunks in, AG-UI events out
+* ``POST /agui``   — AG-UI over SSE for any standard AG-UI client: the last user
+  message is spoken as one turn (earlier user messages replay as earlier turns)
 * ``POST /query``  — testing / Swagger only; streams the text as chunks internally
 * ``GET  /health`` — readiness, corpus and model identity
 * ``GET  /trace``  — recent per-turn trace records (``/trace/{turn_id}`` for one)
@@ -19,16 +21,19 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse
+from ag_ui.core import BaseEvent, RunAgentInput, RunErrorEvent
+from ag_ui.encoder import EventEncoder
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from slr import __version__
+from slr.api.agui import AgUiTranslator, wire
 from slr.config import get_settings
 from slr.contracts import CLIENT_EVENTS
 from slr.stream.engine import Engine, SessionRunner
-from slr.stream.simulator import list_fixtures
+from slr.stream.simulator import chunk_utterance, list_fixtures
 
 log = logging.getLogger("slr.api")
 STATE: dict[str, Any] = {}
@@ -124,13 +129,8 @@ async def query(body: QueryIn) -> dict[str, Any]:
     if body.speed > 0:
         await runner.play_turns(turns, body.speed)
     else:
-        from slr.stream.simulator import chunk_utterance
-
         for spec in turns:
-            await runner.utterance_start()
-            for text, _ in chunk_utterance(spec["utterance"]):
-                await runner.utterance_chunk(text)
-            await runner.utterance_end()
+            await _speak(runner, spec["utterance"])
     await runner.close()
     last = runner.completed[-1] if runner.completed else {}
     answer = "".join(e["text"] for e in events if e["type"] == "answer.token" and e["turnId"] == last.get("turn_id"))
@@ -141,20 +141,105 @@ async def query(body: QueryIn) -> dict[str, Any]:
     }
 
 
+async def _speak(runner: SessionRunner, utterance: str) -> None:
+    """One whole utterance as a turn, chunked the way a live speaker's would be, with no delay."""
+    await runner.utterance_start()
+    for text, _ in chunk_utterance(utterance):
+        await runner.utterance_chunk(text)
+    await runner.utterance_end()
+
+
+def _message_text(message: Any) -> str:
+    content = getattr(message, "content", "")
+    if isinstance(content, str):
+        return content
+    return " ".join(getattr(part, "text", "") for part in content or [])
+
+
+@app.post("/agui")
+async def agui(request: Request) -> StreamingResponse:
+    """One AG-UI run over SSE. The body is an AG-UI ``RunAgentInput``.
+
+    Earlier user messages are replayed silently as earlier turns, so a late
+    detail in the last message refines the answer instead of starting over.
+    The stream then carries one run, under the client's own thread and run ids,
+    opening with the session's full state.
+    """
+    # Validated by the SDK's own model rather than as a FastAPI body parameter:
+    # FastAPI re-wraps a body model's fields, which drops the SDK's aliases.
+    try:
+        body = RunAgentInput.model_validate(await request.json())
+    except (ValueError, ValidationError) as exc:
+        raise HTTPException(422, f"not an AG-UI RunAgentInput: {exc}") from exc
+    engine = _engine()
+    said = [t for t in (_message_text(m) for m in body.messages if m.role == "user") if t.strip()]
+    if not said:
+        raise HTTPException(422, "the run has no user message")
+    encoder = EventEncoder(accept=request.headers.get("accept"))
+    translator = AgUiTranslator(thread_id=body.thread_id)
+    queue: asyncio.Queue[BaseEvent | None] = asyncio.Queue()
+    live = False
+
+    async def emit(event: dict[str, Any]) -> None:
+        out = translator.translate(event)
+        if not live:
+            return
+        if event["type"] == "turn.start":
+            # RUN_STARTED, then everything known so far in place of the turn's
+            # own delta, then the first step
+            out = [out[0], translator.snapshot(), *out[2:]]
+        for item in out:
+            await queue.put(item)
+
+    async def play() -> None:
+        nonlocal live
+        runner = SessionRunner(engine, emit)
+        try:
+            await runner.start()
+            for text in said[:-1]:
+                await _speak(runner, text)
+            live = True
+            translator.next_run_id = body.run_id
+            await _speak(runner, said[-1])
+        except Exception as exc:  # the stream must still end with a terminal event
+            log.exception("agui run failed")
+            await queue.put(RunErrorEvent(message=str(exc)[:300], code="run_failed"))
+        finally:
+            await runner.close()
+            await queue.put(None)
+
+    async def stream_events():
+        task = asyncio.create_task(play())
+        try:
+            while (item := await queue.get()) is not None:
+                yield encoder.encode(item)
+        finally:
+            task.cancel()
+
+    return StreamingResponse(
+        stream_events(),
+        media_type=encoder.get_content_type(),
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
 @app.websocket("/stream")
 async def stream(ws: WebSocket) -> None:
+    """Transcript chunks in (``CLIENT_EVENTS``), AG-UI events out."""
     await ws.accept()
     engine = STATE.get("engine")
     if engine is None:
-        await ws.send_json({"type": "error", "code": "loading", "message": "engine is still loading"})
+        await ws.send_text(wire(RunErrorEvent(message="engine is still loading", code="loading")))
         await ws.close()
         return
 
     send_lock = asyncio.Lock()
+    translator = AgUiTranslator()
 
     async def emit(event: dict[str, Any]) -> None:
         async with send_lock:
-            await ws.send_text(json.dumps(event, ensure_ascii=False))
+            for out in translator.translate(event):
+                await ws.send_text(wire(out))
 
     runner = SessionRunner(engine, emit)
     queue: asyncio.Queue[dict[str, Any] | None] = asyncio.Queue()

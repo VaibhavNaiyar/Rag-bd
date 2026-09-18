@@ -206,3 +206,18 @@ async def test_model_controller_arm_decides_per_chunk(llm, recorder, settings):
     controller_calls = [s for s, _ in model.calls if s == "controller"]
     assert len(controller_calls) == len(trace["chunks"])
     assert any(e["step"] == "controller" and e["kind"] == "llm" for e in trace["cost"]["entries"])
+
+
+@pytest.mark.parametrize(
+    "model, reasoning",
+    [("gpt-4o-mini", False), ("gpt-4.1", False), ("gpt-5-chat-latest", False), ("gpt-5.4-mini", True), ("o4-mini", True)],
+)
+def test_request_limits_follow_the_model_family(model, reasoning):
+    """Reasoning models reject temperature and max_tokens, and need room to reason."""
+    from slr.llm import REASONING_HEADROOM, OpenAIChatModel
+
+    limits = OpenAIChatModel(model, base_url="http://localhost:1")._limits(400)
+    if reasoning:
+        assert limits == {"max_completion_tokens": 400 + REASONING_HEADROOM, "reasoning_effort": "low"}
+    else:
+        assert limits == {"temperature": 0, "max_tokens": 400}

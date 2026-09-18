@@ -68,6 +68,8 @@ class Settings:
     llm_model: str = "gpt-4o-mini"
     llm_base_url: str = ""
     llm_timeout_s: float = 30.0
+    #: only for reasoning models (gpt-5 family, o-series): minimal | low | medium | high
+    llm_reasoning_effort: str = "low"
     controller: str = "rule"  # rule | model
 
     # --- cost (USD) --------------------------------------------------------
@@ -102,7 +104,10 @@ class Settings:
 
     # --- decomposition ---------------------------------------------------
     max_subqueries: int = 4
-    merge_cos: float = 0.90
+    #: two sub-queries this similar are one need asked twice. 0.95, not lower:
+    #: distinct readings of one question ('all-time' vs 'single season') sit at
+    #: 0.90-0.94 under bge-small, while paraphrases sit at 0.95+.
+    merge_cos: float = 0.95
     reuse_cos: float = 0.85
     #: shared context is carried between clauses only when they are about the
     #: same thing; otherwise 'Tokyo' leaks from one intent into an unrelated one

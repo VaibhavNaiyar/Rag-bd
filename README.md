@@ -100,7 +100,8 @@ Measured results: [`docs/BENCHMARK_REPORT.md`](docs/BENCHMARK_REPORT.md).
 
 | Route | What it is for |
 |---|---|
-| `WS /stream` | **The demo path.** Transcript chunks in, trace events out |
+| `WS /stream` | **The demo path.** Transcript chunks in, [AG-UI](https://docs.ag-ui.com) events out |
+| `POST /agui` | AG-UI over SSE for any standard AG-UI client: a `RunAgentInput` in, one run streamed back |
 | `POST /query` | Testing and Swagger only — it still streams the text through the controller internally |
 | `GET /health` | Readiness, corpus size, which models are loaded |
 | `GET /trace`, `GET /trace/{turn_id}` | The per-turn records the gates read |

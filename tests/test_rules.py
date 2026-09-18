@@ -130,9 +130,9 @@ def test_sources_are_utf8_and_parse(path):
 
 
 def test_settings_are_env_overridable():
-    from slr.config import Settings
-
     import dataclasses
+
+    from slr.config import Settings
 
     names = {f.name for f in dataclasses.fields(Settings)} - {"extra"}
     for knob in ["branches", "controller", "quota_per_intent", "top_k", "tau_stab", "support_min"]:
