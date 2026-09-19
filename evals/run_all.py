@@ -18,7 +18,7 @@ from typing import Any
 
 from evals import report as report_mod
 from evals.ablations import compare_baseline, run_ablations
-from evals.gates import all_gates, latency_and_cost
+from evals.gates import AUDIT_NLI, all_gates, latency_and_cost
 from evals.harness import (
     build_engine,
     ensure_asqa_corpus,
@@ -28,6 +28,7 @@ from evals.harness import (
     settings_for,
 )
 from slr.config import get_settings, reset_settings
+from slr.synthesis.grounding import load_nli
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "evals" / "results"
@@ -185,9 +186,14 @@ def main() -> None:
     steps["index_built_by_harness"] = True
     steps["fixtures_ran"] = sum(len(r.turns) for r in runs.values())
 
+    try:
+        auditor = load_nli(AUDIT_NLI)
+    except Exception as exc:  # no copy of the audit model on this machine
+        print(f"[eval] shipped-claim audit skipped: {exc}", flush=True)
+        auditor = None
     for corpus, result in runs.items():
         index = indexes[corpus]
-        gates[corpus] = [g.as_dict() for g in all_gates(result, index, index.embedder, steps)]
+        gates[corpus] = [g.as_dict() for g in all_gates(result, index, index.embedder, steps, auditor)]
 
     baseline: dict[str, Any] = {}
     for corpus, (settings, fixtures) in played.items():

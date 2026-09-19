@@ -977,6 +977,7 @@ class SessionRunner:
                 "supported_claims": grounder.supported,
                 "demoted_claims": grounder.demoted,
                 "auto_cited": grounder.auto_cited,
+                "recited": grounder.recited,
                 "fabricated_markers": grounder.fabricated_markers,
                 "verifier": self.engine.verifier.name,
             }

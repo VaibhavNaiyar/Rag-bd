@@ -58,6 +58,7 @@ fields that cannot apply are `null` rather than absent.
 | `supported_claims` | those that cleared `SLR_SUPPORT_MIN` against their cited chunk |
 | `demoted_claims` | withheld and moved into `uncertainty` |
 | `auto_cited` | sentences the engine attributed itself (above the stricter `SLR_AUTO_CITE_MIN`) |
+| `recited` | cited sentences whose named block did not support them, moved to another retrieved block that does (same `SLR_AUTO_CITE_MIN` bar) |
 | `fabricated_markers` | the exact markers that were stripped |
 | `verifier` | which support scorer ran |
 

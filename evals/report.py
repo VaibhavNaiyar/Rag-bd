@@ -56,6 +56,12 @@ def _fmt(value: Any) -> str:
     return str(value)
 
 
+def _recall(arm: dict[str, Any]) -> str:
+    if arm.get("recall_at_k_pct") is None:
+        return "—"
+    return f"{_fmt(arm['recall_at_k_pct'])}% ({arm.get('recall_unit', 'passages')})"
+
+
 def _gate_table(rows: list[dict[str, Any]]) -> list[str]:
     out = ["| Gate | Criterion | Measured | Threshold | Result |", "|---|---|---|---|---|"]
     for g in rows:
@@ -110,9 +116,12 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
             if g["id"] == "G2":
                 d = g["detail"]
                 add(
-                    f"- G2 detail: {d['retrieved_before_end']}/{d['eligible_turns']} turns began retrieving before the "
-                    f"utterance ended; median lead **{_fmt(d['median_lead_ms'])} ms**, max {_fmt(d['max_lead_ms'])} ms. "
-                    f"False-trigger rate on presentation-only turns: {_fmt(d['false_trigger_rate_pct'])}%."
+                    f"- G2 detail: {d['retrieved_before_end']}/{d['eligible_turns']} turns that should retrieve began "
+                    f"retrieving before the utterance ended (the end-of-speech signal); median lead "
+                    f"**{_fmt(d['median_lead_ms'])} ms**, max {_fmt(d['max_lead_ms'])} ms. Stricter: "
+                    f"{_fmt(d.get('before_last_word_pct'))}% began before the last word was spoken; the rest fired on "
+                    f"the final words, in the pause before the end signal. False-trigger rate on the "
+                    f"{d['suppression_turns']} turns that should not retrieve: {_fmt(d['false_trigger_rate_pct'])}%."
                 )
             if g["id"] == "G3":
                 d = g["detail"]
@@ -127,12 +136,26 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
             if g["id"] == "G4":
                 d = g["detail"]
                 add(
-                    f"- G4 detail: {d['total_claims']} claims across {d['turns_with_claims']} answered turns; "
-                    f"**{d['fabricated_citations']} fabricated citations shipped**, "
-                    f"{d['fabricated_blocked_before_shipping']} blocked before shipping; "
-                    f"recall@k {_fmt(d['recall_at_k_pct'])}% over {d['recall_samples']} labelled turns; "
-                    f"{d['turns_flagging_uncertainty']} turns flagged uncertainty."
+                    f"- G4 detail: support is pooled over every factual sentence the model wrote: "
+                    f"{_fmt(d.get('claims_supported'))} of {_fmt(d.get('claims_written'))} verified (a withheld "
+                    f"sentence counts against it even though it never reached the user); per-turn mean "
+                    f"{_fmt(d.get('per_turn_mean_support_pct'))}%. {d['total_claims']} claims shipped across "
+                    f"{d['turns_with_claims']} answered turns; **{d['fabricated_citations']} fabricated citations "
+                    f"shipped**, {d['fabricated_blocked_before_shipping']} blocked before shipping; "
+                    + (f"recall@k (gold passages) {_fmt(d['recall_at_k_pct'])}% over {d['recall_samples']} labelled turns; "
+                       if d.get("recall_samples") else "")
+                    + (f"recall@k (gold documents) {_fmt(d.get('doc_recall_at_k_pct'))}% over "
+                       f"{d.get('doc_recall_samples')} labelled turns; " if d.get("doc_recall_samples") else "")
+                    + f"{d['turns_flagging_uncertainty']} turns flagged uncertainty."
                 )
+                if d.get("shipped_claims_checked"):
+                    add(
+                        f"- G4 independent audit: a second NLI model the engine never uses (`{d['auditor']}`) "
+                        f"re-read the {d['shipped_claims_checked']} shipped claims against the chunks they cite and "
+                        f"agreed with {_fmt(d['shipped_claims_supported_pct'])}% of them."
+                    )
+                    for ex in d.get("shipped_claims_failing_examples", [])[:5]:
+                        add(f"  - `{ex['fixture']}` (support {ex['support']}): {ex['claim']}")
             if g["id"] == "G5":
                 d = g["detail"]
                 for row in d["rows"]:
@@ -192,7 +215,7 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
             add(
                 f"| {arm['arm']} | {_fmt(arm['early_retrieval_pct'])}% | {_fmt(arm['false_trigger_pct'])}% | "
                 f"{_fmt(arm['multi_intent_pct'])}% | {_fmt(arm['refined_not_restarted_pct'])}% | "
-                f"{_fmt(arm['citation_support_pct'])}% | {_fmt(arm['recall_at_k_pct'])}% | "
+                f"{_fmt(arm['citation_support_pct'])}% | {_recall(arm)} | "
                 f"{_fmt(arm['fabricated_citations'])} | {_fmt(arm['median_ttft_ms'])} ms | "
                 f"{_fmt(arm['median_complete_ms'])} ms | ${_fmt(arm['mean_cost_usd'])} |"
             )
@@ -215,7 +238,7 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
                 cov = arm["intent_coverage"]
                 add(
                     f"| {arm['arm']} | {_fmt(arm['early_retrieval_pct'])}% | {_fmt(arm['multi_intent_pct'])}% | "
-                    f"{_fmt(arm['citation_support_pct'])}% | {_fmt(arm['recall_at_k_pct'])}% | "
+                    f"{_fmt(arm['citation_support_pct'])}% | {_recall(arm)} | "
                     f"{_fmt(cov['with_evidence_pct'])}% ({cov['starved']} starved) | "
                     f"{_fmt(arm['median_ttft_ms'])} ms | ${_fmt(arm['mean_cost_usd'])} |"
                 )

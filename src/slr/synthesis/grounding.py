@@ -44,7 +44,22 @@ ABSENCE = re.compile(
     r"contain(?:s|ed)?|verif(?:y|ied)|found|given|listed|identified|named|detailed)\b[^.]{0,40}"
     r"\b(?:documents?|evidence|sources?|passages?|retrieved|provided (?:text|information))\b"
     r"|\b(?:the )?(?:evidence|documents?|sources?|retrieved (?:documents?|evidence|passages?))\b[^.]{0,30}"
-    r"\b(?:do(?:es)? not|don't|doesn't|did not|fails? to)\b",
+    r"\b(?:do(?:es)? not|don't|doesn't|did not|fails? to)\b"
+    # "There is no information available regarding …", "no evidence indicating …"
+    r"|\bno (?:specific |further |additional |relevant )?(?:information|evidence|data)\b[^.]{0,20}"
+    r"\b(?:available|found|indicat(?:es|ing))\b"
+    # "… is unknown from the provided documents"
+    r"|\b(?:unknown|unclear) (?:from|in) the (?:provided |retrieved )?(?:documents?|evidence|sources?)\b"
+    # first person only: "the venue cannot provide AV equipment" is a claim, "I cannot provide" is not
+    r"|\b(?:I|we) (?:cannot|can't|could not|am unable to|are unable to) (?:provide|determine|confirm|identify)\b",
+    re.I,
+)
+
+
+#: a discourse connective opening a sentence, which carries no fact of its own
+CONNECTIVE = re.compile(
+    r"^\s*(?:additionally|also|however|furthermore|moreover|in addition|meanwhile|similarly|likewise|"
+    r"notably|overall|specifically|in contrast|by contrast|on the other hand)\s*,\s*",
     re.I,
 )
 
@@ -105,6 +120,9 @@ class NliVerifier:
         """``contexts[i]`` names what source ``i`` is about (its page title and section), put in
         front of every window so "the game" or "it" in a single sentence resolves to its subject."""
         ctx = contexts or [""] * len(sources)
+        # "However, the tournament was established in 1891" asserts what the bare
+        # clause asserts; the connective only links it to the previous sentence.
+        claim = CONNECTIVE.sub("", claim, count=1) or claim
         out: list[float | None] = [self._cache.get((claim, c, s)) for c, s in zip(ctx, sources)]
         todo = [i for i, v in enumerate(out) if v is None]
         if todo:
@@ -212,6 +230,8 @@ class Grounder:
     supported: int = 0
     fabricated_blocked: int = 0
     auto_cited: int = 0
+    #: cited claims moved to a different retrieved block that does support them
+    recited: int = 0
     demoted: int = 0
     fabricated_markers: list[str] = field(default_factory=list)
     _cmap: dict[str, Hit] = field(init=False)
@@ -253,8 +273,9 @@ class Grounder:
             return []
         return self.verifier.support(claim, [h.chunk.text for h in hits], [_subject(h) for h in hits])
 
-    def _best_attribution(self, claim: str) -> tuple[Hit | None, float]:
-        pool = sorted(self.evidence.hits, key=lambda h: -containment(claim, h.chunk.text))[:3]
+    def _best_attribution(self, claim: str, exclude: list[Hit] | None = None) -> tuple[Hit | None, float]:
+        others = [h for h in self.evidence.hits if h not in (exclude or [])]
+        pool = sorted(others, key=lambda h: -containment(claim, h.chunk.text))[:3]
         scores = self._score(claim, pool)
         if not scores:
             return None, 0.0
@@ -280,9 +301,15 @@ class Grounder:
             scores = self._score(bare, hits)
             support = max(scores) if scores else 0.0
             if support < self.support_min:
-                self.demoted += 1
-                self.uncertainty.append(f"Not verified in the cited documents: {_plain(bare)}")
-                return None
+                # The model cited the wrong block. If another retrieved block states the
+                # fact, cite that one instead, at the same bar as an engine-picked citation.
+                best, score = self._best_attribution(bare, exclude=hits)
+                if best is None or score < max(self.support_min, self.auto_cite_min):
+                    self.demoted += 1
+                    self.uncertainty.append(f"Not verified in the cited documents: {_plain(bare)}")
+                    return None
+                hits, scores, support = [best], [score], score
+                self.recited += 1
             # keep only the markers that actually support the claim
             strong = [h for h, s in zip(hits, scores) if s >= self.support_min]
             hits = strong or hits

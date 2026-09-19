@@ -227,3 +227,46 @@ measured and dropped: withholding a sub-question from the answer model when its 
 looked weak. Across 149 ASQA sub-queries the top rerank score barely separates those that
 ended with a verified claim (median 0.858) from those that did not (0.832), so any cut would
 drop good evidence with the bad; the verifier remains the gate.
+
+### D24 — Every gate counts against the fixture's labels, and shipped claims get a second grader
+
+An audit of the gate code found three places where a number flattered the system:
+
+- **G4 averaged per turn, over turns that kept at least one claim.** A turn where the
+  verifier withheld every sentence dropped out of the average, which is exactly the turn a
+  grounding metric exists to catch. Support is now pooled: verified sentences over every
+  factual sentence the model wrote, withheld ones included. On the same ASQA run this moved
+  G4 from 88.0% to 77.9%. The old per-turn mean is still reported alongside, labelled as such.
+- **G2's denominators came from the system's own routing.** A question the controller wrongly
+  suppressed left the eligible set instead of counting as late, and a reformat request it
+  wrongly searched on never reached the false-trigger count. Both now come from the fixture's
+  `expect.mode`. G2 also reports the stricter "search began before the last word" share,
+  next to the end-of-speech figure the gate is judged on.
+- **Enterprise recall was blank**, because those fixtures label gold documents, not
+  passages. Recall@k is now measured on whichever the fixture labels, and every table names
+  the unit.
+
+A shipped claim was approved by the engine's own verifier, so the verifier's verdict cannot
+be the evidence for it. The benchmark therefore re-reads every shipped claim against the
+chunks it cites with a second, larger NLI model the engine never uses
+(`nli-deberta-v3-base`) and reports the share it agrees with, listing the disagreements.
+That figure is a floor, not an error count: on inspection, the base model rejects true
+claims read off table-shaped text ("Career Hank Aaron – 2,297").
+
+Two engine changes came out of reading the 46 withheld ASQA sentences, and neither lowers a
+bar:
+
+- Sentences such as "there is no information available regarding …" state that the documents
+  are silent. They are uncertainty, not claims about the world, and now go there. First person
+  only for "cannot provide": "the venue cannot provide AV equipment" is still a claim.
+- A sentence whose cited block does not support it, but whose fact another retrieved block
+  states, now ships with that block's citation. It must clear the stricter bar used for
+  citations the engine picks itself (`SLR_AUTO_CITE_MIN`), and is counted as `recited`.
+
+An opening connective ("However,", "Additionally,") is also removed before scoring, since it
+asserts nothing. A cascade to the larger NLI model inside the engine was measured and left
+out: it accepted 13 of 40 withheld claims against 4 for the small model, but three of the 13
+were wrong (a bare "2", and a World Cup claim matched to a sentence about a player), and it
+would add a model load and a second pass to every rejected sentence. The remaining withheld
+sentences are the answer model stating what it knows rather than what the passages say;
+withholding them is the gate doing its job.

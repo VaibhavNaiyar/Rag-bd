@@ -129,6 +129,10 @@ def test_nli_verifier_windows_stay_in_distribution():
     [
         "The catering vendor for Pune is not mentioned in the retrieved documents [Doc_8 §1].",
         "The evidence does not specify a parking fee for the venue.",
+        "There is no information available regarding the venue's parking fee.",
+        "There is no evidence indicating that the venue charges for parking.",
+        "The parking fee is unknown from the provided documents.",
+        "The venue has a car park, so I cannot provide a parking fee.",
     ],
 )
 def test_a_statement_that_the_documents_are_silent_is_uncertainty_not_a_failed_claim(sentence):
@@ -156,3 +160,43 @@ def test_the_verifier_reads_each_passage_with_its_subject():
     assert lexical.support(claim, [hit.chunk.text])[0] < lexical.support(claim, [hit.chunk.text], [_subject(hit)])[0]
     trail = Hit(Chunk("c8", "d8", "Doc_8", "1", "Travel policy › Hotel limits", "x", 1), 0.9, [], [])
     assert _subject(trail) == "Travel policy, Hotel limits"
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "The venue cannot provide AV equipment for events over 50 people [Doc_11 §1].",
+        "No refund is given for cancellations made fewer than 7 days before the event [Doc_11 §1].",
+    ],
+)
+def test_a_negative_statement_about_the_world_is_still_a_claim(sentence):
+    g = grounder()
+    g.process(sentence + " ")
+    assert g.generated == 1
+
+
+def test_a_claim_citing_the_wrong_block_is_moved_to_the_block_that_states_it():
+    g = grounder()
+    out = g.process("The catering budget for a customer workshop is INR 900 per attendee per day [Doc_11 §1]. ")
+    assert out.claim is not None and out.claim.chunk_ids == ("c2",)
+    assert out.text.strip().endswith("[Doc_8 §1].")
+    assert g.recited == 1 and g.demoted == 0 and g.support_rate == 1.0
+
+
+def test_a_wrongly_cited_claim_no_block_states_is_still_withheld():
+    g = grounder()
+    out = g.process("Parking at the venue costs 200 rupees per car per day [Doc_11 §1]. ")
+    assert out.claim is None and g.recited == 0 and g.demoted == 1
+
+
+def test_an_opening_connective_does_not_change_what_a_claim_asserts():
+    pytest.importorskip("torch")
+    from slr.config import get_settings
+    from slr.synthesis.grounding import load_nli
+
+    try:
+        verifier = load_nli(get_settings().nli_model)
+    except Exception as exc:  # no model cache on this machine
+        pytest.skip(f"NLI model unavailable: {exc}")
+    bare = "Cancellations made fewer than 7 calendar days before the event are not refunded."
+    assert verifier.support("However, " + bare, [TEXT_A]) == verifier.support(bare, [TEXT_A])

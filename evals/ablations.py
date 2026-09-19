@@ -69,13 +69,18 @@ def summarise(result: RunResult, index: Index) -> dict[str, Any]:
     done = [t.trace["latency_ms"]["complete_after_end"] for t in result.turns if t.trace.get("latency_ms")]
     costs = [t.trace["cost"]["turnUsd"] for t in result.turns if t.trace.get("cost")]
     tokens = [t.trace["cost"]["turnTokens"] for t in result.turns if t.trace.get("cost")]
+    recall, unit = g4.detail["recall_at_k_pct"], "passages"
+    if recall is None and g4.detail["doc_recall_at_k_pct"] is not None:
+        recall, unit = g4.detail["doc_recall_at_k_pct"], "documents"
     return {
         "turns": len(result.turns),
         "early_retrieval_pct": g2.value,
         "false_trigger_pct": g2.detail["false_trigger_rate_pct"],
         "multi_intent_pct": g3.value,
         "citation_support_pct": g4.value,
-        "recall_at_k_pct": g4.detail["recall_at_k_pct"],
+        # Gold passages where the fixtures label them (ASQA), gold documents otherwise.
+        "recall_at_k_pct": recall,
+        "recall_unit": unit,
         "fabricated_citations": g4.detail["fabricated_citations"],
         "refined_not_restarted_pct": g5.value,
         "intent_coverage": intent_coverage(result),
