@@ -1,6 +1,6 @@
 """Download the three local models so the image needs no network at run time.
 
-Run at build time by the Dockerfile; also useful locally before a demo.
+Run at build time by the Dockerfile; also useful locally before a first run.
 """
 
 from __future__ import annotations

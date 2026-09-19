@@ -160,6 +160,10 @@ async def extractive_refine(
     last_affected = max(
         (i for i, c in enumerate(previous.claims, start=1) if c.id in plan.affected), default=len(previous.claims)
     )
+    if not previous.claims:
+        # Nothing was verified last time: the detail's evidence is the whole answer.
+        for _, sent, hit in adds:
+            yield f"ADD: {sent.rstrip().rstrip('.!?')} {hit.chunk.citation}.\n"
     for i, _claim in enumerate(previous.claims, start=1):
         yield f"KEEP c{i}\n"
         if i == last_affected:

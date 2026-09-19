@@ -35,6 +35,18 @@ log = logging.getLogger(__name__)
 #: anything bracketed that looks like an attempt at a citation
 CANDIDATE_MARKER = re.compile(r"\[\s*([A-Za-z][A-Za-z0-9_.:-]*)\s*(?:§\s*([^\[\]\n]{1,40}))?\]")
 UNCERTAIN_PREFIX = re.compile(r"^\s*(?:[-*]\s*)?(?:\*\*)?UNCERTAIN(?:\*\*)?\s*:\s*", re.I)
+#: A sentence whose point is that the documents do NOT say something ("the lead
+#: actor is not mentioned in the retrieved documents"). The prompt asks for these
+#: as UNCERTAIN lines; written as prose they are still uncertainty, not a claim
+#: about the world, and verifying them against the evidence would only fail.
+ABSENCE = re.compile(
+    r"\b(?:not|never|no)\b[^.]{0,50}\b(?:mention(?:ed)?|specif(?:y|ied|ies)|stated?|provided?|includ(?:e|ed)|"
+    r"contain(?:s|ed)?|verif(?:y|ied)|found|given|listed|identified|named|detailed)\b[^.]{0,40}"
+    r"\b(?:documents?|evidence|sources?|passages?|retrieved|provided (?:text|information))\b"
+    r"|\b(?:the )?(?:evidence|documents?|sources?|retrieved (?:documents?|evidence|passages?))\b[^.]{0,30}"
+    r"\b(?:do(?:es)? not|don't|doesn't|did not|fails? to)\b",
+    re.I,
+)
 
 
 def normalise_marker(doc: str, section: str | None) -> str:
@@ -49,7 +61,7 @@ def normalise_marker(doc: str, section: str | None) -> str:
 class Verifier(Protocol):
     name: str
 
-    def support(self, claim: str, sources: list[str]) -> list[float]: ...
+    def support(self, claim: str, sources: list[str], contexts: list[str] | None = None) -> list[float]: ...
 
 
 class LexicalVerifier:
@@ -57,8 +69,9 @@ class LexicalVerifier:
 
     name = "lexical"
 
-    def support(self, claim: str, sources: list[str]) -> list[float]:
-        return [containment(claim, s) for s in sources]
+    def support(self, claim: str, sources: list[str], contexts: list[str] | None = None) -> list[float]:
+        ctx = contexts or [""] * len(sources)
+        return [containment(claim, f"{c} {s}".strip()) for c, s in zip(ctx, sources)]
 
 
 class NliVerifier:
@@ -88,14 +101,17 @@ class NliVerifier:
         wins.sort(key=lambda w: -containment(claim, w))
         return wins[:limit]
 
-    def support(self, claim: str, sources: list[str]) -> list[float]:
-        out: list[float | None] = [self._cache.get((claim, s)) for s in sources]
+    def support(self, claim: str, sources: list[str], contexts: list[str] | None = None) -> list[float]:
+        """``contexts[i]`` names what source ``i`` is about (its page title and section), put in
+        front of every window so "the game" or "it" in a single sentence resolves to its subject."""
+        ctx = contexts or [""] * len(sources)
+        out: list[float | None] = [self._cache.get((claim, c, s)) for c, s in zip(ctx, sources)]
         todo = [i for i, v in enumerate(out) if v is None]
         if todo:
             pairs, owner = [], []
             for i in todo:
                 for w in self._windows(sources[i], claim):
-                    pairs.append((w, claim))
+                    pairs.append((f"{ctx[i]}: {w}" if ctx[i] else w, claim))
                     owner.append(i)
             with self._lock:
                 probs = self._model.predict(pairs, apply_softmax=True, batch_size=32, show_progress_bar=False)
@@ -105,9 +121,9 @@ class NliVerifier:
             for i in todo:
                 # A claim whose every content word is in the source is lexically
                 # supported even where the entailment model stays unsure.
-                lexical = containment(claim, sources[i])
+                lexical = containment(claim, f"{ctx[i]} {sources[i]}".strip())
                 out[i] = max(best.get(i, 0.0), lexical if lexical >= 0.9 else 0.0)
-                self._cache[(claim, sources[i])] = out[i]
+                self._cache[(claim, ctx[i], sources[i])] = out[i]
         return [float(v) for v in out]  # type: ignore[arg-type]
 
 
@@ -235,7 +251,7 @@ class Grounder:
     def _score(self, claim: str, hits: list[Hit]) -> list[float]:
         if not hits:
             return []
-        return self.verifier.support(claim, [h.chunk.text for h in hits])
+        return self.verifier.support(claim, [h.chunk.text for h in hits], [_subject(h) for h in hits])
 
     def _best_attribution(self, claim: str) -> tuple[Hit | None, float]:
         pool = sorted(self.evidence.hits, key=lambda h: -containment(claim, h.chunk.text))[:3]
@@ -279,7 +295,7 @@ class Grounder:
             return GroundedSegment(text=segment if self.claims else "")
         trailing = segment[len(segment.rstrip()) :]
         body = segment.strip()
-        if UNCERTAIN_PREFIX.match(body):
+        if UNCERTAIN_PREFIX.match(body) or ABSENCE.search(body):
             note = UNCERTAIN_PREFIX.sub("", body)
             note, _ = self.resolve(note)
             if note:
@@ -322,3 +338,12 @@ def _sub_query_of(hits: list[Hit], default: str) -> str:
     if not counts:
         return default
     return max(counts, key=lambda k: (counts[k], k == default))
+
+
+_SECTION_LABEL = re.compile(r"^(?:passage|section|part|page)\s*\d+$", re.I)
+
+
+def _subject(hit: Hit) -> str:
+    """What a chunk is about, from its heading trail: page title and named sections, not numbers."""
+    parts = [p.strip() for p in hit.chunk.heading.split("›")]
+    return ", ".join(p for p in parts if p and not _SECTION_LABEL.match(p))

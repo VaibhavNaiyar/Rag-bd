@@ -8,7 +8,7 @@ endif
 export PYTHONPATH := src:.
 export PYTHONUTF8 := 1
 
-CORPUS ?= evals/corpora/demo
+CORPUS ?= evals/corpora/enterprise
 INDEX ?= data/index
 FD ?= ../Samsung-fd
 
@@ -42,13 +42,13 @@ dataset:  ## rebuild the ASQA corpus, gold labels, transcripts and fixtures from
 eval:  ## the full benchmark: every gate, both ablations, writes docs/BENCHMARK_REPORT.md
 	$(BIN)/python -m evals.run_all
 
-eval-quick:  ## gates on the demo corpus only, no ablations
+eval-quick:  ## gates on the enterprise corpus only, no ablations
 	$(BIN)/python -m evals.run_all --quick
 
 test:  ## unit and integration tests
 	$(BIN)/python -m pytest -q
 
-demo:  ## replay a fixture through the engine and print the event trace
+replay:  ## replay a fixture through the engine and print the event trace
 	$(BIN)/python scripts/replay.py compound_01 late_detail_01 presentation_01
 
 web:  ## build the console from $(FD) (the Rag-fd checkout) into the API's static root
@@ -59,4 +59,4 @@ web:  ## build the console from $(FD) (the Rag-fd checkout) into the API's stati
 clean:  ## remove built indexes and traces (keeps corpora and fixtures)
 	rm -rf data/index data/index_asqa data/traces
 
-.PHONY: help up down venv models ingest serve dataset eval eval-quick test demo web clean
+.PHONY: help up down venv models ingest serve dataset eval eval-quick test replay web clean

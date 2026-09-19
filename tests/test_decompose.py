@@ -152,3 +152,35 @@ def test_heuristic_split_strips_filler_and_keeps_numbers(index):
     text = parts[0]["text"]
     assert "30" in text and "Riverside" in text
     assert not text.lower().startswith("i need")
+
+
+class _Orthogonal:
+    """Every query looks unrelated by embedding, so only the lexical rules can merge."""
+
+    def embed(self, texts, kind="query"):
+        import numpy as np
+
+        return np.eye(len(texts))
+
+
+@pytest.mark.parametrize(
+    "texts, kept",
+    [
+        # a query that only adds context to another is the same need; the specific one survives
+        (["cancellation policy Pune", "cancellation policy customer workshop venue Pune 30 people"],
+         ["cancellation policy customer workshop venue Pune 30 people"]),
+        # different years are different readings, however similar the words
+        (["World Cup soccer winner 2018", "World Cup soccer winner 2022"],
+         ["World Cup soccer winner 2018", "World Cup soccer winner 2022"]),
+        # different qualifiers are different readings
+        (["Darth Vader original trilogy voice actor", "Darth Vader prequel trilogy voice actor"],
+         ["Darth Vader original trilogy voice actor", "Darth Vader prequel trilogy voice actor"]),
+    ],
+)
+def test_guard_merges_a_restated_need_but_never_a_distinct_reading(settings, texts, kept):
+    from slr.decompose.decomposer import guard
+
+    items = [{"text": t, "span": "", "confidence": 0.9} for t in texts]
+    out, merged, _ = guard(items, _Orthogonal(), settings)
+    assert [i["text"] for i in out] == kept
+    assert merged == len(texts) - len(kept)

@@ -1,6 +1,6 @@
 """Shared machinery for the eval suite: load fixtures, run them, keep the trace.
 
-Fixtures are replayed through exactly the same path the demo uses — the
+Fixtures are replayed through exactly the same path the live console uses — the
 WebSocket turn loop in ``SessionRunner`` — so what the gates measure is what a
 judge would see, not a shortcut through the internals.
 """
@@ -102,7 +102,7 @@ async def run_fixtures(engine: Engine, fixtures: list[dict[str, Any]], speed: fl
             result.turns.append(
                 TurnRun(
                     fixture=fixture["id"],
-                    corpus=fixture.get("corpus", "demo"),
+                    corpus=fixture.get("corpus", "enterprise"),
                     family=fixture["family"],
                     index=i,
                     expect=spec.get("expect", {}),
@@ -111,6 +111,7 @@ async def run_fixtures(engine: Engine, fixtures: list[dict[str, Any]], speed: fl
                 )
             )
         await runner.close()
+    await engine.aclose()
     result.seconds = time.perf_counter() - started
     return result
 

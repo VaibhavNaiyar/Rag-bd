@@ -1,8 +1,15 @@
-"""Architectural ablations, driven by env-level knobs — no code changes.
+"""Architectural ablations and the baseline comparison, driven by env-level knobs.
 
 1. hybrid (BM25 + dense) vs dense-only retrieval
 2. rule-based vs model-based retrieval controller
 3. per-intent quota on vs off
+
+And the baseline: the same fixtures through a conventional batch RAG turn
+(``SLR_CONTROLLER=batch``: nothing until the speaker stops, then one search for
+the whole utterance with ``SLR_DECOMPOSE=off``, no suppression, no
+refinement), with the same retriever, reranker, synthesiser and verifier, so
+the difference is exactly what streaming, decomposition and session
+refinement add.
 
 Arm 3 exists because aggregate recall cannot see the failure it prevents: one
 verbose sub-intent taking every slot in the context window while another
@@ -15,7 +22,7 @@ import statistics
 from dataclasses import dataclass
 from typing import Any
 
-from evals.gates import gate_g2, gate_g3, gate_g4
+from evals.gates import gate_g2, gate_g3, gate_g4, gate_g5
 from evals.harness import RunResult, build_engine, run
 from slr.config import Settings
 from slr.retrieval.store import Index
@@ -56,9 +63,10 @@ def intent_coverage(result: RunResult) -> dict[str, Any]:
 
 
 def summarise(result: RunResult, index: Index) -> dict[str, Any]:
-    g2, g4 = gate_g2(result), gate_g4(result, index)
+    g2, g4, g5 = gate_g2(result), gate_g4(result, index), gate_g5(result)
     g3 = gate_g3(result, index.embedder)
     ttft = [t.trace["latency_ms"]["first_token_after_end"] for t in result.turns if t.trace.get("latency_ms")]
+    done = [t.trace["latency_ms"]["complete_after_end"] for t in result.turns if t.trace.get("latency_ms")]
     costs = [t.trace["cost"]["turnUsd"] for t in result.turns if t.trace.get("cost")]
     tokens = [t.trace["cost"]["turnTokens"] for t in result.turns if t.trace.get("cost")]
     return {
@@ -68,8 +76,11 @@ def summarise(result: RunResult, index: Index) -> dict[str, Any]:
         "multi_intent_pct": g3.value,
         "citation_support_pct": g4.value,
         "recall_at_k_pct": g4.detail["recall_at_k_pct"],
+        "fabricated_citations": g4.detail["fabricated_citations"],
+        "refined_not_restarted_pct": g5.value,
         "intent_coverage": intent_coverage(result),
         "median_ttft_ms": round(statistics.median(ttft)) if ttft else None,
+        "median_complete_ms": round(statistics.median(done)) if done else None,
         "mean_cost_usd": round(statistics.fmean(costs), 6) if costs else None,
         "mean_tokens": round(statistics.fmean([float(t) for t in tokens])) if tokens else None,
         "wall_clock_s": round(result.seconds, 1),
@@ -86,6 +97,15 @@ def run_arm(arm: Arm, fixtures: list[dict], index: Index, speed: float) -> dict[
     arm.result = run(engine, fixtures, speed)
     print(f"[eval]   {arm.name}: {len(arm.result.turns)} turns in {arm.result.seconds:.0f}s", flush=True)
     return {"arm": arm.name, **summarise(arm.result, index)}
+
+
+def compare_baseline(
+    ours: RunResult, settings: Settings, fixtures: list[dict], index: Index, speed: float
+) -> dict[str, Any]:
+    """Our run, and the same fixtures through the batch baseline, summarised side by side."""
+    baseline = Arm("baseline (batch RAG)", settings.with_overrides(controller="batch", decompose=False))
+    row = run_arm(baseline, fixtures, index, speed)
+    return {"ours": {"arm": "streaming live RAG", **summarise(ours, index)}, "baseline": row}
 
 
 def run_ablations(

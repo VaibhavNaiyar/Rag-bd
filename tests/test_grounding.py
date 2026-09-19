@@ -28,7 +28,8 @@ def grounder(support_min: float = 0.5, auto_cite_min: float = 0.75) -> Grounder:
 def test_evidence_package_is_the_prompt_boundary():
     pkg = evidence()
     assert "[Doc_11 §1]" in pkg.text and "[Doc_8 §1]" in pkg.text
-    assert "retrieved for: cancellation" in pkg.text
+    assert '<document retrieved_for="cancellation">' in pkg.text
+    assert pkg.text.count("<document") == pkg.text.count("</document>") == 2
     assert set(pkg.citation_map) == {"[doc_11 §1]", "[doc_8 §1]"}
 
 
@@ -121,3 +122,37 @@ def test_nli_verifier_windows_stay_in_distribution():
         pytest.skip(f"NLI model unavailable: {exc}")
     claim = "Cancellations made fewer than 7 calendar days before the event are not refunded."
     assert verifier.support(claim, [TEXT_A])[0] >= 0.5
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "The catering vendor for Pune is not mentioned in the retrieved documents [Doc_8 §1].",
+        "The evidence does not specify a parking fee for the venue.",
+    ],
+)
+def test_a_statement_that_the_documents_are_silent_is_uncertainty_not_a_failed_claim(sentence):
+    g = grounder()
+    out = g.process(sentence + " ")
+    assert out.text == "" and out.claim is None
+    assert out.uncertainty and "Doc_" not in out.uncertainty
+    assert g.generated == 0 and g.demoted == 0, "an honest 'not stated' must not count against support"
+    assert g.support_rate == 1.0
+
+
+def test_a_policy_sentence_with_a_negation_is_still_a_claim():
+    g = grounder()
+    out = g.process("Cancellations made fewer than 7 calendar days before the event are not refunded [Doc_11 §1]. ")
+    assert out.claim is not None and g.generated == 1
+
+
+def test_the_verifier_reads_each_passage_with_its_subject():
+    from slr.synthesis.grounding import _subject
+
+    hit = Hit(Chunk("c9", "d9", "Doc_9", "2", "Fallout 4 › Passage 2", "The game takes place in Boston.", 2), 0.9, [], [])
+    assert _subject(hit) == "Fallout 4", "section numbers are not a subject"
+    claim = "Fallout 4 takes place in Boston"
+    lexical = LexicalVerifier()
+    assert lexical.support(claim, [hit.chunk.text])[0] < lexical.support(claim, [hit.chunk.text], [_subject(hit)])[0]
+    trail = Hit(Chunk("c8", "d8", "Doc_8", "1", "Travel policy › Hotel limits", "x", 1), 0.9, [], [])
+    assert _subject(trail) == "Travel policy, Hotel limits"

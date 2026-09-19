@@ -26,8 +26,13 @@ def test_health_reports_corpus_and_models(client):
 
 
 def test_fixtures_are_listed_for_replay(client):
-    names = client.get("/fixtures").json()["fixtures"]
-    assert {"compound_01", "late_detail_01", "presentation_01", "unanswerable_01"} <= set(names)
+    body = client.get("/fixtures").json()
+    assert body["corpus"] == "enterprise"
+    by_id = {f["id"]: f for f in body["fixtures"]}
+    assert {"compound_01", "late_detail_01", "presentation_01", "unanswerable_01"} <= set(by_id)
+    assert by_id["late_detail_01"]["family"] == "late_detail" and len(by_id["late_detail_01"]["turns"]) == 2
+    # only fixtures for the corpus being served: an ASQA question means nothing to the enterprise index
+    assert not any(f["id"].startswith("asqa_") for f in body["fixtures"])
 
 
 def test_query_endpoint_runs_the_streaming_path(client):

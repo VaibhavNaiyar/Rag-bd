@@ -86,7 +86,10 @@ def missing_fields(record: dict[str, Any]) -> list[str]:
 
 
 class TraceSink:
-    def __init__(self, path: str, ring: int = 500):
+    """JSONL file + in-memory ring, and optionally a span exporter (``slr.telemetry.otel``)."""
+
+    def __init__(self, path: str, ring: int = 500, exporter: Any | None = None):
+        self.exporter = exporter
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.ring: deque[dict[str, Any]] = deque(maxlen=ring)
@@ -98,6 +101,8 @@ class TraceSink:
             self.ring.append(json.loads(line))
             with self.path.open("a", encoding="utf-8") as fh:
                 fh.write(line + "\n")
+        if self.exporter is not None:
+            self.exporter.export(json.loads(line))
 
     def recent(self, limit: int = 50, session_id: str | None = None) -> list[dict[str, Any]]:
         items = [r for r in self.ring if session_id is None or r.get("session_id") == session_id]

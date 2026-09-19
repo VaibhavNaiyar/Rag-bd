@@ -131,8 +131,27 @@ async def _llm_split(
 
 
 def _numbers_differ(a: dict, b: dict) -> bool:
+    """Both name numbers, and not the same ones: "2014 winner" vs "2018 winner". A number
+    only one of them has ("for 30 people") is added context, not a different reading."""
     numbers = lambda item: {t for t in raw_words(item["text"]) if is_number(t)}  # noqa: E731
-    return numbers(a) != numbers(b)
+    na, nb = numbers(a), numbers(b)
+    return bool(na) and bool(nb) and na != nb
+
+
+def _words(item: dict) -> set[str]:
+    return set(content_tokens(item["text"]))
+
+
+def _duplicate(a: dict, b: dict, cos: float, s: Settings) -> bool:
+    """One need asked twice: near-identical meaning, or one query that only adds context words
+    to the other ("cancellation policy Pune" inside "cancellation policy workshop venue Pune").
+    Never when a number differs: "2014 winner" and "2018 winner" are two readings."""
+    if _numbers_differ(a, b):
+        return False
+    if cos >= s.merge_cos:
+        return True
+    wa, wb = _words(a), _words(b)
+    return bool(wa) and bool(wb) and (wa <= wb or wb <= wa)
 
 
 def guard(items: list[dict], embedder: Embedder, s: Settings) -> tuple[list[dict], int, int]:
@@ -144,10 +163,16 @@ def guard(items: list[dict], embedder: Embedder, s: Settings) -> tuple[list[dict
     merged = 0
     order = sorted(range(len(items)), key=lambda i: -items[i]["confidence"])
     for i in order:
-        if any(float(vecs[i] @ vecs[j]) >= s.merge_cos and not _numbers_differ(items[i], items[j]) for j in keep):
-            merged += 1
+        slot = next(
+            (n for n, j in enumerate(keep) if _duplicate(items[i], items[j], float(vecs[i] @ vecs[j]), s)), None
+        )
+        if slot is None:
+            keep.append(i)
             continue
-        keep.append(i)
+        merged += 1
+        if _words(items[i]) > _words(items[keep[slot]]):
+            keep[slot] = i  # the more specific phrasing carries the shared context
+
     keep.sort()  # utterance order
     capped = max(0, len(keep) - s.max_subqueries)
     kept = [items[i] for i in keep[: s.max_subqueries]]
@@ -168,7 +193,10 @@ async def decompose(
     started = time.perf_counter()
     method = "heuristic"
     items: list[dict]
-    if model is not None:
+    if not settings.decompose:
+        # The baseline: the utterance, as spoken, is the only query.
+        items, method = [{"text": utterance, "span": utterance, "confidence": 1.0}], "off"
+    elif model is not None:
         try:
             items = await _llm_split(utterance, context, model, ledger, settings)
             method = "llm"

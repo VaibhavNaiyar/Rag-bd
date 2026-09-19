@@ -8,16 +8,21 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Serves the demo corpus shipped in the image. ./data/corpus is the ASQA
-      # eval corpus, so point this at your own mount to serve a real one.
-      SLR_CORPUS_DIR: /app/evals/corpora/demo
-      SLR_INDEX_DIR: /data/index
+      # Serves the enterprise corpus shipped in the image by default. To serve the ASQA
+      # corpus built by `make dataset` (./data/corpus, index in ./data/index_asqa):
+      #   SLR_CORPUS_DIR=/data/corpus SLR_INDEX_DIR=/data/index_asqa SLR_FIXTURE_CORPUS=asqa docker compose up
+      SLR_CORPUS_DIR: ${SLR_CORPUS_DIR:-/app/evals/corpora/enterprise}
+      SLR_INDEX_DIR: ${SLR_INDEX_DIR:-/data/index}
+      SLR_FIXTURE_CORPUS: ${SLR_FIXTURE_CORPUS:-enterprise}
       SLR_TRACE_PATH: /data/traces/trace.jsonl
       # Unset -> the deterministic offline arms run, and the suite still passes.
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       SLR_LLM: ${SLR_LLM:-auto}
       SLR_LLM_MODEL: ${SLR_LLM_MODEL:-gpt-4o-mini}
+      SLR_DECOMPOSE_MODEL: ${SLR_DECOMPOSE_MODEL:-gpt-4.1}
       SLR_CONTROLLER: ${SLR_CONTROLLER:-rule}
+      # Span export: `SLR_OTEL_ENDPOINT=http://otel:4318 docker compose --profile observability up`
+      SLR_OTEL_ENDPOINT: ${SLR_OTEL_ENDPOINT:-}
       SLR_BRANCHES: ${SLR_BRANCHES:-bm25,dense}
       SLR_QUOTA_PER_INTENT: ${SLR_QUOTA_PER_INTENT:-2}
     volumes:
@@ -35,8 +40,8 @@ services:
     image: streaming-live-rag:latest
     profiles: ["eval"]
     environment:
-      # The demo corpus ships in the image; ./data/corpus is the ASQA eval corpus.
-      SLR_CORPUS_DIR: /app/evals/corpora/demo
+      # The enterprise corpus ships in the image; ./data/corpus is the ASQA eval corpus.
+      SLR_CORPUS_DIR: /app/evals/corpora/enterprise
       SLR_INDEX_DIR: /data/index
       SLR_TRACE_PATH: /data/traces/trace.jsonl
       SLR_ASQA_DIR: /data

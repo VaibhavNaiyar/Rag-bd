@@ -1,6 +1,6 @@
 {
   "id": "compound_04",
-  "corpus": "demo",
+  "corpus": "enterprise",
   "description": "Two needs, no punctuation, as an ASR stream would deliver them.",
   "turns": [
     {

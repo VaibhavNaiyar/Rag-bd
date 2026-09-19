@@ -1,6 +1,6 @@
 {
   "id": "compound_01",
-  "corpus": "demo",
+  "corpus": "enterprise",
   "description": "Guide example 1: venue capacity, cancellation terms and catering in one utterance.",
   "turns": [
     {

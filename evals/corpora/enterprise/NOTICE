@@ -1,7 +1,7 @@
 SYNTHETIC DEVELOPMENT CORPUS
 
 Every document in this directory is fictional. Company, venue, vendor and
-people names are invented. The corpus exists so the demo fixtures in
+people names are invented. The corpus exists so the enterprise fixtures in
 evals/fixtures/ (which mirror the worked examples in the Theme 04 guide) have
 something real to retrieve from. The engine never reads this directory by
 name: it is mounted via SLR_CORPUS_DIR like any other corpus, and the held-out

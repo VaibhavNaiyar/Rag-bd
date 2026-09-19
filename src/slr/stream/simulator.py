@@ -62,6 +62,24 @@ def list_fixtures(fixtures_dir: str) -> dict[str, Path]:
     return {p.stem: p for p in sorted(root.rglob("*.json"))} if root.is_dir() else {}
 
 
+def describe_fixtures(fixtures_dir: str, corpus: str) -> list[dict[str, Any]]:
+    """What a client may replay against ``corpus``: id, family (its folder), description and what is said."""
+    out = []
+    for name, path in list_fixtures(fixtures_dir).items():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get("corpus", "enterprise") != corpus or not data.get("turns"):
+            continue
+        out.append(
+            {
+                "id": name,
+                "family": path.parent.name,
+                "description": data.get("description", ""),
+                "turns": [utterance_of(turn) for turn in data["turns"]],
+            }
+        )
+    return out
+
+
 def load_fixture(fixtures_dir: str, name: str) -> dict[str, Any]:
     if not _SAFE.match(name):
         raise ValueError(f"invalid fixture name {name!r}")

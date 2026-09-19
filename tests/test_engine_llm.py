@@ -16,12 +16,6 @@ import pytest
 from tests.conftest import FakeChatModel, quote
 
 
-@pytest.fixture
-def llm(engine, settings):
-    """Engine clone whose LLM is scripted per test."""
-    return engine.with_settings(settings.with_overrides(llm="openai"))
-
-
 def runner_for(clone, model, recorder):
     from slr.stream.engine import SessionRunner
 
@@ -221,3 +215,54 @@ def test_request_limits_follow_the_model_family(model, reasoning):
         assert limits == {"max_completion_tokens": 400 + REASONING_HEADROOM, "reasoning_effort": "low"}
     else:
         assert limits == {"temperature": 0, "max_tokens": 400}
+
+
+async def test_a_late_detail_refines_even_when_the_first_answer_verified_nothing(llm, recorder):
+    """The session keeps turn 1's evidence; a correction narrows that search, it does not restart it."""
+    import json as _json
+
+    def refine_ops(prompt: str) -> str:
+        sentence, marker = quote(prompt, 0)
+        return f"ADD: {sentence} {marker}.\n"
+
+    model = FakeChatModel(
+        completions=[
+            DECOMPOSE_ONE,
+            _json.dumps({"delta_queries": [{"text": "international travel booking after travel", "for": ""}]}),
+        ],
+        streams=["The moon is made of green cheese [Doc_1 §1].", refine_ops],
+    )
+    runner = runner_for(llm, model, recorder)
+    await runner.start()
+    await runner.replay("late_detail_01", 40.0)
+
+    first, second = runner.completed[-2], runner.completed[-1]
+    assert first["answer"]["claim_count"] == 0, "the scripted first answer should have verified nothing"
+    assert second["mode"] == "refine"
+    assert second["fusion"]["full_corpus_search"] is False
+    assert second["refinement"]["parent_claims"] == 0
+    assert second["answer"]["version"] == 2 and second["answer"]["claim_count"] >= 1
+
+
+async def test_when_no_reading_is_verified_the_answer_asks_which_was_meant(llm, recorder):
+    model = FakeChatModel(completions=[DECOMPOSE_TWO], streams=["The moon is made of green cheese [Doc_1 §1]."])
+    runner = runner_for(llm, model, recorder)
+    await runner.start()
+    await runner.replay("compound_01", 40.0)
+
+    version = recorder.one("answer.version")
+    assert version["claims"] == []
+    assert version["clarification"] == [
+        "venue in Pune for a 30 person workshop",
+        "venue cancellation and refund policy",
+    ]
+    assert runner.completed[-1]["answer"]["clarification"] == version["clarification"]
+
+
+async def test_a_verified_answer_asks_nothing(llm, recorder):
+    model = FakeChatModel(completions=[DECOMPOSE_TWO], streams=[lambda p: "{} {}.".format(*quote(p, 0))])
+    runner = runner_for(llm, model, recorder)
+    await runner.start()
+    await runner.replay("compound_01", 40.0)
+    version = recorder.one("answer.version")
+    assert version["claims"] and "clarification" not in version

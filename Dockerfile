@@ -24,7 +24,10 @@ RUN pip install --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-# Bake the three local models into the image.
+# Bake the three local models into the image. The script reads the model names
+# from the settings, so only those two files come in here: editing the rest of
+# the source then never invalidates this layer and never re-downloads a model.
+COPY src/slr/__init__.py src/slr/config.py ./src/slr/
 COPY scripts/fetch_models.py ./scripts/fetch_models.py
 RUN python scripts/fetch_models.py
 
@@ -43,7 +46,7 @@ ENV PYTHONPATH=/app/src:/app \
     SLR_ASQA_DIR=/data
 
 # Default corpus: the synthetic dev corpus. Mount a real one over /data/corpus.
-RUN mkdir -p /data && cp -r /app/evals/corpora/demo /data/corpus
+RUN mkdir -p /data && cp -r /app/evals/corpora/enterprise /data/corpus
 
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=90s --retries=10 \

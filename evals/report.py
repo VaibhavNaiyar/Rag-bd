@@ -140,7 +140,9 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
                         f"- G5 `{row['fixture']}`: v{_fmt(row['version'])} from v{_fmt(row['parent'])}, "
                         f"{row['preserved']} claims preserved, {row['mutated']} rewritten, "
                         f"full-corpus search `{row['full_corpus_search']}`, "
-                        f"{row['carried_from_session']} chunks carried from session state."
+                        f"{row['carried_from_session']} chunks carried from session state"
+                        + (" (the parent answer verified no claims, so none could be kept)."
+                           if row.get("parent_claims") == 0 else ".")
                     )
             if g["id"] == "G6" and g["detail"]["incomplete"]:
                 add(f"- G6 incomplete traces: {g['detail']['incomplete']}")
@@ -163,8 +165,41 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
     add("releases a sentence only after its citations resolve and its support clears the bar.")
     add("")
 
+    add("## 4. Against a baseline pipeline")
+    add("")
+    add(
+        "The baseline is a conventional RAG turn on the same fixtures, with the same retriever, reranker, "
+        "synthesiser and verifier: nothing happens while the user speaks, then the whole utterance is one "
+        "search (`SLR_CONTROLLER=batch`, `SLR_DECOMPOSE=off`). It has no notion of a presentation-only turn "
+        "or of a late detail, so it searches on both. The difference between the rows is exactly what "
+        "streaming, decomposition and session refinement add."
+    )
+    add("")
+    if not payload.get("baseline"):
+        add("_Not run._")
+        add("")
+    for corpus, pair in (payload.get("baseline") or {}).items():
+        add(f"### {corpus} corpus")
+        add("")
+        add(
+            "| Pipeline | Retrieval before speech ends | Searches on reformat turns | Multi-intent (G3) | "
+            "Late detail refined, not restarted (G5) | Citation support | Recall@k | Fabricated | "
+            "TTFT after speech | Answer complete after speech | Cost/turn |"
+        )
+        add("|---|---|---|---|---|---|---|---|---|---|---|")
+        for key in ("ours", "baseline"):
+            arm = pair[key]
+            add(
+                f"| {arm['arm']} | {_fmt(arm['early_retrieval_pct'])}% | {_fmt(arm['false_trigger_pct'])}% | "
+                f"{_fmt(arm['multi_intent_pct'])}% | {_fmt(arm['refined_not_restarted_pct'])}% | "
+                f"{_fmt(arm['citation_support_pct'])}% | {_fmt(arm['recall_at_k_pct'])}% | "
+                f"{_fmt(arm['fabricated_citations'])} | {_fmt(arm['median_ttft_ms'])} ms | "
+                f"{_fmt(arm['median_complete_ms'])} ms | ${_fmt(arm['mean_cost_usd'])} |"
+            )
+        add("")
+
     if payload.get("ablations"):
-        add("## 4. Ablations")
+        add("## 5. Ablations")
         add("")
         for exp in payload["ablations"]:
             add(f"### {exp['experiment']}")
@@ -192,7 +227,7 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
                     add(f"  - {ex['fixture']}: \"{ex['sub_query']}\"")
             add("")
 
-    add("## 5. Analysed edge-case failures")
+    add("## 6. Analysed edge-case failures")
     add("")
     cases = payload.get("edge_cases", [])
     if not cases:
@@ -222,7 +257,7 @@ def write_report(payload: dict[str, Any], path: Path = REPORT) -> Path:
                 add(f"Other instances: {', '.join(sorted({i['fixture'] for i in items[1:]})[:8])}")
                 add("")
 
-    add("## 6. Reproducing this")
+    add("## 7. Reproducing this")
     add("")
     add("```bash")
     add("docker compose up --build      # or: make up")

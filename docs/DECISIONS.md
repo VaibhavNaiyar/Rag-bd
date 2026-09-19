@@ -5,12 +5,12 @@ Each entry records what was chosen, what it was chosen over, and what the eviden
 
 ---
 
-### D1 — WebSocket is the demo path; `POST /query` exists for testing only
+### D1 — WebSocket is the live path; `POST /query` exists for testing only
 
 Full-duplex is the theme. If the server ever receives a whole question in one message the
 controller is bypassed and early retrieval becomes unmeasurable. `/query` therefore chunks
 the text internally and runs the same turn loop; it is in the API for Swagger and for tests,
-not for the demo.
+not for the live console.
 
 ### D1a — AG-UI on the wire, over the WebSocket; the input direction stays custom
 
@@ -35,7 +35,7 @@ changing any gate. A test asserts that no banned framework appears in any `src/`
 
 Stability (`cos(e(p_t), e(p_{t-1})) ≥ 0.95`, twice) detects that the *meaning* stopped
 moving, which works on unpunctuated ASR text. But it needs three chunks, and short requests
-end before that. Measured on the demo fixtures, stability alone left every short
+end before that. Measured on the enterprise fixtures, stability alone left every short
 single-intent turn retrieving only at the utterance end. Adding a clause-completion trigger
 (sentence punctuation or a comma, with sufficiency satisfied) brought early retrieval from
 50% to 89% of eligible turns. Both are reported as separate reasons in the trace
@@ -44,7 +44,7 @@ single-intent turn retrieving only at the utterance end. Adding a clause-complet
 ### D4 — Corpus-grounded salience instead of NER
 
 "Entity" is a number, a capitalised non-initial word, or a token with document frequency
-≤ 25% of chunks. The first attempt used an IDF percentile, which broke on the small demo
+≤ 25% of chunks. The first attempt used an IDF percentile, which broke on the small enterprise
 corpus: most terms appear exactly once, so the 70th percentile marked almost nothing as
 salient and "travel reimbursement rule employee trip" failed the sufficiency gate. Document
 frequency is stable across corpus sizes and needs no model.
@@ -119,14 +119,16 @@ At 20× replay the gap between the last word and the end-of-utterance signal shr
 read 50% instead of 89%. The suite therefore defaults to `--speed 1.0`. Compressed replay is
 available for development iteration, and the speed used is recorded in the report.
 
-### D14 — Two dev corpora, and ambiguity is scored separately from composition
+### D14 — Two dev corpora; on ASQA a compound utterance is an ambiguous question
 
 The guide's worked examples are *compound* requests (several unrelated needs in one breath).
-ASQA's examples are *ambiguous* questions (one question with several readings, whose
-disambiguations differ by a single qualifier). The over-fragmentation guard, which is
-required by pitfall #5, merges near-duplicates and therefore collapses ASQA's ambiguity
-variants by design. Both families are built and reported separately rather than picking the
-flattering one.
+ASQA's are *ambiguous* questions: one question with several readings, whose disambiguations
+differ by a qualifier. The mechanics are the same (one utterance, N sub-queries, N
+retrievals, one fused answer), so G3 is scored on ASQA's ambiguous questions against its gold
+disambiguations, and on the enterprise corpus against the guide-style compounds. The
+decomposer is told to split an underspecified question into its readings; the merge guard
+(pitfall #5) merges paraphrases at cosine ≥ 0.95 but never two queries that differ in a
+number, because "2014 winner" and "2018 winner" are two readings, not a duplicate.
 
 ### D15 — A deterministic offline mode, and it is the default without a key
 
@@ -143,8 +145,85 @@ a hands-on workshop with 24 people?", just under a flat 0.48 bar, and was routed
 search. A modifier cue on a *statement* is now enough at a much lower similarity; a cue on a
 *question* needs more; a bare new question is never a refinement.
 
-### D17 — Prices, including local compute
+### D17 — Prices, including local compute, per model
 
 Cost per turn includes CPU time for the embedder, reranker and verifier at
 `SLR_CPU_USD_PER_HOUR`. Reporting local inference as free would make the offline arm look
-costless when it is the arm doing the most work.
+costless when it is the arm doing the most work. Model tokens are priced per model
+(`slr/telemetry/cost.py: MODEL_RATES`, overridable with `SLR_PRICE_<MODEL>=in,out`): one
+flat rate under-reports a gpt-4.1 decomposition thirteen-fold.
+
+### D18 — Retrieved text is fenced as untrusted data
+
+A corpus document is written by someone other than the user, so without a boundary every
+document is an instruction channel into the model. Each evidence block's source and text sit
+inside `<document>` … `</document>`, the synthesis and refine prompts declare fenced content
+to be data and never instructions, a document cannot close its own fence, and text that
+addresses a model ("ignore previous instructions", "the assistant must say") is marked
+`flagged` and logged per turn (`fusion.flagged_chunk_ids`). The detector is a narrow pattern,
+deliberately: an ordinary "you must" in a policy is not an attack, and a false flag costs
+only a label. This is the cheapest real defence, not a complete one; the grounding verifier
+behind it still withholds any claim the evidence does not support.
+
+### D19 — A circuit breaker on the model, and every model step has an offline twin
+
+If the provider is slow or rate-limiting, a turn must not wait out a timeout per call. Three
+consecutive *health* failures (timeouts, dropped connections, 429s, 5xx) open the circuit for
+30 s; one trial call then decides. A bad request or a rejected key never counts: retrying it
+fails forever, but it is not an outage, and one malformed call must not take the model away
+from every turn. While the circuit is open, or when a stream fails, each step takes its
+offline strategy: decomposition the clause splitter, synthesis the extractive answer,
+refinement the extractive refine, a reformat the offline regrouping. A stream that fails
+after text was shipped keeps that text and says it was cut short, rather than gluing a
+second answer onto half of the first. The trace records every fallback under `degraded`.
+
+### D20 — The trace record is also exported as OpenTelemetry spans
+
+G6 asks for structured logs *or dashboards*. The JSONL record stays the system of record;
+with `SLR_OTEL_ENDPOINT` set, each record is also exported over OTLP/HTTP as one trace: a
+`turn` span with `listen`, `plan`, `retrieve` and `synthesise` children rebuilt from the
+record's own timings, decisions and searches as span events. Spans carry ids, counts,
+timings, outcomes, costs and model names only; never the utterance, a query, chunk text or
+the answer, because a collector is a third party. `tests/test_otel.py` asserts that.
+
+### D21 — A baseline pipeline, run on the same fixtures
+
+The guide asks for a comparison against the baseline pipeline. The baseline is a
+conventional RAG turn, built from the same parts so the difference is only the design:
+`SLR_CONTROLLER=batch` does nothing until the speaker stops and then always retrieves (no
+suppression, no refinement), and `SLR_DECOMPOSE=off` makes the whole utterance one search.
+`make eval` replays every fixture through it after the main run, and the report's §4 puts
+the two side by side: retrieval before speech ends, searches on reformat turns, multi-intent,
+refinement, grounding, TTFT, completion time and cost.
+
+### D22 — A stronger model for decomposition only, and readings only where the world has them
+
+Measured on ASQA's 40 compound fixtures with the same prompt and guard: gpt-4o-mini
+isolated two or more gold readings in 13, gpt-4.1-mini in 11, gpt-4.1 in 25, gpt-5.4 in 22
+(3.8 s), gpt-5-mini in 24 but split 14 of 20 single questions and took 7 s. Grounding the
+decomposer in a BM25 look at the corpus did not help (10 and 21). So `SLR_DECOMPOSE_MODEL`
+defaults to gpt-4.1 while the answer stays on gpt-4o-mini: about 0.3 US cents more per turn,
+on the one call that decides G3.
+
+gpt-4.1 then invented readings for the enterprise corpus: a hotel limit "per night" and "per
+stay", a hall's "main room" and "breakout room", even a "[specific venue name]" placeholder.
+Pitfall #5 is exactly that, so the prompt now says readings belong to questions about the
+wider world, and a question about the organisation's own rules, prices or facilities has one
+reading. That cost three ASQA splits (25 → 22 of 40) and bought every single question kept
+single (17 → 20 of 20 on ASQA, 1 → 3 of 4 on the enterprise set). ASQA's ambiguous questions
+sit below the 70% bar and the report states it rather than tuning the matcher. The fourth
+enterprise "single" asks for a per diem rate *and* a hotel limit, two needs; its label is
+left as authored rather than edited to match the system.
+
+### D23 — When no reading is verified, ask which was meant
+
+The guide's grounding rule allows two answers to missing evidence: an uncertainty indicator,
+or a targeted clarification. When a request was split into several readings and the
+documents confirmed none, the answer version carries those readings as `clarification`, and
+the console offers them as choices; choosing one speaks "Sorry, I meant …", which the
+controller routes as a refinement of the same answer (D16, D19). The idea comes from a
+planner that asks rather than guesses when a request is ambiguous. One alternative was
+measured and dropped: withholding a sub-question from the answer model when its evidence
+looked weak. Across 149 ASQA sub-queries the top rerank score barely separates those that
+ended with a verified claim (median 0.858) from those that did not (0.832), so any cut would
+drop good evidence with the bad; the verifier remains the gate.

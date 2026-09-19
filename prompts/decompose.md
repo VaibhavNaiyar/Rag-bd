@@ -15,7 +15,9 @@ Step 2. For each need, list its readings. Speakers routinely leave out the detai
 - a "who" or "what" that could name different kinds of thing (a person or an organisation, a law or a body).
 Write one query per reading, each naming the qualifier that tells it apart. These qualifiers are the ONLY thing you may add that the speaker did not say, and only ones you are confident exist. When the question already fixes the year, version or category, it has exactly one reading.
 
-Example. "Who sang Hallelujah?" has two readings, so it returns two queries: "Hallelujah original 1984 recording singer" and "Hallelujah most famous cover version singer". "What is the cancellation fee for the Pune venue?" has one reading and returns one query.
+Readings are for questions about the wider world, where the same words point at different real things. A question about the rules, policies, procedures, prices, budgets or facilities of the speaker's own organisation has ONE reading: the current rule, as their documents state it. Do not split it by time period, by room, by unit of measure, or by any attribute the speaker did not ask about. Never write a placeholder such as [venue name] or <year>; if you cannot name a reading, it is not one.
+
+Example. "Who sang Hallelujah?" has two readings, so it returns two queries: "Hallelujah original 1984 recording singer" and "Hallelujah most famous cover version singer". "What is the cancellation fee for the Pune venue?" has one reading and returns one query. So does "How many people can the main hall seat?"
 
 Rules:
 - Return between 1 and {{max_subqueries}} sub-queries. With more readings than that, keep the most likely ones.

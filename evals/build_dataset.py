@@ -446,7 +446,7 @@ def write_case(case: dict[str, Any]) -> None:
 
 
 def _reset_outputs(families: list[str]) -> None:
-    """Remove only what this script generates; hand-written demo fixtures stay."""
+    """Remove only what this script generates; hand-written enterprise fixtures stay."""
     if TRANSCRIPTS.exists():
         shutil.rmtree(TRANSCRIPTS)
     TRANSCRIPTS.mkdir(parents=True)

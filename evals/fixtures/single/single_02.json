@@ -1,6 +1,6 @@
 {
   "id": "single_02",
-  "corpus": "demo",
+  "corpus": "enterprise",
   "description": "One information need; must yield exactly one sub-query.",
   "turns": [
     {

@@ -11,8 +11,13 @@ reported cost per turn is not flattered by pretending local compute is free.
 
 from __future__ import annotations
 
+import logging
+import os
+import re
 from dataclasses import dataclass, field
 from typing import Any
+
+log = logging.getLogger(__name__)
 
 
 def usage_of_stream(readings: list[Any]) -> dict[str, int]:
@@ -25,6 +30,43 @@ def usage_of_stream(readings: list[Any]) -> dict[str, int]:
     return {"prompt_tokens": 0, "completion_tokens": 0}
 
 
+#: Published list prices, USD per million tokens (input, output). Indicative:
+#: they go stale, and a deployment on negotiated rates overrides one with
+#: ``SLR_PRICE_<MODEL>=<in>,<out>`` (model id upper-cased, non-alphanumerics as
+#: underscores: ``SLR_PRICE_GPT_4_1_MINI=0.4,1.6``). A model not listed here is
+#: priced at ``SLR_PRICE_IN_PER_M`` / ``SLR_PRICE_OUT_PER_M``.
+MODEL_RATES: dict[str, tuple[float, float]] = {
+    "gpt-4o-mini": (0.15, 0.60),
+    "gpt-4o": (2.50, 10.00),
+    "gpt-4.1-nano": (0.10, 0.40),
+    "gpt-4.1-mini": (0.40, 1.60),
+    "gpt-4.1": (2.00, 8.00),
+    "gpt-5-nano": (0.05, 0.40),
+    "gpt-5-mini": (0.25, 2.00),
+    "gpt-5": (1.25, 10.00),
+}
+
+
+def rate_for(model: str, default: tuple[float, float]) -> tuple[float, float]:
+    """(input, output) USD per million tokens for ``model``.
+
+    A dated snapshot is priced as its family (``gpt-4o-mini-2024-07-18`` as
+    ``gpt-4o-mini``), longest name first, and only at a ``-`` boundary, so
+    ``gpt-5.4-mini`` is never mistaken for ``gpt-5``.
+    """
+    override = os.environ.get("SLR_PRICE_" + re.sub(r"[^A-Z0-9]", "_", model.upper()))
+    if override:
+        try:
+            given, taken = (float(part) for part in override.split(","))
+            return given, taken
+        except ValueError:
+            log.warning("ignoring malformed price override for %s: %r", model, override)
+    for name in sorted(MODEL_RATES, key=len, reverse=True):
+        if model == name or model.startswith(name + "-"):
+            return MODEL_RATES[name]
+    return default
+
+
 @dataclass
 class UsageLedger:
     price_in_per_m: float
@@ -33,7 +75,8 @@ class UsageLedger:
     entries: list[dict[str, Any]] = field(default_factory=list)
 
     def record_llm(self, step: str, model: str, prompt_tokens: int, completion_tokens: int, ms: float) -> None:
-        usd = prompt_tokens / 1e6 * self.price_in_per_m + completion_tokens / 1e6 * self.price_out_per_m
+        rate_in, rate_out = rate_for(model, (self.price_in_per_m, self.price_out_per_m))
+        usd = prompt_tokens / 1e6 * rate_in + completion_tokens / 1e6 * rate_out
         self.entries.append(
             {
                 "step": step,

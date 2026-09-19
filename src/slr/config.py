@@ -40,12 +40,20 @@ def _env(name: str, default):
 @dataclass(frozen=True)
 class Settings:
     # --- paths -----------------------------------------------------------
-    corpus_dir: str = str(ROOT / "evals" / "corpora" / "demo")
+    corpus_dir: str = str(ROOT / "evals" / "corpora" / "enterprise")
     index_dir: str = str(ROOT / "data" / "index")
     trace_path: str = str(ROOT / "data" / "traces" / "trace.jsonl")
     fixtures_dir: str = str(ROOT / "evals" / "fixtures")
+    #: which fixtures ``GET /fixtures`` offers: those whose ``corpus`` field names
+    #: the corpus being served ("enterprise" or "asqa"), so the console never replays a
+    #: question the index cannot know about
+    fixture_corpus: str = "enterprise"
     static_dir: str = str(Path(__file__).resolve().parent / "api" / "static")
     prompts_dir: str = str(ROOT / "prompts")
+    #: OTLP/HTTP collector base URL (e.g. http://otel:4318); empty keeps span export off
+    otel_endpoint: str = ""
+    #: browser origins allowed to call the HTTP API; the console dev server by default
+    cors_origins: tuple[str, ...] = ("http://localhost:3000", "http://127.0.0.1:3000")
 
     # --- models ----------------------------------------------------------
     embedder: str = "auto"  # auto | bge | lsa
@@ -66,11 +74,20 @@ class Settings:
     nli_model: str = "cross-encoder/nli-deberta-v3-xsmall"
     llm: str = "auto"  # auto | openai | offline
     llm_model: str = "gpt-4o-mini"
+    #: the model that splits an utterance into sub-queries (and plans a refinement).
+    #: Measured on ASQA's 40 compound fixtures: gpt-4o-mini isolates two or more of
+    #: the gold readings in 13, gpt-4.1 in 25, for ~0.3 US cents more per turn.
+    #: Empty = llm_model.
+    decompose_model: str = "gpt-4.1"
     llm_base_url: str = ""
     llm_timeout_s: float = 30.0
     #: only for reasoning models (gpt-5 family, o-series): minimal | low | medium | high
     llm_reasoning_effort: str = "low"
-    controller: str = "rule"  # rule | model
+    #: consecutive provider failures (timeouts, 429s, 5xx) that open the LLM circuit
+    llm_breaker_failures: int = 3
+    #: how long an open circuit keeps the model out before one trial call
+    llm_breaker_cooldown_s: float = 30.0
+    controller: str = "rule"  # rule | model | batch (the baseline: acts only at the utterance end)
 
     # --- cost (USD) --------------------------------------------------------
     price_in_per_m: float = 0.15
@@ -103,6 +120,8 @@ class Settings:
     max_provisional: int = 2
 
     # --- decomposition ---------------------------------------------------
+    #: off = one search for the whole utterance, the baseline pipeline
+    decompose: bool = True
     max_subqueries: int = 4
     #: two sub-queries this similar are one need asked twice. 0.95, not lower:
     #: distinct readings of one question ('all-time' vs 'single season') sit at

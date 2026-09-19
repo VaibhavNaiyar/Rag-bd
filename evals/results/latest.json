@@ -1,12 +1,13 @@
 {
-  "generated_at": 1789724664010,
-  "seconds": 150.7,
+  "generated_at": 1789811540113,
+  "seconds": 4402.6,
   "engine": {
     "models": {
       "embedder": "BAAI/bge-small-en-v1.5",
       "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
       "verifier": "cross-encoder/nli-deberta-v3-xsmall",
-      "llm": "offline",
+      "llm": "gpt-4o-mini",
+      "decomposer": "gpt-4.1",
       "controller": "rule",
       "branches": "bm25,dense",
       "quota_per_intent": "2"
@@ -18,16 +19,16 @@
       "top_k": 8,
       "tau_stab": 0.95,
       "stab_run": 2,
-      "merge_cos": 0.9,
+      "merge_cos": 0.95,
       "support_min": 0.5,
       "llm": "auto",
       "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
     },
-    "llm_configured": false,
+    "llm_configured": true,
     "replay_speed": 1.0
   },
   "gates": {
-    "demo": [
+    "enterprise": [
       {
         "id": "G1",
         "name": "Reproducibility",
@@ -39,9 +40,11 @@
         "detail": {
           "manual_steps": [],
           "command": "make eval",
-          "index_demo": "reused",
+          "index_enterprise": "reused",
+          "asqa_corpus": "reused",
+          "index_asqa": "reused",
           "index_built_by_harness": true,
-          "fixtures_ran": 22
+          "fixtures_ran": 142
         }
       },
       {
@@ -55,11 +58,11 @@
         "detail": {
           "eligible_turns": 18,
           "retrieved_before_end": 16,
-          "median_lead_ms": 260,
-          "max_lead_ms": 6496,
-          "median_lead_multi_intent_ms": 4411,
-          "median_lead_single_intent_ms": 257,
-          "multi_intent_turns": 5,
+          "median_lead_ms": 258,
+          "max_lead_ms": 6623,
+          "median_lead_multi_intent_ms": 3891,
+          "median_lead_single_intent_ms": 256,
+          "multi_intent_turns": 6,
           "suppression_turns": 4,
           "false_trigger_rate_pct": 0.0,
           "late_turns": [
@@ -71,39 +74,32 @@
       {
         "id": "G3",
         "name": "Multi-intent identification",
-        "value": 100.0,
+        "value": 75.0,
         "threshold": ">= 70% of compound utterances isolate >= 2 distinct sub-intents",
         "passed": true,
         "applicable": true,
         "note": "",
         "detail": {
           "compound_utterances": 4,
-          "identified": 4,
-          "ambiguous_diagnostic": {
-            "utterances": 0,
-            "identified_two_or_more_pct": null,
-            "mean_sub_queries": null,
-            "note": "single questions with several valid readings; reported, not scored — see the report"
-          },
-          "full_coverage_pct": 100.0,
-          "over_fragmentation_pct": 0.0,
-          "single_intent_kept_single_pct": 100.0,
+          "identified": 3,
+          "full_coverage_pct": 50.0,
+          "over_fragmentation_pct": 12.5,
+          "single_intent_kept_single_pct": 75.0,
           "by_family": {
-            "compound": 100.0
+            "compound": 75.0
           },
           "rows": [
             {
               "fixture": "compound_01",
               "family": "compound",
               "gold": 3,
-              "predicted": 3,
-              "matched": 3,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.875,
-                0.772,
-                0.912
+                0.754,
+                0.886
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "compound_02",
@@ -112,23 +108,23 @@
               "predicted": 3,
               "matched": 3,
               "best_scores": [
-                0.861,
-                0.798,
-                0.793
+                0.918,
+                0.882,
+                0.796
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "compound_03",
               "family": "compound",
               "gold": 2,
               "predicted": 2,
-              "matched": 2,
+              "matched": 1,
               "best_scores": [
-                0.757,
-                0.987
+                0.685,
+                0.958
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "compound_04",
@@ -137,10 +133,10 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.94,
-                0.934
+                0.931,
+                0.961
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "single_01",
@@ -149,9 +145,9 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.939
+                0.942
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "single_02",
@@ -160,20 +156,20 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.928
+                0.924
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "single_03",
               "family": "single",
               "gold": 1,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.969
+                0.856
               ],
-              "method": "heuristic"
+              "method": "llm"
             },
             {
               "fixture": "single_04",
@@ -182,9 +178,9 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.927
+                0.885
               ],
-              "method": "heuristic"
+              "method": "llm"
             }
           ]
         }
@@ -192,20 +188,20 @@
       {
         "id": "G4",
         "name": "Factual grounding",
-        "value": 100.0,
+        "value": 88.2,
         "threshold": ">= 85% citation support and zero fabricated citations",
         "passed": true,
         "applicable": true,
         "note": "",
         "detail": {
-          "turns_with_claims": 20,
+          "turns_with_claims": 19,
           "fabricated_citations": 0,
-          "fabricated_blocked_before_shipping": 0,
+          "fabricated_blocked_before_shipping": 1,
           "claims_without_a_citation": 0,
           "recall_at_k_pct": null,
           "recall_samples": 0,
-          "turns_flagging_uncertainty": 5,
-          "total_claims": 60
+          "turns_flagging_uncertainty": 18,
+          "total_claims": 75
         }
       },
       {
@@ -224,10 +220,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 2,
+              "preserved": 5,
               "mutated": 0,
               "full_corpus_search": false,
               "carried_from_session": 3,
+              "parent_claims": 6,
               "passed": true
             },
             {
@@ -236,9 +233,10 @@
               "version": 2,
               "parent": 1,
               "preserved": 3,
-              "mutated": 0,
+              "mutated": 1,
               "full_corpus_search": false,
               "carried_from_session": 4,
+              "parent_claims": 4,
               "passed": true
             },
             {
@@ -246,10 +244,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 2,
+              "preserved": 3,
               "mutated": 0,
               "full_corpus_search": false,
               "carried_from_session": 3,
+              "parent_claims": 4,
               "passed": true
             }
           ]
@@ -268,44 +267,1472 @@
           "incomplete": []
         }
       }
+    ],
+    "asqa": [
+      {
+        "id": "G1",
+        "name": "Reproducibility",
+        "value": 100.0,
+        "threshold": "one command builds the index and runs the suite with no manual step",
+        "passed": true,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "manual_steps": [],
+          "command": "make eval",
+          "index_enterprise": "reused",
+          "asqa_corpus": "reused",
+          "index_asqa": "reused",
+          "index_built_by_harness": true,
+          "fixtures_ran": 142
+        }
+      },
+      {
+        "id": "G2",
+        "name": "Early retrieval",
+        "value": 87.6,
+        "threshold": ">= 80% of eligible turns, with a low false-trigger rate",
+        "passed": true,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "eligible_turns": 105,
+          "retrieved_before_end": 92,
+          "median_lead_ms": 259,
+          "max_lead_ms": 3428,
+          "median_lead_multi_intent_ms": 258,
+          "median_lead_single_intent_ms": 260,
+          "multi_intent_turns": 32,
+          "suppression_turns": 15,
+          "false_trigger_rate_pct": 0.0,
+          "late_turns": [
+            "asqa_compound_02",
+            "asqa_compound_06",
+            "asqa_compound_07",
+            "asqa_compound_11",
+            "asqa_compound_13",
+            "asqa_compound_21",
+            "asqa_compound_23",
+            "asqa_compound_26",
+            "asqa_late_detail_12",
+            "asqa_single_10",
+            "asqa_single_13",
+            "asqa_suppression_03",
+            "asqa_suppression_14"
+          ]
+        }
+      },
+      {
+        "id": "G3",
+        "name": "Multi-intent identification",
+        "value": 50.0,
+        "threshold": ">= 70% of compound utterances isolate >= 2 distinct sub-intents",
+        "passed": false,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "compound_utterances": 40,
+          "identified": 20,
+          "full_coverage_pct": 12.5,
+          "over_fragmentation_pct": 0.0,
+          "single_intent_kept_single_pct": 100.0,
+          "by_family": {
+            "compound": 50.0
+          },
+          "rows": [
+            {
+              "fixture": "asqa_compound_01",
+              "family": "compound",
+              "gold": 5,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.939
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_02",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.868
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_03",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 3,
+              "matched": 3,
+              "best_scores": [
+                0.889,
+                0.788,
+                0.796
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_04",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 1,
+              "matched": 0,
+              "best_scores": [
+                0.729
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_05",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.815,
+                0.755
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_06",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.854
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_07",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.864
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_08",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 2,
+              "matched": 1,
+              "best_scores": [
+                0.746,
+                0.805
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_09",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.776
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_10",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.922,
+                0.903
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_11",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 1,
+              "matched": 0,
+              "best_scores": [
+                0.658
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_12",
+              "family": "compound",
+              "gold": 5,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.872,
+                0.882
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_13",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.759
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_14",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.838
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_15",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 3,
+              "matched": 2,
+              "best_scores": [
+                0.783,
+                0.781,
+                0.691
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_16",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.929,
+                0.924
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_17",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.914
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_18",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.849,
+                0.785
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_19",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.896
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_20",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.933,
+                0.791
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_21",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.773,
+                0.809
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_22",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.826,
+                0.874
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_23",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.904
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_24",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.915
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_25",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.807,
+                0.847
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_26",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.81,
+                0.813
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_27",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.842,
+                0.827
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_28",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 2,
+              "matched": 1,
+              "best_scores": [
+                0.924,
+                0.749
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_29",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 3,
+              "matched": 3,
+              "best_scores": [
+                0.902,
+                0.929,
+                0.872
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_30",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 0,
+              "best_scores": [
+                0.733
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_31",
+              "family": "compound",
+              "gold": 3,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.909,
+                0.898
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_32",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.966
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_33",
+              "family": "compound",
+              "gold": 5,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.908,
+                0.783
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_34",
+              "family": "compound",
+              "gold": 5,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.804
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_35",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.805,
+                0.768
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_36",
+              "family": "compound",
+              "gold": 4,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.835,
+                0.818
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_37",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.929
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_38",
+              "family": "compound",
+              "gold": 6,
+              "predicted": 4,
+              "matched": 4,
+              "best_scores": [
+                0.903,
+                0.909,
+                0.906,
+                0.911
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_39",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 2,
+              "matched": 2,
+              "best_scores": [
+                0.8,
+                0.833
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_compound_40",
+              "family": "compound",
+              "gold": 2,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.879
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_01",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.911
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_02",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.929
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_03",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.913
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_04",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.858
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_05",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.877
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_06",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.903
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_07",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.96
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_08",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.938
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_09",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.929
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_10",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.855
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_11",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.873
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_12",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.951
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_13",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.864
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_14",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.913
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_15",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.964
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_16",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.884
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_17",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.869
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_18",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.886
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_19",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.923
+              ],
+              "method": "llm"
+            },
+            {
+              "fixture": "asqa_single_20",
+              "family": "single",
+              "gold": 1,
+              "predicted": 1,
+              "matched": 1,
+              "best_scores": [
+                0.848
+              ],
+              "method": "llm"
+            }
+          ]
+        }
+      },
+      {
+        "id": "G4",
+        "name": "Factual grounding",
+        "value": 88.0,
+        "threshold": ">= 85% citation support and zero fabricated citations",
+        "passed": true,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "turns_with_claims": 99,
+          "fabricated_citations": 0,
+          "fabricated_blocked_before_shipping": 0,
+          "claims_without_a_citation": 0,
+          "recall_at_k_pct": 77.9,
+          "recall_samples": 74,
+          "turns_flagging_uncertainty": 109,
+          "total_claims": 162
+        }
+      },
+      {
+        "id": "G5",
+        "name": "Session refinement",
+        "value": 100.0,
+        "threshold": "every late-detail turn: version 2, parent 1, claims preserved, no full-corpus search",
+        "passed": true,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "refinement_turns": 15,
+          "rows": [
+            {
+              "fixture": "asqa_late_detail_01",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 1,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 2,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_02",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 2,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 6,
+              "parent_claims": 2,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_03",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_04",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 0,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 0,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_05",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 1,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 2,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_06",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 5,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_07",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 5,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_08",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 2,
+              "mutated": 1,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 4,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_09",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_10",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 6,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_11",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 8,
+              "parent_claims": 1,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_12",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 0,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 5,
+              "parent_claims": 0,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_13",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 1,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 2,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_14",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 2,
+              "mutated": 0,
+              "full_corpus_search": false,
+              "carried_from_session": 4,
+              "parent_claims": 2,
+              "passed": true
+            },
+            {
+              "fixture": "asqa_late_detail_15",
+              "routed_as_refine": true,
+              "version": 2,
+              "parent": 1,
+              "preserved": 1,
+              "mutated": 1,
+              "full_corpus_search": false,
+              "carried_from_session": 3,
+              "parent_claims": 2,
+              "passed": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "G6",
+        "name": "Telemetry and observability",
+        "value": 100.0,
+        "threshold": "100% of turns emit a complete trace record",
+        "passed": true,
+        "applicable": true,
+        "note": "",
+        "detail": {
+          "turns": 120,
+          "incomplete": []
+        }
+      }
     ]
   },
   "performance": {
-    "demo": {
+    "enterprise": {
       "turns": 22,
       "retrieval_lead_ms": {
-        "median": 260,
-        "p90": 4432
+        "median": 258,
+        "p90": 4996
       },
       "time_to_first_token_ms": {
-        "median": 469,
-        "p90": 1407
+        "median": 3440,
+        "p90": 5560
       },
       "turn_complete_ms": {
-        "median": 610,
-        "p90": 2053
+        "median": 4720,
+        "p90": 7397
       },
       "cost_per_turn_usd": {
-        "mean": 1.218e-05,
-        "total": 0.000268
+        "mean": 0.00218886,
+        "total": 0.048155
       },
       "tokens_per_turn": {
-        "mean": 0.0
+        "mean": 1631.3182
       },
-      "wall_clock_seconds": 138.5
+      "wall_clock_seconds": 229.6
+    },
+    "asqa": {
+      "turns": 120,
+      "retrieval_lead_ms": {
+        "median": 259,
+        "p90": 840
+      },
+      "time_to_first_token_ms": {
+        "median": 3276,
+        "p90": 6351
+      },
+      "turn_complete_ms": {
+        "median": 3544,
+        "p90": 7130
+      },
+      "cost_per_turn_usd": {
+        "mean": 0.00218822,
+        "total": 0.262586
+      },
+      "tokens_per_turn": {
+        "mean": 1708.675
+      },
+      "wall_clock_seconds": 919.4
     }
   },
-  "ablations": [],
+  "baseline": {
+    "enterprise": {
+      "ours": {
+        "arm": "streaming live RAG",
+        "turns": 22,
+        "early_retrieval_pct": 88.9,
+        "false_trigger_pct": 0.0,
+        "multi_intent_pct": 75.0,
+        "citation_support_pct": 88.2,
+        "recall_at_k_pct": null,
+        "fabricated_citations": 0,
+        "refined_not_restarted_pct": 100.0,
+        "intent_coverage": {
+          "multi_intent_sub_queries": 15,
+          "with_evidence_pct": 100.0,
+          "starved": 0,
+          "starved_examples": []
+        },
+        "median_ttft_ms": 3440,
+        "median_complete_ms": 4720,
+        "mean_cost_usd": 0.002189,
+        "mean_tokens": 1631,
+        "wall_clock_s": 229.6,
+        "knobs": {
+          "controller": "rule",
+          "branches": "bm25,dense",
+          "quota_per_intent": 2,
+          "top_k": 8,
+          "tau_stab": 0.95,
+          "stab_run": 2,
+          "merge_cos": 0.95,
+          "support_min": 0.5,
+          "llm": "auto",
+          "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        }
+      },
+      "baseline": {
+        "arm": "baseline (batch RAG)",
+        "turns": 22,
+        "early_retrieval_pct": 0.0,
+        "false_trigger_pct": null,
+        "multi_intent_pct": 0.0,
+        "citation_support_pct": 88.0,
+        "recall_at_k_pct": null,
+        "fabricated_citations": 0,
+        "refined_not_restarted_pct": 0.0,
+        "intent_coverage": {
+          "multi_intent_sub_queries": 0,
+          "with_evidence_pct": null,
+          "starved": 0,
+          "starved_examples": []
+        },
+        "median_ttft_ms": 2212,
+        "median_complete_ms": 3010,
+        "mean_cost_usd": 0.000245,
+        "mean_tokens": 1046,
+        "wall_clock_s": 186.1,
+        "knobs": {
+          "controller": "batch",
+          "branches": "bm25,dense",
+          "quota_per_intent": 2,
+          "top_k": 8,
+          "tau_stab": 0.95,
+          "stab_run": 2,
+          "merge_cos": 0.95,
+          "support_min": 0.5,
+          "llm": "auto",
+          "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        }
+      }
+    },
+    "asqa": {
+      "ours": {
+        "arm": "streaming live RAG",
+        "turns": 120,
+        "early_retrieval_pct": 87.6,
+        "false_trigger_pct": 0.0,
+        "multi_intent_pct": 50.0,
+        "citation_support_pct": 88.0,
+        "recall_at_k_pct": 77.9,
+        "fabricated_citations": 0,
+        "refined_not_restarted_pct": 100.0,
+        "intent_coverage": {
+          "multi_intent_sub_queries": 79,
+          "with_evidence_pct": 100.0,
+          "starved": 0,
+          "starved_examples": []
+        },
+        "median_ttft_ms": 3276,
+        "median_complete_ms": 3544,
+        "mean_cost_usd": 0.002188,
+        "mean_tokens": 1709,
+        "wall_clock_s": 919.4,
+        "knobs": {
+          "controller": "rule",
+          "branches": "bm25,dense",
+          "quota_per_intent": 2,
+          "top_k": 8,
+          "tau_stab": 0.95,
+          "stab_run": 2,
+          "merge_cos": 0.95,
+          "support_min": 0.5,
+          "llm": "auto",
+          "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        }
+      },
+      "baseline": {
+        "arm": "baseline (batch RAG)",
+        "turns": 120,
+        "early_retrieval_pct": 0.0,
+        "false_trigger_pct": null,
+        "multi_intent_pct": 0.0,
+        "citation_support_pct": 92.0,
+        "recall_at_k_pct": 62.2,
+        "fabricated_citations": 0,
+        "refined_not_restarted_pct": 0.0,
+        "intent_coverage": {
+          "multi_intent_sub_queries": 0,
+          "with_evidence_pct": null,
+          "starved": 0,
+          "starved_examples": []
+        },
+        "median_ttft_ms": 2420,
+        "median_complete_ms": 2910,
+        "mean_cost_usd": 0.00023,
+        "mean_tokens": 1051,
+        "wall_clock_s": 826.0,
+        "knobs": {
+          "controller": "batch",
+          "branches": "bm25,dense",
+          "quota_per_intent": 2,
+          "top_k": 8,
+          "tau_stab": 0.95,
+          "stab_run": 2,
+          "merge_cos": 0.95,
+          "support_min": 0.5,
+          "llm": "auto",
+          "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        }
+      }
+    }
+  },
+  "ablations": [
+    {
+      "experiment": "retrieval branches",
+      "question": "Does the lexical branch earn its place, or would dense-only do?",
+      "arms": [
+        {
+          "arm": "hybrid (bm25+dense)",
+          "turns": 44,
+          "early_retrieval_pct": 79.5,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 52.3,
+          "citation_support_pct": 85.2,
+          "recall_at_k_pct": 67.9,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 56,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 2483,
+          "median_complete_ms": 2908,
+          "mean_cost_usd": 0.002882,
+          "mean_tokens": 2127,
+          "wall_clock_s": 349.1,
+          "knobs": {
+            "controller": "rule",
+            "branches": "bm25,dense",
+            "quota_per_intent": 2,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        },
+        {
+          "arm": "dense only",
+          "turns": 44,
+          "early_retrieval_pct": 79.5,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 56.8,
+          "citation_support_pct": 86.4,
+          "recall_at_k_pct": 72.9,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 62,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 3060,
+          "median_complete_ms": 3328,
+          "mean_cost_usd": 0.002883,
+          "mean_tokens": 2149,
+          "wall_clock_s": 359.6,
+          "knobs": {
+            "controller": "rule",
+            "branches": "dense",
+            "quota_per_intent": 2,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        }
+      ]
+    },
+    {
+      "experiment": "per-intent quota",
+      "question": "What happens to the quiet sub-intent when the context window is filled by score alone?",
+      "arms": [
+        {
+          "arm": "quota = 2 per intent",
+          "turns": 44,
+          "early_retrieval_pct": 79.5,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 61.4,
+          "citation_support_pct": 83.8,
+          "recall_at_k_pct": 69.5,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 66,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 2328,
+          "median_complete_ms": 2736,
+          "mean_cost_usd": 0.002893,
+          "mean_tokens": 2150,
+          "wall_clock_s": 333.5,
+          "knobs": {
+            "controller": "rule",
+            "branches": "bm25,dense",
+            "quota_per_intent": 2,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        },
+        {
+          "arm": "quota = 0 (global top-k)",
+          "turns": 44,
+          "early_retrieval_pct": 79.5,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 56.8,
+          "citation_support_pct": 87.5,
+          "recall_at_k_pct": 71.6,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 64,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 2544,
+          "median_complete_ms": 2774,
+          "mean_cost_usd": 0.002861,
+          "mean_tokens": 2143,
+          "wall_clock_s": 324.2,
+          "knobs": {
+            "controller": "rule",
+            "branches": "bm25,dense",
+            "quota_per_intent": 0,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        }
+      ]
+    },
+    {
+      "experiment": "retrieval controller",
+      "question": "Is a model call per transcript chunk worth what it costs?",
+      "arms": [
+        {
+          "arm": "rule controller",
+          "turns": 44,
+          "early_retrieval_pct": 79.5,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 59.1,
+          "citation_support_pct": 85.2,
+          "recall_at_k_pct": 68.3,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 65,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 2485,
+          "median_complete_ms": 2702,
+          "mean_cost_usd": 0.002875,
+          "mean_tokens": 2128,
+          "wall_clock_s": 326.6,
+          "knobs": {
+            "controller": "rule",
+            "branches": "bm25,dense",
+            "quota_per_intent": 2,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        },
+        {
+          "arm": "model controller",
+          "turns": 44,
+          "early_retrieval_pct": 0.0,
+          "false_trigger_pct": null,
+          "multi_intent_pct": 56.8,
+          "citation_support_pct": 83.3,
+          "recall_at_k_pct": 70.9,
+          "fabricated_citations": 0,
+          "refined_not_restarted_pct": null,
+          "intent_coverage": {
+            "multi_intent_sub_queries": 64,
+            "with_evidence_pct": 100.0,
+            "starved": 0,
+            "starved_examples": []
+          },
+          "median_ttft_ms": 3223,
+          "median_complete_ms": 3489,
+          "mean_cost_usd": 0.003101,
+          "mean_tokens": 3061,
+          "wall_clock_s": 496.1,
+          "knobs": {
+            "controller": "model",
+            "branches": "bm25,dense",
+            "quota_per_intent": 2,
+            "top_k": 8,
+            "tau_stab": 0.95,
+            "stab_run": 2,
+            "merge_cos": 0.95,
+            "support_min": 0.5,
+            "llm": "auto",
+            "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2"
+          }
+        }
+      ]
+    }
+  ],
   "edge_cases": [
     {
+      "category": "under_decomposition",
+      "corpus": "enterprise",
+      "fixture": "compound_01",
+      "utterance": "I need to plan a customer workshop in Pune for 30 people, and I need the cancellation policy and the catering options.",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Pune workshop venue with capacity for 30 people",
+          "venue cancellation and refund policy",
+          "catering options for a workshop in Pune"
+        ],
+        "predicted": [
+          "customer workshop Pune 30 people cancellation policy",
+          "customer workshop Pune 30 people catering options"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "compound_01",
+      "utterance": "I need to plan a customer workshop in Pune for 30 people, and I need the cancellation policy and the catering options.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: Cancellations for the customer workshop in Pune can be made with different refund policies based on the timing",
+          "Not verified in the cited documents: Hinjewadi Convention Suites includes a working lunch and two tea breaks in its per-attendee rate, but it is not recommended for groups smaller than 50,,",
+          "Specific catering options available through the approved external caterers at Baner Tech Hub could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "compound_03",
+      "utterance": "Can you tell me how far in advance a venue has to be booked, and also which external caterers are approved for Baner Tech Hub?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: Venues, including Baner Tech Hub, must be booked at least 10 working days before the event",
+          "Additional approved external caterers for Baner Tech Hub could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
       "category": "late_trigger",
-      "corpus": "demo",
+      "corpus": "enterprise",
       "fixture": "compound_04",
       "utterance": "how much is the hotel limit for business trips in New York and what is the catering budget per attendee for a customer workshop",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 10144,
-        "utterance_end_ms": 10088,
+        "first_retrieval_ms": 11796,
+        "utterance_end_ms": 10511,
         "decisions": [
           [
             "wait",
@@ -339,14 +1766,121 @@
       }
     },
     {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "compound_04",
+      "utterance": "how much is the hotel limit for business trips in New York and what is the catering budget per attendee for a customer workshop",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The current hotel nightly rate limit for business trips in New York is USD 360 per night",
+          "The catering budget for internal events could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "late_detail_01",
+      "utterance": "The trip was international and the booking was made after travel.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Claims must be submitted in the expense system within 30 days of the trip ending, with an itemised receipt for every expense above INR 500, unless the booking was made after travel, in which case written approval from a senior director is required",
+          "Not verified in the cited documents: For international trips, approval is needed from both the line manager and the department head before booking, and if the booking is made after travel, additional approval from a senior director is required"
+        ],
+        "support_rate": 0.7143,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "late_detail_02",
+      "utterance": "What are the hotel limits for business travel?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The current hotel limits for business travel company policy vary by location",
+          "Specific details about hotel limits for domestic travel could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.8,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "late_detail_03",
+      "utterance": "Which Pune venue should I book for a hands-on workshop with 24 people?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: However, it has a higher standard room rate of INR 58,000 per day and includes an in-house kitchen, which may not be necessary for a hands-on workshop",
+          "Not verified in the cited documents: Hinjewadi Convention Suites is not recommended for this group size, as it is designed for larger events and has a minimum billing for 50 attendees",
+          "Specific recommendations for catering arrangements for Baner Tech Hub could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "late_detail_03",
+      "utterance": "But we also want to bring in an outside caterer.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: It has an Innovation Room that seats 24 people at lab benches with power at every seat, making it suitable for hands-on technical workshops, and it allows the use of an outside caterer from an approved vendor directory"
+        ],
+        "support_rate": 0.75,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "over_fragmentation",
+      "corpus": "enterprise",
+      "fixture": "single_03",
+      "utterance": "What is the per diem rate and hotel limit when travelling to London for work?",
+      "what_happened": "2 sub-queries for 1 gold sub-intents.",
+      "evidence": {
+        "gold": [
+          "What is the per diem rate and hotel limit when travelling to London for work?"
+        ],
+        "predicted": [
+          "current per diem rate business travel London",
+          "current hotel reimbursement limit business travel London"
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "enterprise",
+      "fixture": "single_03",
+      "utterance": "What is the per diem rate and hotel limit when travelling to London for work?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The current per diem rate for business travel to London is GBP 85 per day",
+          "Not verified in the cited documents: The hotel reimbursement limit for business travel to London is GBP 230 per night",
+          "The hotel reimbursement limit for domestic travel to London could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
       "category": "late_trigger",
-      "corpus": "demo",
+      "corpus": "enterprise",
       "fixture": "presentation_01",
       "utterance": "What is the venue cancellation policy?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 2697,
-        "utterance_end_ms": 2697,
+        "first_retrieval_ms": 3724,
+        "utterance_end_ms": 2774,
         "decisions": [
           [
             "wait",
@@ -362,16 +1896,1668 @@
           ]
         ]
       }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_01",
+      "utterance": "Who took control of the italian government in 1922?",
+      "what_happened": "5 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What party took control of the Italian government in 1922?",
+          "What leader took control of the Italian government in 1922?",
+          "What faction took control of the Italian government in 1922?",
+          "Who is the party that took control of the italian government in 1922?",
+          "Who is the prime minister that took control of the italian government in 1922?"
+        ],
+        "predicted": [
+          "Italian government 1922 who took control"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_02",
+      "utterance": "Who did we buy the gadsden purchase from?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4612,
+        "utterance_end_ms": 3661,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_02",
+      "utterance": "Who did we buy the gadsden purchase from?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who did the United States buy the Gadsden purchase from?",
+          "How did the United States buy the Gadsden purchase?"
+        ],
+        "predicted": [
+          "Gadsden Purchase seller country"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_04",
+      "utterance": "Who played the chicago cubs in the world series last year?",
+      "what_happened": "3 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who played the Chicago Cubs in the 2016 World Series?",
+          "Who played the Chicago Cubs in the 1908 World Series?",
+          "Who played the Chicago Cubs in the 1907 World Series?"
+        ],
+        "predicted": [
+          "Chicago Cubs opponent in World Series 2023"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_05",
+      "utterance": "Who has scored the highest number of runs in test cricket?",
+      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who has scored the highest number of runs in a career in test cricket?",
+          "Who has scored the highest number of runs in test cricket in a single match?",
+          "Who has scored the highest number of runs in test cricket in a series?",
+          "Who has scored the highest number of runs in test cricket in a calendar year?",
+          "Who has scored the highest number of runs in test cricket between successive dismissals?",
+          "Who has scored the highest number of runs in test cricket in an over?"
+        ],
+        "predicted": [
+          "highest run scorer in men's test cricket",
+          "highest run scorer in women's test cricket"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_06",
+      "utterance": "Where does the federal reserve get its authority?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4560,
+        "utterance_end_ms": 3588,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_06",
+      "utterance": "Where does the federal reserve get its authority?",
+      "what_happened": "3 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Which body does the federal reserve get its authority from originally?",
+          "Which body governs the federal reserve and its authority?",
+          "From which act does the federal reserve get its authority?"
+        ],
+        "predicted": [
+          "Federal Reserve source of authority US law"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_07",
+      "utterance": "Who is in charge of the hollywood walk of fame?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 5283,
+        "utterance_end_ms": 4367,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_07",
+      "utterance": "Who is in charge of the hollywood walk of fame?",
+      "what_happened": "3 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who administers the hollywood walk of fame?",
+          "Who maintains the hollywood walk of fame?",
+          "Who is in charge of choosing celebrities for the hollywood walk of fame?"
+        ],
+        "predicted": [
+          "Hollywood Walk of Fame managing organization authority"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_08",
+      "utterance": "Who was the first person who discovered electricity?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: William Gilbert is recognized as the first person to observe electricity in nature, having made a careful study of electricity and magnetism in 1600 and distinguishing between different effects of electricity in his work \"De Magnete\"",
+          "The specific names of the first person to conduct scientific experiments on electricity could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_09",
+      "utterance": "When was the city of new york founded?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "When was the city of new york founded by the Dutch and initially called New Amsterdam?",
+          "When was the city of new york under English control and renamed to New York?"
+        ],
+        "predicted": [
+          "New York City founding date"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_10",
+      "utterance": "Who played flash gordon in the tv series?",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who played flash gordon in the 1954 tv series?",
+          "Who was flash gordon's voice in the 1996 tv series?",
+          "Who played flash gordon in the 2007tv series?"
+        ],
+        "predicted": [
+          "Flash Gordon 1954 TV series lead actor",
+          "Flash Gordon 2007 TV series lead actor"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_11",
+      "utterance": "Who was the mother of dragons married to?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 5143,
+        "utterance_end_ms": 3580,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_11",
+      "utterance": "Who was the mother of dragons married to?",
+      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who was the mother of dragons first married to?",
+          "Who was the mother of dragons married to second?",
+          "What leader of Dothraki is the mother of dragons married to?",
+          "What Ghiscari noble is the mother of dragons married to?"
+        ],
+        "predicted": [
+          "Game of Thrones Daenerys Targaryen husband"
+        ],
+        "merged_by_guard": 1,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_12",
+      "utterance": "Who raps in the gorillaz song clint eastwood?",
+      "what_happened": "5 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who raps in the original gorillaz song clint eastwood?",
+          "Who raps in the alternate version of gorillaz song clint eastwood?",
+          "Who raps in the live version of gorillaz song clint eastwood?",
+          "What is the given name of the rapper who does the rapping in the Gorillaz song \"Clint Eastwood\"?",
+          "What is the alternative rap name of the rapper in the Gorillaz song \"Clint Eastwood\"?"
+        ],
+        "predicted": [
+          "Clint Eastwood original 2001 Gorillaz recording rapper",
+          "Clint Eastwood Gorillaz live performances rapper"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_13",
+      "utterance": "Who did the virginia plan give more power to?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 5305,
+        "utterance_end_ms": 3950,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_13",
+      "utterance": "Who did the virginia plan give more power to?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Which members of the Union did the Virginia Plan give more power to?",
+          "Which branch did the Virginia Plan give more power to?"
+        ],
+        "predicted": [
+          "Virginia Plan allocation of power beneficiary"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_13",
+      "utterance": "Who did the virginia plan give more power to?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The Virginia Plan gave more power to the national government, proposing a supreme national government with three branches and a bicameral legislature",
+          "Specific groups or individuals who benefited from the power allocation in the Virginia Plan could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_14",
+      "utterance": "What are the 3 types of enzymes in digestion?",
+      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What are the types of enzymes in digestion that split fatty acids?",
+          "What are the types of enzymes in digestion that split proteins?",
+          "What are the types of enzymes in digestion that split carbohydrates?",
+          "What are the types of enzymes in digestion that split nucleic acids?"
+        ],
+        "predicted": [
+          "main types of digestive enzymes in human digestion"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_14",
+      "utterance": "What are the 3 types of enzymes in digestion?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The main types of digestive enzymes in human digestion are lipases, proteases (and peptidases), amylases, and nucleases",
+          "The specific number of types of digestive enzymes could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_15",
+      "utterance": "Who plays cat in beauty and the beast?",
+      "what_happened": "4 gold sub-intents, 3 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who plays cat in the 2012 reboot of beauty and the beast tv series?",
+          "Who plays cat in the 1987 beauty and the beast tv series?",
+          "Who plays Catherine in the 2012 reboot of the beauty and the beast tv series?",
+          "Who plays Catherine in the 1987 beauty and the beast tv series?"
+        ],
+        "predicted": [
+          "Beauty and the Beast original stage musical cat character actor",
+          "Beauty and the Beast 1991 animated film cat character voice actor",
+          "Beauty and the Beast 2017 live action film cat character actor"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_15",
+      "utterance": "Who plays cat in beauty and the beast?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "The evidence does not specify a cat character in the original stage musical of Beauty and the Beast, so I cannot provide the actor's name.",
+          "Not verified in the retrieved documents: The 1991 animated film does not feature a cat character, so there is no voice actor to identify",
+          "Not verified in the retrieved documents: The 2017 live-action film also does not mention a cat character, so I cannot provide the actor's name"
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_16",
+      "utterance": "Who is the winner of 2018 royal rumble?",
+      "what_happened": "4 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who won the Women's 2018 royal rumble?",
+          "Who won the Men's 2018 royal rumble?",
+          "Who won the women's Royal Rumble match in 2018?",
+          "Who won the men's Royal Rumble match in 2018?"
+        ],
+        "predicted": [
+          "2018 WWE Royal Rumble men's match winner",
+          "2018 WWE Royal Rumble women's match winner"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_17",
+      "utterance": "According to 2011 census the literacy rate of india is?",
+      "what_happened": "6 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "According to the 2011 census the combined literacy rate of India is?",
+          "According to the 2011 census the male literacy rate of India is?",
+          "According to the 2011 census the female literacy rate of India is?",
+          "According to the 2001 census the combined literacy rate of India is?",
+          "According to the 2001 census the male literacy rate of India is?",
+          "According to the 2001 census the female literacy rate of India is?"
+        ],
+        "predicted": [
+          "India literacy rate 2011 census overall"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_18",
+      "utterance": "Who won the men's french open title?",
+      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who won the singles men's French Open title in 2017?",
+          "Who won the singles men's French Open title in 2016?",
+          "Who won the singles men's French Open title in 2015?",
+          "Who won the doubles men's French Open title in 2017?",
+          "Who won the doubles men's French Open title in 2016?",
+          "Who won the doubles men's French Open title in 2015?"
+        ],
+        "predicted": [
+          "men's French Open singles champion most recent year",
+          "men's French Open singles champion all time first winner"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_18",
+      "utterance": "Who won the men's french open title?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The all-time first winner of the men's French Open singles title is unknown from the provided documents",
+          "The name of the all-time first winner of the men's French Open singles title could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_19",
+      "utterance": "Where are most of your taste buds located on your tounge?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Where on your tongue do you find the taste buds?",
+          "Where can you find your taste buds on your tongue?"
+        ],
+        "predicted": [
+          "where are most taste buds located on the human tongue"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_20",
+      "utterance": "Who acted as harley quinn in suicide squad?",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who acted as harley quinn in the 2016 suicide squad?",
+          "Who acted as harley quinn in the Suicide Squad: Hell to Pay?",
+          "Who acted as harley quinn in suicide squad 2?"
+        ],
+        "predicted": [
+          "Harley Quinn actress Suicide Squad 2016 film",
+          "Harley Quinn actress Suicide Squad 2021 film"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_21",
+      "utterance": "Who did raven marry in that's so raven?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4851,
+        "utterance_end_ms": 3554,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_21",
+      "utterance": "Who did raven marry in that's so raven?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: There is no information available regarding Raven's marriage spouse in the original series That's So Raven",
+          "Raven's marriage spouse in the original series That's So Raven could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_23",
+      "utterance": "What religion are they in call the midwife?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4864,
+        "utterance_end_ms": 3596,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_23",
+      "utterance": "What religion are they in call the midwife?",
+      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What Christian denomination are the characters in Call the Midwife?",
+          "What is the religion in Call the Midwife?",
+          "What Christian denomination are the nuns in Call the Midwife?",
+          "What religion are the nuns in Call the Midwife?"
+        ],
+        "predicted": [
+          "Call the Midwife TV series main characters religion"
+        ],
+        "merged_by_guard": 1,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_23",
+      "utterance": "What religion are they in call the midwife?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The main characters in Call the Midwife are associated with the Anglican religion, as they work with the Community of St",
+          "Specific details about the individual characters' personal beliefs or practices could not be verified from the documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_24",
+      "utterance": "Who wrote the national anthem trinidad and tobago?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who wrote the lyrics for the national anthem of trinidad and tobago?",
+          "Who wrote the music for the national anthem of trinidad and tobago?"
+        ],
+        "predicted": [
+          "Trinidad and Tobago national anthem lyrics author"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_25",
+      "utterance": "When did the first cassette tape come out?",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "When was the first compact cassette tape invented and introduced in Europe?",
+          "When did the first large cassette tape that failed come out?",
+          "When did the first compact cassette tape get introduced to the United States?"
+        ],
+        "predicted": [
+          "first compact audio cassette tape release date",
+          "first video cassette tape release date"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_26",
+      "utterance": "Who fought with an angel in the bible?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4648,
+        "utterance_end_ms": 3577,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_26",
+      "utterance": "Who fought with an angel in the bible?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Jacob is the Old Testament person who fought with an angel, as described in Genesis 32:22–32, where he wrestles with a \"man\" until daybreak and is later blessed and renamed \"Israel\"",
+          "The evidence does not provide any information about a New Testament person who fought with an angel.",
+          "New Testament person who fought with an angel could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_27",
+      "utterance": "Who plays the voice of darth vader in star wars?",
+      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who plays the voice of darth vader in star wars Episodes III–VI, IX, and Rebels?",
+          "Who plays the voice of darth vader in star wars for vocal effects?",
+          "Who plays the voice of darth vader in the star wars radio series?",
+          "Who plays the voice of darth vader in star wars Episodes III–VI, IX, Rogue One, Rebels?",
+          "Who plays the vocal effect of darth vader in star wars?",
+          "Who plays the voice of darth vader in star wars radio drama?"
+        ],
+        "predicted": [
+          "Darth Vader original Star Wars trilogy voice actor",
+          "Darth Vader Star Wars animated series voice actor"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_28",
+      "utterance": "Who sings the song stuck in the middle with you?",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who originally sang \"Stuck in the Middle With You\"?",
+          "Who sang \"Stuck in the Middle with You\" on the album Can't Explain?",
+          "Who sang \"Stuck in the Middle With You\" on the album Old Flame?"
+        ],
+        "predicted": [
+          "Stuck in the Middle with You original recording singer",
+          "Stuck in the Middle with You most famous cover version singer"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_28",
+      "utterance": "Who sings the song stuck in the middle with you?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The most famous cover version of \"Stuck in the Middle with You\" was recorded by Juice Newton for her 1985 album \"Old Flame\"",
+          "The identity of the most famous cover version singer could not be definitively verified from the documents, as it may vary by opinion."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_29",
+      "utterance": "What's the most points scored in an nba game?",
+      "what_happened": "6 gold sub-intents, 3 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What's the most points scored in an nba game by combined team?",
+          "What's the most points scored in an nba game by a single team?",
+          "What's the most points scored in an nba game by an individual?",
+          "What is the highest amount of points scored by a single team in regular season NBA games?",
+          "What is the highest amount of points scored by a single team in regular season games in regulation?",
+          "What is the highest amount of points scored by a single team in playoff games?"
+        ],
+        "predicted": [
+          "nba most points scored single player game record",
+          "nba most points scored by a team in a single game record",
+          "nba most combined points both teams single game record"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_30",
+      "utterance": "When was the song as time goes by written?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "When was the song \"As Time Goes By\" written by Herman Hupfeld?",
+          "When was the song 'As Time Goes By' (as performed by Hiroko Shimabukuro) written?"
+        ],
+        "predicted": [
+          "As Time Goes By original song written year composition date"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_31",
+      "utterance": "Who landed the first quad jump in figure skating?",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who was the first person to land a quad jump in figure skating?",
+          "Who was the first woman to land a quad jump in figure skating?",
+          "Who landed the first quad jump in figure skating ever?"
+        ],
+        "predicted": [
+          "first quad jump landed men's figure skating skater",
+          "first quad jump landed women's figure skating skater"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_32",
+      "utterance": "Who said the power of the pen is mightier than the sword?",
+      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who first said the exact phrase the power of the pen is mightier than the sword?",
+          "Who first said a phrase similar the power of the pen is mightier than the sword?",
+          "Who said the first known version of the phrase the power of the pen is mightier than the sword?",
+          "Who first said \"the pen is mightier than the sword\"?"
+        ],
+        "predicted": [
+          "who coined the phrase the pen is mightier than the sword"
+        ],
+        "merged_by_guard": 1,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_33",
+      "utterance": "Where was the count of monte cristo published?",
+      "what_happened": "5 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Where was first edition in book form of The Count of Monte Cristo published?",
+          "Where was The Count of Monte Cristo originally published?",
+          "Where was The Count of Monte Cristo English translation first published?",
+          "Where was The Count of Monte Cristo's Japanese translation published?",
+          "What country was the Count of Monte Cristo comic book published in?"
+        ],
+        "predicted": [
+          "The Count of Monte Cristo original 1844 novel publication location",
+          "The Count of Monte Cristo 2002 film release location"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_34",
+      "utterance": "Where does raymond live in everybody loves raymond?",
+      "what_happened": "5 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What is the city and state where Raymond lives in Everybody Loves Raymond?",
+          "Where does Raymond live in Everybody Loves Raymond, in relation to other people?",
+          "In what region does Raymond live in Everybody Loves Raymond?",
+          "In what city does Raymond live in Everybody Loves Raymond?",
+          "Where does Raymond live in Everybody Loves Raymond, in terms of other people?"
+        ],
+        "predicted": [
+          "Raymond Barone home location in original Everybody Loves Raymond TV series"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_35",
+      "utterance": "Ok google who won the world cup soccer?",
+      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who won the 2015 FIFA Women's World Cup?",
+          "Who won the 2011 FIFA Women's World Cup?",
+          "Who won the 2007 FIFA Women's World Cup?",
+          "Who won the 2014 FIFA World Cup?",
+          "Who won the 2010 FIFA World Cup?",
+          "Who won the 2006 FIFA World Cup?"
+        ],
+        "predicted": [
+          "FIFA Men's World Cup most recent winner",
+          "FIFA Women's World Cup most recent winner"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_35",
+      "utterance": "Ok google who won the world cup soccer?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The most recent winner of the FIFA Men's World Cup is France, who won the title in 2018",
+          "The winner of the FIFA Men's World Cup prior to 2018 could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_36",
+      "utterance": "Where did they film the movie in the heat of the night?",
+      "what_happened": "4 gold sub-intents, 2 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Where did they film most of the movie in the heat of the night?",
+          "Where in Tennesse did they film part of the movie in the heat of the night?",
+          "Where did they film the chase scene in the movie in the heat of the night?",
+          "Where did they film the Compton's diner scenes in the movie in the heat of the night?"
+        ],
+        "predicted": [
+          "In the Heat of the Night 1967 film filming locations",
+          "In the Heat of the Night TV series filming locations"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_36",
+      "utterance": "Where did they film the movie in the heat of the night?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The 1967 film \"In the Heat of the Night\" was primarily filmed in Sparta, Illinois, although it was set in the fictional town of Sparta, Mississippi",
+          "The TV series \"In the Heat of the Night,\" which aired from 1988 to 1995, featured the character Virgil Tibbs, played by Howard Rollins, but the specific filming locations for the series are not mentioned in the retrieved documents.",
+          "Filming locations for the In the Heat of the Night TV series could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_37",
+      "utterance": "Who sings better than i in joseph king of dreams?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who is the character that sings better than i in joseph king of dreams?",
+          "Who is the artist that sings better than i in joseph king of dreams?"
+        ],
+        "predicted": [
+          "'Better Than I' Joseph: King of Dreams original animated film singer"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_38",
+      "utterance": "Who did kobe bryant beat in the finals?",
+      "what_happened": "6 gold sub-intents, 4 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who did kobe bryant beat in the 2002 finals?",
+          "Who did kobe bryant beat in the 2001 finals?",
+          "Who did kobe bryant beat in the 2000 finals?",
+          "Who did kobe bryant beat in the 2009 finals?",
+          "Who did Kobe Bryant beat in the 2010 NBA Finals?",
+          "Who did Kobe Bryant beat in the Olympic finals in 2012?"
+        ],
+        "predicted": [
+          "Kobe Bryant NBA Finals opponent 2000",
+          "Kobe Bryant NBA Finals opponent 2001",
+          "Kobe Bryant NBA Finals opponent 2002",
+          "Kobe Bryant NBA Finals opponent 2009"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_38",
+      "utterance": "Who did kobe bryant beat in the finals?",
+      "what_happened": "3 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Kobe Bryant's NBA Finals opponent in 2000 was the Indiana Pacers, and the Lakers won the series 4 games to 2",
+          "Not verified in the cited documents: In 2001, Kobe Bryant faced the Philadelphia 76ers in the NBA Finals, and the Lakers won the series 4 games to 1",
+          "Not verified in the cited documents: In 2002, Kobe Bryant's opponent was the New Jersey Nets, and the Lakers won the series, although the specific number of games is not stated"
+        ],
+        "support_rate": 0.25,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_39",
+      "utterance": "When did india win the cricket world cup?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: India won the men's Cricket World Cup in 1983 and 2011",
+          "Not verified in the cited documents: India has not won the women's Cricket World Cup; they were runners-up in 2017",
+          "The years of any women's Cricket World Cup wins by India could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_40",
+      "utterance": "Who played the older dottie in a league of their own?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "Who plays the older Dottie in the TV series A League of Their Own?",
+          "Who plays the older Dottie in the movie A League of Their Own?"
+        ],
+        "predicted": [
+          "A League of Their Own 1992 film older Dottie actress"
+        ],
+        "merged_by_guard": 0,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_02",
+      "utterance": "What season is the plane crash greys anatomy?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The episode titled \"Flight,\" which depicts the crash, is the twenty-fourth episode and the season finale of that season",
+          "The specific details of the plane crash's impact on the characters in season eight could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_02",
+      "utterance": "Sorry, I mean first.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The aftermath of the plane crash is explored in season nine, where characters deal with the consequences of the crash that claimed the life of Lexie Grey and affected other survivors, following the first plane crash in the series",
+          "The detail raises whether there are additional significant events or implications related to the first plane crash that are not covered in the current claims."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_03",
+      "utterance": "When was crude oil first discovered in nigeria?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The first commercial crude oil discovery in Nigeria occurred in 1956 when Shell-BP found oil in Oloibiri, Nigeria",
+          "Specific details about the first exploratory crude oil find prior to 1953 could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_04",
+      "utterance": "Who sang still crazy after all these years?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The original 1975 recording of \"Still Crazy After All These Years\" was sung by Paul Simon",
+          "Not verified in the cited documents: Notable cover versions of the song have been sung by Rosemary Clooney, Ray Charles, Karen Carpenter, and Willie Nelson",
+          "Specific notable cover version singers could not be verified from the documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_06",
+      "utterance": "Who is the singer of main tera boyfriend?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The original version of \"Main Tera Boyfriend\" was sung by J Star",
+          "Specific details about the original version's release date or additional context could not be verified from the documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_07",
+      "utterance": "When did the king size bed come out?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "The introduction date of the king size bed in the United States is not explicitly stated in the retrieved documents.",
+          "The introduction date of the king size bed in the United Kingdom is not mentioned in the retrieved documents.",
+          "Not verified in the retrieved documents: Therefore, no specific information is available regarding its introduction in the UK"
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_11",
+      "utterance": "Who has the most rbis in major league history?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: There is no information available regarding the most career RBIs in Major League Baseball history for women",
+          "Most career RBIs in Major League Baseball history for women could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_12",
+      "utterance": "Who played alice in a league of their own?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 5276,
+        "utterance_end_ms": 4020,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_12",
+      "utterance": "Who played alice in a league of their own?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Renée Coleman played Alice \"Skeeter\" Gaspers in the 1992 film A League of Their Own",
+          "The evidence does not provide information about the actress who played Alice in the 2022 TV series A League of Their Own.",
+          "The actress who played Alice in the 2022 TV series A League of Their Own could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_12",
+      "utterance": "Oh wait, I meant younger.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: In the 2022 TV series adaptation, the younger version of Alice is played by a different actress",
+          "The specific name of the actress who played the younger version of Alice in the 2022 TV series is not provided in the evidence."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_late_detail_14",
+      "utterance": "Sorry, I mean from the West End musical Pickwick.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The song \"If I Ruled the World (Imagine That)\" was written by Nas, featuring Lauryn Hill, and released on June 4, 1996, and is not related to the musical \"Pickwick\"",
+          "Whether there are any other songs titled \"If I Ruled the World\" that are not related to the musical \"Pickwick.\""
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_single_06",
+      "utterance": "In what book is the shema found in the torah?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The Shema is found in the book of Deuteronomy in the Torah",
+          "Specific verses or chapters of the Shema in Deuteronomy could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_single_08",
+      "utterance": "Who sang i fooled around and fell in love in 1976?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The original recording of \"I Fooled Around and Fell in Love\" in 1976 featured lead vocals by Mickey Thomas, who was invited by Elvin Bishop, the song's writer and performer, to sing it due to Bishop's concern that his voice wouldn't do the song justice",
+          "The specific details about the release date of the single in 1976 could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_single_10",
+      "utterance": "When did the American show lie to me end?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4947,
+        "utterance_end_ms": 3935,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_single_13",
+      "utterance": "Where is the tv show the ranch filmed?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4534,
+        "utterance_end_ms": 3595,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_single_16",
+      "utterance": "How many jimmy john's are there plans for in the world?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: As of March 2017, there are plans for Jimmy John's to expand up to 5,000 locations worldwide, in addition to the almost 3,000 stores that already exist",
+          "The current total number of planned Jimmy John's locations worldwide could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_single_19",
+      "utterance": "Who portrayed the character who dies in season 9 from injuries sustained in the plane crash on Grey's?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Additionally, Mark Sloan, played by Eric Dane, is on life support due to extensive injuries from the crash and ultimately dies later in the season",
+          "The specific details about the timing of Lexie Grey's death in relation to Mark Sloan's could not be verified from the documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_01",
+      "utterance": "When did west germany win the world cup?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: West Germany won the men's FIFA World Cup in 1954, 1974, and 1990",
+          "Not verified in the retrieved documents: There is no evidence indicating that West Germany's women's national team won a FIFA World Cup",
+          "West Germany women's FIFA World Cup win years could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_02",
+      "utterance": "Song at the end of who dat boy?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: The audio track ending sample or outro song for \"Who Dat Boy\" is also a preview of \"Mr",
+          "Specific details about the audio track ending sample or outro song could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.75,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_03",
+      "utterance": "Who's won the most premierships in afl?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 4379,
+        "utterance_end_ms": 3135,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_04",
+      "utterance": "When does dr owen come to grey's anatomy?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Owen Hunt first appeared in the series \"Grey's Anatomy\" during the fifth season, although the specific episode of his first appearance is not mentioned in the retrieved documents.",
+          "The documents do not specify the exact episode number in which Dr.",
+          "Not verified in the cited documents: However, it is noted that he was introduced as a character to improve the show's ratings and was part of the fifth season, which was considered an improvement over the previous two seasons"
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_04",
+      "utterance": "Repeat that more slowly.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Owen Hunt first appeared"
+        ],
+        "support_rate": 0.75,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_05",
+      "utterance": "Where does implantation of the fertilized ovum usually occur?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: In humans, the implantation of a fertilized ovum usually occurs in the endometrium of the uterus",
+          "Specific anatomical details about the endometrium's structure or function during implantation could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.75,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_07",
+      "utterance": "How many houses are in the british parliament?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The two houses that meet in separate chambers are the House of Lords and the House of Commons",
+          "The specific number of houses in the UK Parliament could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_07",
+      "utterance": "Say that again as a numbered list.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the retrieved documents: 2",
+          "Not verified in the cited documents: The House of Commons is the third part of Parliament"
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_09",
+      "utterance": "When does the new family guy season come out?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "The evidence does not provide a specific release date for the next season of Family Guy.",
+          "Not verified in the cited documents: It mentions that Fox renewed the series for a nineteenth season on May 11, 2020, and announced that the show would continue through a twenty-first season on September 23, 2020, but does not specify when these seasons will be released",
+          "The release date for the next season of Family Guy could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_13",
+      "utterance": "Who played zorro son in the legend of zorro?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Adrián Alonso played Zorro's son in the 2005 film \"The Legend of Zorro\"",
+          "The specific character name of Zorro's son in the film could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "late_trigger",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_14",
+      "utterance": "When did the song lean on me come out?",
+      "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
+      "evidence": {
+        "first_retrieval_ms": 5075,
+        "utterance_end_ms": 3936,
+        "decisions": [
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "wait",
+            "insufficient_content"
+          ],
+          [
+            "retrieve",
+            "utterance_complete"
+          ]
+        ]
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_14",
+      "utterance": "When did the song lean on me come out?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The original release date of \"Lean on Me\" by Bill Withers was in April 1972 as the first single from his second album, Still Bill",
+          "Not verified in the cited documents: The most famous cover version of \"Lean on Me\" is by British group Red Box, which was released in 1985 as the third single from their debut album The Circle & the Square",
+          "The release date of the 1976 Grammy-nominated cover of \"Lean on Me\" by Melba Moore could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_15",
+      "utterance": "How much did it cost rio to host the olympics?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: This figure is consistently reported across multiple sources",
+          "Details on the breakdown of costs or specific expenses related to the hosting could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+      }
     }
   ],
   "corpora": {
-    "demo": {
+    "enterprise": {
       "documents": 11,
       "chunks": 39
+    },
+    "asqa": {
+      "documents": 8366,
+      "chunks": 15679
     }
   },
   "fixtures": {
-    "demo": [
+    "enterprise": [
       "chitchat_01",
       "compound_01",
       "compound_02",
@@ -388,6 +3574,98 @@
       "single_03",
       "single_04",
       "unanswerable_01"
+    ],
+    "asqa": [
+      "asqa_compound_01",
+      "asqa_compound_02",
+      "asqa_compound_03",
+      "asqa_compound_04",
+      "asqa_compound_05",
+      "asqa_compound_06",
+      "asqa_compound_07",
+      "asqa_compound_08",
+      "asqa_compound_09",
+      "asqa_compound_10",
+      "asqa_compound_11",
+      "asqa_compound_12",
+      "asqa_compound_13",
+      "asqa_compound_14",
+      "asqa_compound_15",
+      "asqa_compound_16",
+      "asqa_compound_17",
+      "asqa_compound_18",
+      "asqa_compound_19",
+      "asqa_compound_20",
+      "asqa_compound_21",
+      "asqa_compound_22",
+      "asqa_compound_23",
+      "asqa_compound_24",
+      "asqa_compound_25",
+      "asqa_compound_26",
+      "asqa_compound_27",
+      "asqa_compound_28",
+      "asqa_compound_29",
+      "asqa_compound_30",
+      "asqa_compound_31",
+      "asqa_compound_32",
+      "asqa_compound_33",
+      "asqa_compound_34",
+      "asqa_compound_35",
+      "asqa_compound_36",
+      "asqa_compound_37",
+      "asqa_compound_38",
+      "asqa_compound_39",
+      "asqa_compound_40",
+      "asqa_late_detail_01",
+      "asqa_late_detail_02",
+      "asqa_late_detail_03",
+      "asqa_late_detail_04",
+      "asqa_late_detail_05",
+      "asqa_late_detail_06",
+      "asqa_late_detail_07",
+      "asqa_late_detail_08",
+      "asqa_late_detail_09",
+      "asqa_late_detail_10",
+      "asqa_late_detail_11",
+      "asqa_late_detail_12",
+      "asqa_late_detail_13",
+      "asqa_late_detail_14",
+      "asqa_late_detail_15",
+      "asqa_single_01",
+      "asqa_single_02",
+      "asqa_single_03",
+      "asqa_single_04",
+      "asqa_single_05",
+      "asqa_single_06",
+      "asqa_single_07",
+      "asqa_single_08",
+      "asqa_single_09",
+      "asqa_single_10",
+      "asqa_single_11",
+      "asqa_single_12",
+      "asqa_single_13",
+      "asqa_single_14",
+      "asqa_single_15",
+      "asqa_single_16",
+      "asqa_single_17",
+      "asqa_single_18",
+      "asqa_single_19",
+      "asqa_single_20",
+      "asqa_suppression_01",
+      "asqa_suppression_02",
+      "asqa_suppression_03",
+      "asqa_suppression_04",
+      "asqa_suppression_05",
+      "asqa_suppression_06",
+      "asqa_suppression_07",
+      "asqa_suppression_08",
+      "asqa_suppression_09",
+      "asqa_suppression_10",
+      "asqa_suppression_11",
+      "asqa_suppression_12",
+      "asqa_suppression_13",
+      "asqa_suppression_14",
+      "asqa_suppression_15"
     ]
   }
 }

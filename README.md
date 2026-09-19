@@ -45,7 +45,7 @@ docker compose run --rm eval                    # the full benchmark
 docker compose run --rm app ingest --corpus /data/my_corpus --out /data/index
 ```
 
-The app serves the demo corpus shipped in the image. To serve your own, put it under
+The app serves the enterprise corpus shipped in the image. To serve your own, put it under
 `./data/` and set `SLR_CORPUS_DIR` to it (not `./data/corpus/`, which holds the ASQA eval
 corpus). It is indexed at startup: txt, md, json, jsonl and pdf, with transcripts detected
 by shape. Nothing assumes a filename convention.
@@ -55,11 +55,11 @@ by shape. Nothing assumes a filename convention.
 ```bash
 make venv          # virtualenv + pinned dependencies
 make models        # pre-download the three local models
-make ingest        # build an index from evals/corpora/demo
+make ingest        # build an index from evals/corpora/enterprise
 make serve         # http://localhost:8000
 make eval          # the benchmark; rewrites docs/BENCHMARK_REPORT.md
 make test          # 131 tests
-make demo          # replay fixtures and print the event trace
+make replay        # replay fixtures and print the event trace
 ```
 
 ---
@@ -100,7 +100,7 @@ Measured results: [`docs/BENCHMARK_REPORT.md`](docs/BENCHMARK_REPORT.md).
 
 | Route | What it is for |
 |---|---|
-| `WS /stream` | **The demo path.** Transcript chunks in, [AG-UI](https://docs.ag-ui.com) events out |
+| `WS /stream` | **The live path.** Transcript chunks in, [AG-UI](https://docs.ag-ui.com) events out |
 | `POST /agui` | AG-UI over SSE for any standard AG-UI client: a `RunAgentInput` in, one run streamed back |
 | `POST /query` | Testing and Swagger only — it still streams the text through the controller internally |
 | `GET /health` | Readiness, corpus size, which models are loaded |
@@ -116,10 +116,10 @@ become unmeasurable — which is why `/query` chunks internally too.
 
 ## Evaluation
 
-`make eval` runs every fixture through the same WebSocket turn loop the demo uses, then
+`make eval` runs every fixture through the same WebSocket turn loop the console uses, then
 writes `docs/BENCHMARK_REPORT.md` and `evals/results/latest.json`.
 
-Two dev corpora: a small synthetic enterprise corpus (`evals/corpora/demo/`) that backs the
+Two dev corpora: a small synthetic enterprise corpus (`evals/corpora/enterprise/`) that backs the
 worked examples in the theme guide, and ASQA (`din0s/asqa`, Apache-2.0, all 5,301 samples).
 `make dataset` (`evals/build_dataset.py`) builds four artifacts from ASQA:
 
@@ -153,6 +153,11 @@ ablations flip:
 | Variable | Default | Effect |
 |---|---|---|
 | `SLR_BRANCHES` | `bm25,dense` | retrieval branches |
-| `SLR_CONTROLLER` | `rule` | `model` puts an LLM call on every transcript chunk |
+| `SLR_CONTROLLER` | `rule` | `model` puts an LLM call on every transcript chunk; `batch` is the baseline (acts only when the speaker stops) |
+| `SLR_DECOMPOSE` | `true` | `false`: the whole utterance is one search (the baseline) |
+| `SLR_DECOMPOSE_MODEL` | `gpt-4.1` | model that splits an utterance and plans a refinement; the answer model is `SLR_LLM_MODEL` |
 | `SLR_QUOTA_PER_INTENT` | `2` | `0` removes the per-intent coverage guarantee |
 | `SLR_LLM` | `auto` | `offline` forces the deterministic arms |
+| `SLR_LLM_BREAKER_FAILURES` / `_COOLDOWN_S` | `3` / `30` | provider failures that open the model circuit, and for how long |
+| `SLR_OTEL_ENDPOINT` | unset | OTLP/HTTP collector; every turn is exported as spans |
+| `SLR_PRICE_<MODEL>` | built-in table | `in,out` USD per million tokens for one model |

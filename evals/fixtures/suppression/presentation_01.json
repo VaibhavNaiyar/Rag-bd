@@ -1,6 +1,6 @@
 {
   "id": "presentation_01",
-  "corpus": "demo",
+  "corpus": "enterprise",
   "description": "Guide example 3: re-present the previous answer as two bullets.",
   "turns": [
     {

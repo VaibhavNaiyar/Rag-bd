@@ -4,7 +4,7 @@ What to show, in what order, and what to say while it is on screen. Every claim 
 visible on screen at the moment it is made — nothing is asserted that the trace does not show.
 
 **Setup (before recording):** `docker compose up --build`, then open
-<http://localhost:8000/?demo=1>. The fixture bar appears; keys `1`–`4` replay fixtures. Have
+<http://localhost:8000/?replay=1>. The fixture bar appears; keys `1`–`4` replay fixtures. Have
 a second tab on <http://localhost:8000/trace?limit=1> for the raw record.
 
 ---
@@ -126,7 +126,7 @@ Show `docs/BENCHMARK_REPORT.md` scrolling past the gate table.
 
 ## Notes
 
-- Run the demo with an `OPENAI_API_KEY` set if you want the model-backed answers; without one
+- Record the video with an `OPENAI_API_KEY` set if you want the model-backed answers; without one
   the engine uses its deterministic offline arms, which are grounded but blunter in wording.
   Either way the behaviour being demonstrated — early retrieval, decomposition, refinement,
   suppression, grounding — is identical.

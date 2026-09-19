@@ -262,12 +262,14 @@ def gate_g5(result: RunResult) -> Gate:
             "mutated": len(answer.get("mutated", [])),
             "full_corpus_search": fusion.get("full_corpus_search"),
             "carried_from_session": fusion.get("carried_from_session", 0),
+            "parent_claims": (turn.trace.get("refinement") or {}).get("parent_claims"),
         }
         row["passed"] = bool(
             row["routed_as_refine"]
             and row["version"] == 2
             and row["parent"] == 1
-            and row["preserved"] > 0
+            # there is nothing to preserve when the parent answer verified no claims
+            and (row["preserved"] > 0 or row["parent_claims"] == 0)
             and row["full_corpus_search"] is False
         )
         rows.append(row)
@@ -281,7 +283,7 @@ def gate_g5(result: RunResult) -> Gate:
         bool(rows and len(passed) == len(rows)),
         {"refinement_turns": len(rows), "rows": rows},
         applicable=bool(rows),
-        note="" if rows else "this corpus has no late-detail fixtures; G5 is measured on the demo corpus",
+        note="" if rows else "this corpus has no late-detail fixtures; G5 is measured on the enterprise corpus",
     )
 
 

@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
-DEMO_CORPUS = ROOT / "evals" / "corpora" / "demo"
+ENTERPRISE_CORPUS = ROOT / "evals" / "corpora" / "enterprise"
 
 
 @pytest.fixture(scope="session")
@@ -32,7 +32,7 @@ def settings(tmp_path_factory):
             "SLR_RERANKER": "none",
             "SLR_VERIFIER": "lexical",
             "SLR_LLM": "offline",
-            "SLR_CORPUS_DIR": str(DEMO_CORPUS),
+            "SLR_CORPUS_DIR": str(ENTERPRISE_CORPUS),
             "SLR_INDEX_DIR": str(tmp / "index"),
             "SLR_TRACE_PATH": str(tmp / "trace.jsonl"),
             "SLR_CONTROLLER": "rule",
@@ -58,6 +58,12 @@ def engine(settings, index):
     from slr.stream.engine import Engine
 
     return Engine.from_settings(settings, index)
+
+
+@pytest.fixture
+def llm(engine, settings):
+    """Engine clone whose LLM is scripted per test (assign ``.model``)."""
+    return engine.with_settings(settings.with_overrides(llm="openai"))
 
 
 class FakeChatModel:
@@ -137,17 +143,12 @@ def blocks_in(prompt: str) -> list[tuple[str, str]]:
     """
     import re
 
-    head = re.compile(
+    block = re.compile(
         r"^(\[[A-Za-z0-9_.:-]+ §[^\]\n]{1,24}\])\n"
-        r"(?:source:[^\n]*\n)?(?:retrieved for:[^\n]*\n)?(.*)",
+        r"<document[^>\n]*>\n(?:source:[^\n]*\n)?(.*?)\n</document>",
         re.S | re.M,
     )
-    out = []
-    for block in prompt.split("\n---\n"):
-        m = head.search(block)
-        if m:
-            out.append((m.group(1), " ".join(m.group(2).split())))
-    return out
+    return [(m.group(1), " ".join(m.group(2).split())) for m in block.finditer(prompt)]
 
 
 def quote(prompt: str, index: int = 0, words: int = 18) -> tuple[str, str]:

@@ -51,13 +51,16 @@ seen. This is what stops "I need to plan a customer…" from searching on nothin
 must not touch the retriever. It requires all three of: a presentation phrase, an anaphoric
 reference to prior output, and no new content — where "new content" is measured on the text
 *outside* the presentation phrase, so the verb in "make that shorter" is not mistaken for a
-topic. Result: zero vector queries, prior citations retained.
+topic. Result: zero vector queries, prior citations retained. It applies whenever an answer
+was given, even one whose every claim was withheld: reformatting "nothing verified" is still
+not a reason to search.
 
 **Refinement.** A late constraint is routed to the refinement path rather than a fresh
-decomposition. Three bars by sentence form: a modifier cue on a statement needs only weak
-similarity to the previous request (a constraint often shares little vocabulary with what it
-narrows), a cue on a question needs more, and a bare new question is never a refinement
-however similar it looks.
+decomposition. Four bars by sentence form: a self-correction on a statement ("sorry, I meant
+the 2019 one") is decisive, because it can only narrow the previous request; a modifier cue on
+a statement needs only weak similarity to the previous request (a constraint often shares
+little vocabulary with what it narrows); a cue on a question needs more; and a bare new
+question is never a refinement however similar it looks, "sorry" or not.
 
 **Speculative retrieval with cancellation.** On `retrieve`, the search runs as an asyncio
 task. If a later chunk moves the topic away — measured on the words spoken *since* the
@@ -78,15 +81,22 @@ grammar-corrected, each carrying the shared context it needs ("Pune", "30 people
 alone. `span` records which part of the utterance produced it, so a claim can be traced back
 to the part of the request it answers.
 
-**The over-fragmentation guard** (guide pitfall #5) caps at four, merges any pair above 0.90
-cosine, and requires a single-intent utterance to return exactly one sub-query. Splitting
-"what is the cancellation policy" into three near-identical variants pollutes the reranker
-and burns tokens for nothing.
+Two kinds of split. A **compound** request bundles different needs ("the cancellation policy
+and the catering options"). An **ambiguous** question has several readings with different
+answers ("who played the Cubs in the World Series": which year?), and the prompt asks for one
+query per reading, naming the qualifier. Readings belong to questions about the wider world:
+a question about the organisation's own rules, prices or facilities has one reading, and the
+prompt says so, because the stronger decomposer otherwise invents "per night" versus "per
+stay" variants of one hotel limit. This one call runs on gpt-4.1 (`SLR_DECOMPOSE_MODEL`)
+while answers stay on gpt-4o-mini: it roughly doubled the ambiguous readings found, for about
+0.3 US cents a turn.
 
-That guard has a real cost, and the benchmark measures it rather than hiding it: ASQA's
-*ambiguous* questions are disambiguated into sub-questions that differ by one qualifier
-("men's" vs "women's"), which sit above the merge threshold and collapse into one query. The
-report scores compound utterances and ambiguous ones separately for exactly this reason.
+**The over-fragmentation guard** (guide pitfall #5) caps at four and merges duplicates: a pair
+at 0.95 cosine or above, or one query whose words are a subset of another's ("cancellation
+policy Pune" inside "cancellation policy workshop venue Pune"), keeping the more specific
+phrasing. It never merges two queries that name different numbers, because "2014 winner" and
+"2018 winner" are two readings, not a duplicate. A single-intent utterance returns exactly one
+sub-query.
 
 **The provisional query is reused, not discarded.** A decomposed sub-query that matches a
 provisional guess above 0.85 cosine takes its results directly; the rest are searched fresh,
@@ -134,6 +144,12 @@ they are guesses.
 
 ## 5. Stage 4 — grounded synthesis, and refinement
 
+**Retrieved text is untrusted.** Each evidence block reaches the model inside a
+`<document>` fence the prompts declare to be data, never instructions; a document cannot
+close its own fence, and text that addresses a model ("ignore previous instructions") is
+flagged and logged per turn. The cheapest real defence against a corpus document acting as
+an instruction channel, with the verifier behind it.
+
 **Generation is streamed, but the stream is released one validated sentence at a time.** For
 each completed sentence:
 
@@ -152,7 +168,21 @@ measures.
 One measured detail shaped this design: the NLI model scores a claim at 0.99 against the
 single sentence that entails it, and 0.02 against that same sentence with one unrelated
 sentence appended. Support is therefore scored over 1- and 2-sentence windows of the chunk,
-not the whole chunk, with a lexical floor for near-verbatim claims.
+not the whole chunk, with a lexical floor for near-verbatim claims. Each window is read with
+its page title and section in front of it: "The game takes place in Boston" supports
+"Fallout 4 takes place in Boston" only once the checker knows the page is about Fallout 4
+(0.004 → 0.993), while the same sentence naming the wrong game stays rejected.
+
+A sentence that only says the documents are silent ("the lead actor is not mentioned in the
+retrieved documents") is uncertainty, not a claim, and is routed there rather than failing
+verification and counting against support.
+
+**Resilience.** Every model step has an offline twin: the clause splitter, extractive
+synthesis, extractive refinement, offline regrouping. A circuit breaker opens after three
+consecutive provider-health failures (timeouts, 429s, 5xx; never a bad request), so while the
+provider is down a turn takes the offline path at once instead of waiting out a timeout per
+call. A stream that fails after text was shipped keeps that text and says it was cut short.
+Every fallback is recorded in the trace under `degraded`.
 
 **Refinement (stage 4b)** mutates claims instead of restarting:
 
@@ -166,6 +196,12 @@ not the whole chunk, with a lexical floor for near-verbatim claims.
    mention is kept: refinement never silently loses a fact. An `EDIT` that fails verification
    leaves the original claim standing.
 4. The result is version *n+1* with parent *n*, and explicit `preserved` / `mutated` lists.
+   This holds even when the previous answer verified nothing: the session still has its
+   evidence, so the detail narrows that search instead of restarting it.
+
+When a split request verifies none of its readings, the answer asks which was meant and
+offers the readings as choices: the guide's "request targeted clarification", and the reply
+is a refinement, not a new search.
 
 Session state is **ephemeral and scope-bound**: the store is constructed with its own id, no
 method accepts a caller-supplied one (enforced by a test), and it is cleared when the socket
@@ -173,7 +209,31 @@ closes. There is no cross-session profile to leak because none exists.
 
 ---
 
-## 6. Data provenance
+## 6. The wire and the telemetry
+
+**AG-UI out.** Everything the server sends is a standard [AG-UI](https://docs.ag-ui.com)
+event: a turn is a run, the four stages above are steps (`listen`, `plan`, `retrieve`,
+`synthesise`), each retrieval is a `corpus_search` tool call, each answer version a text
+message, and the trace is shared state (one snapshot, then JSON-Patch deltas). Token usage
+rides on `RUN_FINISHED`. The engine's own events are translated at one boundary
+(`slr/api/agui.py`), so what the gates measure is unchanged. The browser → server direction
+stays three small input messages, because AG-UI has no event for input that arrives while a
+run is already retrieving, and that is exactly what full-duplex needs. `POST /agui` serves
+any standard AG-UI client over SSE.
+
+**One trace record per turn** (G6): every decision, retrieval, sub-query, fused chunk,
+claim, version, latency and cost, as JSONL and at `GET /trace`. With `SLR_OTEL_ENDPOINT` set,
+each record is also exported as OpenTelemetry spans (a `turn` span with one child per stage)
+carrying ids, counts, timings and costs, never user or document text.
+
+**Measured against a baseline.** `make eval` replays every fixture a second time through a
+conventional batch RAG turn built from the same parts (`SLR_CONTROLLER=batch`,
+`SLR_DECOMPOSE=off`: wait for the end, one search, no suppression, no refinement), and the
+benchmark report puts the two side by side.
+
+---
+
+## 7. Data provenance
 
 - `doc_id = sha256(bytes)[:16]`, `chunk_id = f"{doc_id}_{i}"` — content-addressed, so
   re-ingesting rewrites in place instead of duplicating.
@@ -188,13 +248,16 @@ closes. There is no cross-session profile to leak because none exists.
 
 ---
 
-## 7. Trade-offs taken
+## 8. Trade-offs taken
 
 | Decision | Bought | Paid |
 |---|---|---|
 | Rule controller by default | ~20 ms and $0 per chunk; deterministic and inspectable | Hand-calibrated thresholds; a model arm exists for comparison |
 | Stability **or** clause completion as triggers | Short utterances still retrieve early | A closed clause fires on some incomplete thoughts |
-| Merge guard at 0.90 cosine | No near-duplicate sub-queries | Genuinely distinct near-duplicate intents collapse (measured on ASQA ambiguous) |
+| Merge guard: 0.95 cosine, word-subset, never across numbers | No restated needs, distinct readings kept | A paraphrase between 0.90 and 0.95 can survive as a second query |
+| gpt-4.1 for decomposition only | About twice the ambiguous readings found | ~0.3 US cents and ~1 s of TTFT per turn |
+| Evidence fenced as untrusted data | A document cannot steer the model | A few tokens per block; not a complete defence |
+| Circuit breaker + offline twins | A provider outage costs quality, not the turn | Offline answers are extractive, not written |
 | Sentence-level validation before streaming | Zero fabricated citations shipped | First token waits for the first sentence to be verified |
 | Per-intent quota | No starved sub-intent | Two slots that global ranking would have spent elsewhere |
 | MiniLM reranker on CPU | ~8x faster turns | Lower ranking quality than `bge-reranker-base` |
@@ -203,7 +266,7 @@ closes. There is no cross-session profile to leak because none exists.
 
 ---
 
-## 8. Failure modes and what mitigates them
+## 9. Failure modes and what mitigates them
 
 | Failure | Mitigation | Where it is visible |
 |---|---|---|
@@ -213,12 +276,14 @@ closes. There is no cross-session profile to leak because none exists.
 | Querying on presentation-only turns (pitfall 4) | suppression signal | `mode: suppress`, empty `retrieval` |
 | Over-fragmented sub-queries (pitfall 5) | merge + cap guard | `decomposition.merged`, `capped` |
 | Reranker unavailable or failing | degrade to fused order | `retrieval[].reranked: false` |
-| LLM unavailable | deterministic offline arms; suite still passes | `decomposition.method`, `models.llm` |
+| LLM unavailable or slow | circuit breaker, deterministic offline twins; suite still passes | `degraded`, `decomposition.method` |
+| A corpus document tries to instruct the model | `<document>` fence, instruction-like text flagged | `fusion.flagged_chunk_ids` |
+| Model states "not in the documents" as a fact | routed to uncertainty, not counted as a failed claim | `uncertainty[]` |
 | Corpus cannot answer part of the request | uncertainty instead of filler | `uncertainty[]` |
 
 ---
 
-## 9. What is deliberately not here
+## 10. What is deliberately not here
 
 No knowledge graph, no ontology layer, no multi-agent planner, no vector database service, no
 cross-session memory, no auth. Each would add latency and operational surface for a theme

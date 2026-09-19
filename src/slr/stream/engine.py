@@ -15,7 +15,7 @@ import copy
 import logging
 import time
 from collections.abc import AsyncIterator, Awaitable, Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from slr.config import Settings, get_settings
@@ -35,10 +35,11 @@ from slr.controller.base import (
     SessionView,
     UtteranceState,
 )
+from slr.controller.batch import BatchController
 from slr.controller.model import ModelController
 from slr.controller.rules import RuleController
 from slr.decompose.decomposer import decompose, heuristic_split
-from slr.llm import ChatModel, build_chat_model
+from slr.llm import ChatModel, build_chat_model, with_fallback
 from slr.retrieval.context import EvidencePackage, assemble
 from slr.retrieval.embed import Embedder
 from slr.retrieval.fusion import FusionOutcome, fuse, union_prior
@@ -57,6 +58,7 @@ from slr.synthesis.grounding import (
     load_nli,
 )
 from slr.telemetry.cost import UsageLedger
+from slr.telemetry.otel import OtelExporter
 from slr.telemetry.trace import TraceSink, new_record
 from slr.text import content_tokens
 
@@ -79,8 +81,10 @@ class Engine:
         verifier: Verifier,
         model: ChatModel | None,
         sink: TraceSink,
+        decomposer: ChatModel | None = None,
     ):
         self.s = settings
+        self._decomposer = decomposer
         self.index = index
         self.embedder: Embedder = index.embedder
         self.retriever = retriever
@@ -109,8 +113,24 @@ class Engine:
                     raise
                 log.warning("NLI verifier unavailable (%s); lexical support will be used", exc)
         model = build_chat_model(s)
-        sink = TraceSink(s.trace_path)
-        return cls(s, index, Retriever(index, reranker, s), verifier, model, sink)
+        decomposer = None
+        if model is not None and s.decompose_model and s.decompose_model != s.llm_model:
+            # Same provider, so the same circuit: an outage opens it for both.
+            decomposer = build_chat_model(s, s.decompose_model, breaker=getattr(model, "breaker", None))
+        sink = TraceSink(s.trace_path, exporter=OtelExporter.from_settings(s.otel_endpoint))
+        return cls(s, index, Retriever(index, reranker, s), verifier, model, sink, decomposer)
+
+    @property
+    def decomposer(self) -> ChatModel | None:
+        """The model that decomposes and plans refinements; the answer model unless one is configured."""
+        return self._decomposer if self._decomposer is not None and self.model is not None else self.model
+
+    async def aclose(self) -> None:
+        """Release the model clients of the running event loop (the models themselves stay loaded)."""
+        for model in {id(m): m for m in (self.model, self._decomposer) if m is not None}.values():
+            close = getattr(model, "aclose", None)
+            if close is not None:
+                await close()
 
     def with_settings(self, settings: Settings) -> "Engine":
         """Same loaded models, different knobs — used by the ablation harness."""
@@ -118,9 +138,12 @@ class Engine:
         clone.s = settings
         clone.retriever = Retriever(self.index, self.retriever.reranker if settings.reranker != "none" else None, settings)
         clone.model = self.model if settings.llm != "offline" else None
+        clone._decomposer = self._decomposer if settings.llm != "offline" else None
         return clone
 
     def controller(self, ledger: UsageLedger) -> Controller:
+        if self.s.controller == "batch":
+            return BatchController(self.embedder)
         if self.s.controller == "model":
             if self.model is None:
                 raise RuntimeError("SLR_CONTROLLER=model needs an LLM (set OPENAI_API_KEY)")
@@ -142,6 +165,7 @@ class Engine:
             "reranker": getattr(self.retriever.reranker, "name", "none"),
             "verifier": self.verifier.name,
             "llm": getattr(self.model, "name", "offline"),
+            "decomposer": getattr(self.decomposer, "name", "offline"),
             "controller": self.s.controller,
             "branches": ",".join(self.s.branches),
             "quota_per_intent": str(self.s.quota_per_intent),
@@ -413,7 +437,9 @@ class SessionRunner:
                 if not p.cancelled:
                     await self._cancel(turn, p, "presentation_only")
             await self._suppressed_turn(turn, final.reason)
-        elif final.decision == Decision.REFINE and self.store.has_answer:
+        elif final.decision == Decision.REFINE and self.store.topic is not None:
+            # Refine even when the last answer verified nothing: the session still holds
+            # its evidence, and a late detail narrows that search rather than restarting it.
             await self._refine_turn(turn)
         else:
             turn.record["mode"] = Decision.RETRIEVE.value
@@ -431,7 +457,7 @@ class SessionRunner:
         decomposition = await decompose(
             turn.state.prefix,
             turn_id=turn.id,
-            model=e.model,
+            model=e.decomposer,
             embedder=e.embedder,
             index=e.index,
             settings=s,
@@ -541,14 +567,28 @@ class SessionRunner:
 
         all_sq = [*decomposed, *(r.sub_query for r in extras)]
         evidence = assemble(fusion.hits, all_sq, s.context_char_budget)
+        self._record_flagged(turn, evidence)
         version, parent = 1, None
         grounder = self._grounder(turn, evidence, version, decomposed[0].id if decomposed else "")
+        def extractive():
+            return gen.extractive_answer(turn.state.prefix, decomposed, evidence, idf=e.index.idf)
+
         if e.model is not None:
-            stream = gen.llm_answer(e.model, turn.state.prefix, decomposed, evidence, turn.ledger, s)
+            stream = with_fallback(
+                gen.llm_answer(e.model, turn.state.prefix, decomposed, evidence, turn.ledger, s),
+                extractive,
+                self._degraded(turn, "synthesise", grounder),
+            )
         else:
-            stream = gen.extractive_answer(turn.state.prefix, decomposed, evidence, idf=e.index.idf)
+            stream = extractive()
         body = await self._stream_grounded(turn, stream, grounder, version)
         answer = self._version(grounder, body, version, parent, (), (), True)
+        readings = [sq.text for sq in decomposed if sq.source == "decomposed"]
+        if len(readings) >= 2 and not answer.claims:
+            # Several readings, none confirmed: ask which was meant rather than
+            # leave only "could not be verified". A reply ("sorry, I meant …")
+            # refines this answer instead of starting over.
+            answer = replace(answer, clarification=tuple(readings))
         await self._emit_version(turn, answer, grounder)
         self.store.commit(
             Topic(
@@ -575,7 +615,7 @@ class SessionRunner:
             previous=previous,
             previous_utterance=topic.utterance,
             sub_queries=list(topic.sub_queries),
-            model=e.model,
+            model=e.decomposer,
             embedder=e.embedder,
             ledger=turn.ledger,
             s=s,
@@ -633,16 +673,26 @@ class SessionRunner:
         refines = {sq.id: sq.reused_from for sq in plan.delta}
         all_sq = [*topic.sub_queries, *plan.delta]
         evidence = assemble(final_hits, all_sq, s.context_char_budget + 3000)
+        self._record_flagged(turn, evidence)
         version, parent = self.store.next_version()
         grounder = self._grounder(turn, evidence, version, plan.affected_sub_queries[0] if plan.affected_sub_queries else "")
 
         if e.model is not None:
-            stream = ref.llm_refine(e.model, detail, topic.utterance, previous, evidence, turn.ledger, s)
+            stream = with_fallback(
+                ref.llm_refine(e.model, detail, topic.utterance, previous, evidence, turn.ledger, s),
+                lambda: ref.extractive_refine(detail, previous, plan, evidence),
+                self._degraded(turn, "refine", grounder),
+            )
         else:
             stream = ref.extractive_refine(detail, previous, plan, evidence)
         body, preserved, mutated, dropped = await self._apply_refine_ops(turn, stream, grounder, previous, version, refines)
         answer = self._version(grounder, body, version, parent, tuple(preserved), tuple(mutated), False)
-        turn.record["refinement"] = {"preserved": preserved, "mutated": mutated, "dropped": dropped}
+        turn.record["refinement"] = {
+            "preserved": preserved,
+            "mutated": mutated,
+            "dropped": dropped,
+            "parent_claims": len(previous.claims),
+        }
         await self._emit_version(turn, answer, grounder)
         self.store.commit(
             Topic(
@@ -762,6 +812,12 @@ class SessionRunner:
         version, parent = self.store.next_version()
         grounder = self._grounder(turn, evidence, version, previous.claims[0].sub_query_id)
         stream = gen.restructure(e.model, turn.state.prefix, previous, turn.ledger, s)
+        if e.model is not None:
+            stream = with_fallback(
+                stream,
+                lambda: gen.restructure(None, turn.state.prefix, previous, turn.ledger, s),
+                self._degraded(turn, "restructure", grounder),
+            )
         body = await self._stream_grounded(turn, stream, grounder, version)
         # A restructured claim citing the same chunks as a prior claim is that claim, carried over.
         prior = {c.chunk_ids: c for c in previous.claims}
@@ -837,6 +893,25 @@ class SessionRunner:
         pieces = [p for p in _split_tokens(text) if p]
         for p in pieces:
             await self.emit({"type": "answer.token", "turnId": turn.id, "version": version, "text": p})
+
+    @staticmethod
+    def _degraded(turn: ActiveTurn, step: str, grounder: Grounder):
+        """Record a model step that fell back to its offline strategy, in the trace and, if it cut the answer, to the reader."""
+
+        def on_failure(exc: BaseException, wrote: bool) -> None:
+            turn.record.setdefault("degraded", []).append(
+                {"step": step, "reason": type(exc).__name__, "after_text": wrote}
+            )
+            if wrote:
+                grounder.uncertainty.append("The answer was cut short: the language model stopped responding.")
+
+        return on_failure
+
+    @staticmethod
+    def _record_flagged(turn: ActiveTurn, evidence: EvidencePackage) -> None:
+        """Which retrieved text read like an instruction to the model: fenced, labelled and logged."""
+        if turn.record.get("fusion") is not None:
+            turn.record["fusion"]["flagged_chunk_ids"] = list(evidence.flagged)
 
     async def _stream_grounded(
         self, turn: ActiveTurn, stream: AsyncIterator[str], grounder: Grounder, version: int
@@ -926,6 +1001,7 @@ class SessionRunner:
                 "uncertainty": list(answer.uncertainty),
                 "citationSupportRate": answer.citation_support_rate,
                 "fabricatedCitations": answer.fabricated_citations,
+                **({"clarification": list(answer.clarification)} if answer.clarification else {}),
             }
         )
 
@@ -1041,4 +1117,5 @@ def _answer_record(answer: AnswerVersion) -> dict[str, Any]:
         "full_corpus_search": answer.full_corpus_search,
         "claim_count": len(answer.claims),
         "word_count": len(content_tokens(answer.body)),
+        "clarification": list(answer.clarification),
     }

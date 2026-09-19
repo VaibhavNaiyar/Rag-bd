@@ -1,12 +1,12 @@
 """FastAPI surface.
 
-* ``WS  /stream``  — the demo path: transcript chunks in, AG-UI events out
+* ``WS  /stream``  — the live path: transcript chunks in, AG-UI events out
 * ``POST /agui``   — AG-UI over SSE for any standard AG-UI client: the last user
   message is spoken as one turn (earlier user messages replay as earlier turns)
 * ``POST /query``  — testing / Swagger only; streams the text as chunks internally
 * ``GET  /health`` — readiness, corpus and model identity
 * ``GET  /trace``  — recent per-turn trace records (``/trace/{turn_id}`` for one)
-* ``GET  /fixtures`` — replayable fixture names
+* ``GET  /fixtures`` — the replayable test cases for the corpus being served
 
 The built console (Next.js static export) is mounted last so it can never
 shadow an API route.
@@ -24,6 +24,7 @@ from typing import Any
 from ag_ui.core import BaseEvent, RunAgentInput, RunErrorEvent
 from ag_ui.encoder import EventEncoder
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
@@ -33,7 +34,7 @@ from slr.api.agui import AgUiTranslator, wire
 from slr.config import get_settings
 from slr.contracts import CLIENT_EVENTS
 from slr.stream.engine import Engine, SessionRunner
-from slr.stream.simulator import chunk_utterance, list_fixtures
+from slr.stream.simulator import chunk_utterance, describe_fixtures
 
 log = logging.getLogger("slr.api")
 STATE: dict[str, Any] = {}
@@ -62,6 +63,7 @@ async def lifespan(app: FastAPI):
     await asyncio.to_thread(engine.verifier.support, "warm up", ["warm up text"])
     log.info("engine ready: %s", engine.models_info())
     yield
+    await engine.aclose()
     STATE.clear()
 
 
@@ -72,6 +74,8 @@ def _warm_query():
 
 
 app = FastAPI(title="Streaming Live RAG", version=__version__, lifespan=lifespan)
+# The console dev server (npm run dev on :3000) reads /fixtures and /health cross-origin.
+app.add_middleware(CORSMiddleware, allow_origins=list(get_settings().cors_origins), allow_methods=["GET", "POST"])
 
 
 class QueryIn(BaseModel):
@@ -96,8 +100,13 @@ async def health() -> dict[str, Any]:
 
 
 @app.get("/fixtures")
-async def fixtures() -> dict[str, list[str]]:
-    return {"fixtures": sorted(list_fixtures(get_settings().fixtures_dir))}
+async def fixtures() -> dict[str, Any]:
+    """The replayable test cases for the corpus being served, with what each one says."""
+    settings = get_settings()
+    return {
+        "corpus": settings.fixture_corpus,
+        "fixtures": describe_fixtures(settings.fixtures_dir, settings.fixture_corpus),
+    }
 
 
 @app.get("/trace")
@@ -116,7 +125,7 @@ async def trace(turn_id: str, session_id: str | None = None) -> dict[str, Any]:
 
 @app.post("/query")
 async def query(body: QueryIn) -> dict[str, Any]:
-    """Runs the full streaming path in-process. Not the demo path — the WebSocket is."""
+    """Runs the full streaming path in-process. Not the live path — the WebSocket is."""
     engine = _engine()
     events: list[dict[str, Any]] = []
 

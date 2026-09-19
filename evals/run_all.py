@@ -1,7 +1,7 @@
 """The whole benchmark, unattended.
 
     python -m evals.run_all              # gates on both dev corpora + ablations
-    python -m evals.run_all --quick      # demo corpus only, no ablations
+    python -m evals.run_all --quick      # enterprise corpus only, no ablations
     python -m evals.run_all --no-ablations
 
 Writes evals/results/latest.json and docs/BENCHMARK_REPORT.md.
@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from evals import report as report_mod
-from evals.ablations import run_ablations
+from evals.ablations import compare_baseline, run_ablations
 from evals.gates import all_gates, latency_and_cost
 from evals.harness import (
     build_engine,
@@ -32,7 +32,7 @@ from slr.config import get_settings, reset_settings
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "evals" / "results"
 
-DEMO_FAMILIES = ["compound", "late_detail", "suppression", "single", "unanswerable"]
+ENTERPRISE_FAMILIES = ["compound", "late_detail", "suppression", "single", "unanswerable"]
 ASQA_FAMILIES = ["compound", "late_detail", "suppression", "single"]
 
 
@@ -143,7 +143,7 @@ def edge_cases(runs: dict[str, Any]) -> list[dict[str, Any]]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--quick", action="store_true", help="demo corpus only, no ablations")
+    parser.add_argument("--quick", action="store_true", help="enterprise corpus only, no ablations")
     parser.add_argument("--no-ablations", action="store_true")
     parser.add_argument(
         "--speed",
@@ -161,8 +161,8 @@ def main() -> None:
     get_settings()
     steps: dict[str, Any] = {"manual_steps": [], "command": "make eval"}
 
-    corpora = ["demo"] if args.quick else ["demo", "asqa"]
-    runs, gates, indexes = {}, {}, {}
+    corpora = ["enterprise"] if args.quick else ["enterprise", "asqa"]
+    runs, gates, indexes, played = {}, {}, {}, {}
     for corpus in corpora:
         if corpus == "asqa":
             steps.update(ensure_asqa_corpus())
@@ -172,12 +172,13 @@ def main() -> None:
         steps[f"index_{corpus}"] = "reused" if existed else "built by the harness"
         engine = build_engine(settings)
         indexes[corpus] = engine.index
-        families = DEMO_FAMILIES if corpus == "demo" else ASQA_FAMILIES
+        families = ENTERPRISE_FAMILIES if corpus == "enterprise" else ASQA_FAMILIES
         fixtures = load_fixtures(corpus, families)
         if not fixtures:
             steps["manual_steps"].append(f"no fixtures for corpus {corpus}")
             continue
         print(f"[eval] {corpus}: {len(fixtures)} fixtures", flush=True)
+        played[corpus] = (settings, fixtures)
         runs[corpus] = run(engine, fixtures, args.speed)
         print(f"[eval] {corpus}: {len(runs[corpus].turns)} turns in {runs[corpus].seconds:.0f}s", flush=True)
 
@@ -188,11 +189,16 @@ def main() -> None:
         index = indexes[corpus]
         gates[corpus] = [g.as_dict() for g in all_gates(result, index, index.embedder, steps)]
 
+    baseline: dict[str, Any] = {}
+    for corpus, (settings, fixtures) in played.items():
+        print(f"[eval] baseline pipeline: {corpus}", flush=True)
+        baseline[corpus] = compare_baseline(runs[corpus], settings, fixtures, indexes[corpus], args.speed)
+
     ablations: list[dict[str, Any]] = []
     if not args.quick and not args.no_ablations:
         print("[eval] ablations", flush=True)
         asqa = settings_for("asqa")
-        fixtures = load_fixtures("asqa", ["compound"]) + load_fixtures("demo", ["compound"])
+        fixtures = load_fixtures("asqa", ["compound"]) + load_fixtures("enterprise", ["compound"])
         ablations = run_ablations(
             asqa, fixtures, indexes["asqa"], args.speed, has_llm=bool(os.environ.get("OPENAI_API_KEY"))
         )
@@ -208,6 +214,7 @@ def main() -> None:
         },
         "gates": gates,
         "performance": {c: latency_and_cost(r) for c, r in runs.items()},
+        "baseline": baseline,
         "ablations": ablations,
         "edge_cases": edge_cases(runs),
         "corpora": {

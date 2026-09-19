@@ -144,7 +144,31 @@ providers report cumulative totals on the final chunk, and summing double-counts
 
 Local inference is priced by CPU time (`SLR_CPU_USD_PER_HOUR`) rather than reported as free,
 so cost-per-turn does not flatter itself by ignoring the embedder, the reranker and the
-verifier. Token prices are `SLR_PRICE_IN_PER_M` / `SLR_PRICE_OUT_PER_M`.
+verifier. Model tokens are priced per model (`MODEL_RATES`, or `SLR_PRICE_<MODEL>=in,out`);
+a model not listed is priced at `SLR_PRICE_IN_PER_M` / `SLR_PRICE_OUT_PER_M`. The turn's
+tokens per model are also in `cost.models`, and ride on AG-UI's `RUN_FINISHED.usage`.
+
+### Clarification
+
+`answer.clarification`: the readings offered back to the user when the request was split
+into several and none could be verified (empty otherwise). It rides on the version in AG-UI
+shared state, `/turns/<id>/versions/<n>/clarification`.
+
+### Degraded steps and flagged evidence
+
+`degraded`: `[{step, reason, after_text}]` for every model step that fell back to its offline
+strategy (circuit open, timeout, provider error). `fusion.flagged_chunk_ids`: retrieved
+chunks whose text reads like an instruction to a model; they were fenced and labelled, never
+followed.
+
+### OpenTelemetry
+
+With `SLR_OTEL_ENDPOINT` set (`docker compose --profile observability up` runs a collector at
+`http://otel:4318`), every trace record is also exported as spans: `turn` →
+`listen` (events: decisions) · `plan` · `retrieve` (events: searches) · `synthesise` (event:
+first_token). Attributes are `slr.*` scalars: mode, searches, sub-queries, claims,
+support rate, fabricated citations, lead, TTFT, cost, tokens, flagged chunks, degraded
+steps. No user or document text is exported.
 
 ---
 
