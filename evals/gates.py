@@ -15,8 +15,8 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 
 from evals.harness import RunResult, TurnRun
-from slr.retrieval.embed import Embedder
 from slr.contracts import Hit
+from slr.retrieval.embed import Embedder
 from slr.retrieval.store import Index
 from slr.synthesis.grounding import CANDIDATE_MARKER, Verifier, _subject
 from slr.telemetry.trace import missing_fields

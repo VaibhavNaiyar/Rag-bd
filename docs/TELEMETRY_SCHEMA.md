@@ -37,6 +37,7 @@ fields that cannot apply are `null` rather than absent.
 | `before_utterance_end` | bool\|null | **the G2 fact**: did retrieval begin before the speaker finished |
 | `sub_queries` | `[{id, text, source, span, confidence, reused_from}]` | provisional and decomposed queries |
 | `decomposition` | object\|null | `method` (`llm`/`heuristic`/`heuristic_fallback`/`refine_*`), the raw model output, `merged`, `capped`, `ms`; on a refine turn also `affected_claims` and `claim_similarity` |
+| `speculation` | object (optional) | present when the answer was started from the mid-utterance search before decomposition returned: `reused` (that search's sub-query id), `kept`, `reason` (`one_reading`, `rephrased`, `several_readings`, `failed`), `cos` |
 | `retrieval` | `[{sub_query_id, candidates, branch_counts, kept[], reranked, reused, ms}]` | per sub-query: how many candidates each branch returned and which chunks survived the margin cut |
 | `fusion` | object\|null | `final_count`, `quota_applied`, `quota_promoted`, `per_sub_query`, `full_corpus_search`, `carried_from_session`, `chunk_ids` |
 | `answer` | object | `version`, `parent`, `body`, `claims[]`, `preserved[]`, `mutated[]`, `full_corpus_search`, and a `grounding` block |

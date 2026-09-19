@@ -122,6 +122,11 @@ class Settings:
     # --- decomposition ---------------------------------------------------
     #: off = one search for the whole utterance, the baseline pipeline
     decompose: bool = True
+    #: At the end of speech, search the whole utterance and start the answer while
+    #: the decomposer runs; keep it when the decomposer finds one reading that
+    #: means the same thing (``reuse_cos``). Takes the decomposer off the path to
+    #: the first word for single-reading turns.
+    speculate: bool = True
     max_subqueries: int = 4
     #: two sub-queries this similar are one need asked twice. 0.95, not lower:
     #: distinct readings of one question ('all-time' vs 'single season') sit at

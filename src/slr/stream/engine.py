@@ -190,6 +190,26 @@ class Provisional:
 
 
 @dataclass
+class SpeculativeAnswer:
+    """The early search's evidence, fused, and the answer model already writing from it."""
+
+    result: SubQueryResult
+    provisional: list[SubQueryResult]
+    fusion: FusionOutcome
+    evidence: EvidencePackage
+    deltas: asyncio.Queue
+    producer: asyncio.Task
+
+
+@dataclass
+class Speculation:
+    sub_query: SubQuery
+    started_ms: int
+    task: asyncio.Task | None = None
+    dropped: bool = False
+
+
+@dataclass
 class ActiveTurn:
     id: str
     t0: float
@@ -454,6 +474,7 @@ class SessionRunner:
         e, s = self.engine, self.engine.s
         topic = self.store.topic
         context = topic.utterance if topic else ""
+        spec = await self._speculate(turn) if e.model is not None and s.speculate and s.decompose else None
         decomposition = await decompose(
             turn.state.prefix,
             turn_id=turn.id,
@@ -473,6 +494,54 @@ class SessionRunner:
         }
         decomposed = decomposition.items
 
+        gathered = await self._settle_speculation(turn, spec, decomposed) if spec is not None else None
+        prefetched: asyncio.Queue | None = None
+        if gathered is not None:
+            fusion, evidence, prefetched = gathered
+        else:
+            fusion, evidence = await self._gather(turn, decomposed)
+        version, parent = 1, None
+        grounder = self._grounder(turn, evidence, version, decomposed[0].id if decomposed else "")
+        def extractive():
+            return gen.extractive_answer(turn.state.prefix, decomposed, evidence, idf=e.index.idf)
+
+        if e.model is not None:
+            source = (
+                _drain(prefetched)
+                if prefetched is not None
+                else gen.llm_answer(e.model, turn.state.prefix, decomposed, evidence, turn.ledger, s)
+            )
+            stream = with_fallback(
+                source,
+                extractive,
+                self._degraded(turn, "synthesise", grounder),
+            )
+        else:
+            stream = extractive()
+        body = await self._stream_grounded(turn, stream, grounder, version)
+        answer = self._version(grounder, body, version, parent, (), (), True)
+        readings = [sq.text for sq in decomposed if sq.source == "decomposed"]
+        if len(readings) >= 2 and not answer.claims:
+            # Several readings, none confirmed: ask which was meant rather than
+            # leave only "could not be verified". A reply ("sorry, I meant …")
+            # refines this answer instead of starting over.
+            answer = replace(answer, clarification=tuple(readings))
+        await self._emit_version(turn, answer, grounder)
+        self.store.commit(
+            Topic(
+                utterance=turn.state.prefix,
+                utterance_vec=turn.state.vecs[-1] if turn.state.vecs else None,
+                sub_queries=tuple(decomposed),
+                hits=tuple(evidence.hits),
+                answer=answer,
+            )
+        )
+        await self._complete(turn)
+
+
+    async def _gather(self, turn: ActiveTurn, decomposed: list[SubQuery]) -> tuple[FusionOutcome, EvidencePackage]:
+        """Search every decomposed sub-query (reusing a provisional search where one matches), then fuse."""
+        e, s = self.engine, self.engine.s
         # Reuse is decided on the *queries*, which are known now, so the fresh
         # searches can start while the provisional ones are still running. That
         # overlap is what turns early retrieval into a latency win.
@@ -568,38 +637,131 @@ class SessionRunner:
         all_sq = [*decomposed, *(r.sub_query for r in extras)]
         evidence = assemble(fusion.hits, all_sq, s.context_char_budget)
         self._record_flagged(turn, evidence)
-        version, parent = 1, None
-        grounder = self._grounder(turn, evidence, version, decomposed[0].id if decomposed else "")
-        def extractive():
-            return gen.extractive_answer(turn.state.prefix, decomposed, evidence, idf=e.index.idf)
+        return fusion, evidence
 
-        if e.model is not None:
-            stream = with_fallback(
-                gen.llm_answer(e.model, turn.state.prefix, decomposed, evidence, turn.ledger, s),
-                extractive,
-                self._degraded(turn, "synthesise", grounder),
-            )
-        else:
-            stream = extractive()
-        body = await self._stream_grounded(turn, stream, grounder, version)
-        answer = self._version(grounder, body, version, parent, (), (), True)
-        readings = [sq.text for sq in decomposed if sq.source == "decomposed"]
-        if len(readings) >= 2 and not answer.claims:
-            # Several readings, none confirmed: ask which was meant rather than
-            # leave only "could not be verified". A reply ("sorry, I meant …")
-            # refines this answer instead of starting over.
-            answer = replace(answer, clarification=tuple(readings))
-        await self._emit_version(turn, answer, grounder)
-        self.store.commit(
-            Topic(
-                utterance=turn.state.prefix,
-                utterance_vec=turn.state.vecs[-1] if turn.state.vecs else None,
-                sub_queries=tuple(decomposed),
-                hits=tuple(evidence.hits),
-                answer=answer,
-            )
+    # ------------------------------------------------------- speculation
+
+    async def _speculate(self, turn: ActiveTurn) -> Speculation | None:
+        """Start the answer from the search that began while the user was speaking, while the
+        decomposer works out whether the utterance hides several needs.
+
+        When the decomposer then returns one reading close enough to that search's query to
+        reuse it (``reuse_cos``, the rule the normal path applies), the normal path would
+        answer from exactly this evidence, so the answer already being written is kept and
+        the decomposer's second or so is off the path to the first word."""
+        live = turn.live_provisional
+        if live is None:
+            return None
+        spec = Speculation(live.sub_query, turn.ms())
+        spec.task = asyncio.create_task(self._speculative_answer(turn, spec))
+        # A dropped speculation may still fail on its own; that outcome is nobody's to handle.
+        spec.task.add_done_callback(lambda t: t.cancelled() or t.exception())
+        return spec
+
+    async def _speculative_answer(self, turn: ActiveTurn, spec: Speculation) -> SpeculativeAnswer:
+        e, s = self.engine, self.engine.s
+        provisional = await self._provisional_results(turn)
+        main = next((r for r in provisional if r.sub_query.id == spec.sub_query.id), None)
+        if main is None:
+            raise LookupError("the provisional search failed")
+        extras = [r for r in provisional if r is not main]
+        fusion = fuse([main], s.top_k, s.quota_per_intent, extras)
+        evidence = assemble(fusion.hits, [r.sub_query for r in provisional], s.context_char_budget)
+        if spec.dropped:
+            raise asyncio.CancelledError
+        # The provisional query was cut from a prefix; the question is the whole utterance.
+        question = SubQuery(id=spec.sub_query.id, text=turn.state.prefix, source="provisional")
+        deltas: asyncio.Queue = asyncio.Queue()
+
+        async def produce() -> None:
+            try:
+                async for delta in gen.llm_answer(e.model, turn.state.prefix, [question], evidence, turn.ledger, s):
+                    deltas.put_nowait(delta)
+            except Exception as exc:  # handed to the reader, whose fallback decides what to do
+                deltas.put_nowait(exc)
+            else:
+                deltas.put_nowait(None)
+
+        return SpeculativeAnswer(main, provisional, fusion, evidence, deltas, asyncio.create_task(produce()))
+
+    async def _settle_speculation(
+        self, turn: ActiveTurn, spec: Speculation, decomposed: list[SubQuery]
+    ) -> tuple[FusionOutcome, EvidencePackage, asyncio.Queue] | None:
+        """Keep the speculative answer if the decomposer found one reading that reuses the same
+        search; otherwise drop it and let the sub-queries run. None means dropped."""
+        e, s = self.engine, self.engine.s
+        cos = None
+        if len(decomposed) == 1:
+            vecs = e.embedder.embed([decomposed[0].text, spec.sub_query.text], kind="query")
+            cos = float(vecs[0] @ vecs[1])
+        keep = cos is not None and cos >= s.reuse_cos
+        reason = "one_reading" if keep else ("rephrased" if cos is not None else "several_readings")
+        record: dict[str, Any] = {"reused": spec.sub_query.id, "kept": keep, "reason": reason, "cos": cos}
+        turn.record["speculation"] = record
+        answer: SpeculativeAnswer | None = None
+        if keep:
+            try:
+                answer = await spec.task  # type: ignore[misc]
+            except Exception as exc:
+                turn.record["errors"].append(f"speculation: {type(exc).__name__}")
+                record.update(kept=False, reason="failed")
+        if answer is None:
+            self._drop_speculation(spec)
+            return None
+
+        sq = decomposed[0]
+        sq.reused_from = spec.sub_query.id
+        reused = SubQueryResult(
+            sub_query=sq,
+            candidates=answer.result.candidates,
+            kept=[Hit(h.chunk, h.score, list(h.branches), [sq.id], h.rrf) for h in answer.result.kept],
+            branch_counts=answer.result.branch_counts,
+            reranked=answer.result.reranked,
         )
-        await self._complete(turn)
+        items = [{"id": r.sub_query.id, "text": r.sub_query.text, "source": "provisional"} for r in answer.provisional]
+        items.append({"id": sq.id, "text": sq.text, "source": "decomposed"})
+        await self.emit({"type": "subqueries", "turnId": turn.id, "items": items})
+        for r, was_reused in [*((r, False) for r in answer.provisional), (reused, True)]:
+            await self.emit(
+                {
+                    "type": "retrieval.result",
+                    "turnId": turn.id,
+                    "subQueryId": r.sub_query.id,
+                    "candidates": r.candidates,
+                    "kept": [h.to_wire() for h in r.kept],
+                    "reused": was_reused,
+                }
+            )
+        turn.record["sub_queries"] = [
+            {
+                "id": q.id,
+                "text": q.text,
+                "source": q.source,
+                "span": q.span,
+                "confidence": q.confidence,
+                "reused_from": q.reused_from,
+            }
+            for q in [*(r.sub_query for r in answer.provisional), sq]
+        ]
+        turn.record["retrieval"] = [
+            *(_result_record(r, False) for r in answer.provisional),
+            _result_record(reused, True),
+        ]
+        await self._emit_fusion(turn, answer.fusion.hits, answer.fusion.quota_applied, True, answer.fusion)
+        self._record_flagged(turn, answer.evidence)
+        return answer.fusion, answer.evidence, answer.deltas
+
+    @staticmethod
+    def _drop_speculation(spec: Speculation) -> None:
+        """Stop the speculative answer. The provisional search itself stays: the normal path reuses it."""
+        spec.dropped = True
+        task = spec.task
+        if task is None:
+            return
+        if not task.done():
+            task.cancel()
+        elif not task.cancelled() and task.exception() is None:
+            task.result().producer.cancel()
 
     # --------------------------------------------------------- refine path
 
@@ -1120,3 +1282,11 @@ def _answer_record(answer: AnswerVersion) -> dict[str, Any]:
         "word_count": len(content_tokens(answer.body)),
         "clarification": list(answer.clarification),
     }
+
+
+async def _drain(deltas: asyncio.Queue) -> AsyncIterator[str]:
+    """Read a speculative answer's deltas as the stream they came from; a model error re-raises here."""
+    while (item := await deltas.get()) is not None:
+        if isinstance(item, BaseException):
+            raise item
+        yield item

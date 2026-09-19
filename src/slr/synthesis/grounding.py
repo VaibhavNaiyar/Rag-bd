@@ -28,7 +28,8 @@ from typing import Protocol
 
 from slr.contracts import Claim, Hit
 from slr.retrieval.context import EvidencePackage
-from slr.text import containment, content_tokens, sentences
+from slr.retrieval.rerank import predict_by_length
+from slr.text import containment, content_tokens, heading_subject, sentences
 
 log = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class NliVerifier:
         """``contexts[i]`` names what source ``i`` is about (its page title and section), put in
         front of every window so "the game" or "it" in a single sentence resolves to its subject."""
         ctx = contexts or [""] * len(sources)
-        # "However, the tournament was established in 1891" asserts what the bare
+        # "However, the venue opened in 2004" asserts what the bare
         # clause asserts; the connective only links it to the previous sentence.
         claim = CONNECTIVE.sub("", claim, count=1) or claim
         out: list[float | None] = [self._cache.get((claim, c, s)) for c, s in zip(ctx, sources)]
@@ -132,7 +133,7 @@ class NliVerifier:
                     pairs.append((f"{ctx[i]}: {w}" if ctx[i] else w, claim))
                     owner.append(i)
             with self._lock:
-                probs = self._model.predict(pairs, apply_softmax=True, batch_size=32, show_progress_bar=False)
+                probs = predict_by_length(self._model, pairs, batch_size=32, apply_softmax=True)
             best: dict[int, float] = {}
             for i, p in zip(owner, probs):
                 best[i] = max(best.get(i, 0.0), float(p[self._entail]))
@@ -367,10 +368,6 @@ def _sub_query_of(hits: list[Hit], default: str) -> str:
     return max(counts, key=lambda k: (counts[k], k == default))
 
 
-_SECTION_LABEL = re.compile(r"^(?:passage|section|part|page)\s*\d+$", re.I)
-
-
 def _subject(hit: Hit) -> str:
     """What a chunk is about, from its heading trail: page title and named sections, not numbers."""
-    parts = [p.strip() for p in hit.chunk.heading.split("›")]
-    return ", ".join(p for p in parts if p and not _SECTION_LABEL.match(p))
+    return heading_subject(hit.chunk.heading)

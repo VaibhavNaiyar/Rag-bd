@@ -90,3 +90,12 @@ def containment(claim: str, source: str) -> float:
         return 0.0
     s = set(content_tokens(source))
     return len(c & s) / len(c)
+
+
+_SECTION_LABEL = re.compile(r"^(?:passage|section|part|page)\s*\d+$", re.I)
+
+
+def heading_subject(heading: str) -> str:
+    """What a chunk is about, from its heading trail: page title and named sections, not numbers."""
+    parts = [p.strip() for p in heading.split("›")]
+    return ", ".join(p for p in parts if p and not _SECTION_LABEL.match(p))

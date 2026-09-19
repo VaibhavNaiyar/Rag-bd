@@ -23,9 +23,26 @@ from slr.retrieval.context import EvidencePackage
 from slr.telemetry.cost import UsageLedger
 from slr.text import REQUEST_WORDS, content_tokens, sentences
 
+#: a number or year in a sub-question ("2001", "30", "1,500")
+_NUMBER = re.compile(r"\b\d(?:[\d,.]*\d)?\b")
 
-def format_sub_queries(sub_queries: list[SubQuery]) -> str:
-    return "\n".join(f"{i}. ({sq.id}) {sq.text}" for i, sq in enumerate(sub_queries, start=1))
+
+def missing_numbers(sub_query: SubQuery, evidence: EvidencePackage) -> list[str]:
+    """Numbers the sub-question hinges on that no retrieved block contains.
+
+    "Venue capacity for the 2031 offsite" against evidence that never says 2031
+    cannot be answered from it, whatever the model happens to remember.
+    """
+    return [n for n in dict.fromkeys(_NUMBER.findall(sub_query.text)) if n not in evidence.text]
+
+
+def format_sub_queries(sub_queries: list[SubQuery], evidence: EvidencePackage | None = None) -> str:
+    lines = []
+    for i, sq in enumerate(sub_queries, start=1):
+        gap = missing_numbers(sq, evidence) if evidence is not None else []
+        note = f" (no retrieved block mentions {', '.join(gap)})" if gap else ""
+        lines.append(f"{i}. ({sq.id}) {sq.text}{note}")
+    return "\n".join(lines)
 
 
 async def llm_answer(
@@ -40,7 +57,7 @@ async def llm_answer(
         s.prompts_dir,
         "synthesise",
         utterance=utterance,
-        sub_queries=format_sub_queries(sub_queries),
+        sub_queries=format_sub_queries(sub_queries, evidence),
         evidence=evidence.text or "(no evidence was retrieved)",
     )
     async for delta in model.stream(system, user, ledger=ledger, step="synthesise", max_tokens=700):

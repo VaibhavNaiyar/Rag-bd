@@ -270,3 +270,95 @@ were wrong (a bare "2", and a World Cup claim matched to a sentence about a play
 would add a model load and a second pass to every rejected sentence. The remaining withheld
 sentences are the answer model stating what it knows rather than what the passages say;
 withholding them is the gate doing its job.
+
+### D25 — Start the answer from the mid-utterance search while the decomposer runs
+
+The benchmark put the streaming pipeline's time to first token about 1.7 s behind the
+batch baseline. The traces showed where it went: after the end of speech a turn waited on
+the decomposer (a gpt-4.1 call, median about 1.2 s) before the answer model was even asked.
+The search itself was already done: the decomposed query almost always reuses the search
+that started while the user was still speaking, so "retrieve" costs about 0 ms after the end.
+
+So at the end of speech the engine now starts the answer from that search's evidence, with
+the utterance as spoken as the question, while the decomposer runs. When the decomposer
+returns one reading close enough to that search's query for the normal path to reuse it
+(`SLR_REUSE_COS`, the same rule), the normal path would have answered from exactly this
+evidence, and the answer already under way is kept. With several readings, or a rephrasing
+that no longer matches, the speculative answer is cancelled and each reading is searched and
+answered as before. Nothing reaches the user before the decomposer has decided, so the answer
+never addresses a question the decomposer then splits.
+
+A first version searched the whole utterance afresh at the end instead of reusing the
+mid-utterance search. It was slower than no speculation (median 3.8 s against 2.5 s on 16
+turns): a full rerank on CPU takes 2–4 s, longer than the decomposer it was meant to hide.
+
+Measured on the 20 ASQA single-reading questions, each played twice with and twice without,
+interleaved: median time to first validated token 1.88 s with, 2.57 s without; p90 4.4 s
+against 5.3 s. A dropped speculation still costs its prompt tokens, and they are billed: a
+stream stopped before the provider's usage report is charged an estimate (characters / 4)
+rather than nothing.
+
+A faster decomposer was also measured and rejected: gpt-4.1-mini was no faster in practice
+(median 1.18 s against 1.23 s) and isolated two or more readings in 8 of 40 ASQA ambiguous
+questions against 22 for gpt-4.1.
+
+### D26 — What did not move G3 on ASQA
+
+ASQA's ambiguous questions sit near 55% against the 70% bar. Every change was measured by
+running only the decomposer over all 64 labelled utterances (enterprise and ASQA), scored
+with the G3 matcher, before spending a benchmark run on it:
+
+| Variant | ASQA compound, ≥2 readings | kept single (ASQA / enterprise) |
+|---|---|---|
+| current prompt | 22/40 | 19–20/20, 3/4 |
+| more reading cues (who: person or party; change over time; breakdown by category) | 23/40 | 18/20, 3/4 |
+| plus "several true answers at once" and "split on the line that changes the answer" | 23/40 | 17/20, 3/4 |
+| plus the page titles the mid-utterance search had already found | 21/40 | 18/20, 2/4 |
+| gpt-5-mini, minimal reasoning | 25/40 | 12/20, 0/4 (and 3.4 s a call) |
+
+None beat the current prompt by more than run-to-run noise, and each cost single questions
+that must stay single (pitfall #5), so the prompt is unchanged. Most remaining misses are
+splits the decomposer does make along a different line than ASQA's annotators (a character
+and its revival series, where ASQA wants the character and the actor), or facets the
+annotators chose that the question does not signal ("how did the US buy it" alongside "from
+whom"). The matcher threshold was not touched. An early draft put two ASQA questions into the
+prompt as examples; they were replaced before any number was taken, because a fixture in the
+prompt measures memory, not decomposition.
+
+### D27 — Cross-encoder batches sorted by length
+
+After D25 the slow turns were the ones with several readings: a fresh search per reading
+after the decomposer, taking 2–3 s, although the same search timed alone took 0.1 s. That
+figure was the reranker's cache answering; an uncached pass of 48 pairs through MiniLM-L6
+takes about 3 s on the 4-core laptop CPU the benchmark runs on. A batch is padded to its
+longest pair, and passages run from about 40 to 280 tokens, so one long passage made every
+pair in its batch pay for it. Pairs are now sorted by length before batching, for the
+reranker and for the NLI verifier, and the scores returned in the caller's order. Nothing
+changes but the time: on 192 pairs the largest score difference against the unsorted pass
+was 1.5e-7, and the time went from 14.9 s to 7.1 s.
+
+Two faster options were measured and not taken, because they change rankings: int8 dynamic
+quantisation (a further 30%, top-1 agreement 11 of 12 queries) and a 128-token input limit
+(top-3 overlap 35 of 36 alone, top-1 agreement 10 of 12 combined with quantisation).
+
+### D28 — Answer in the evidence's own terms
+
+With D25 in place the enterprise set fell to 82.4% support, and the withheld sentences were
+true: "the current hotel nightly rate limit for business trips in New York is USD 360 per
+night" against a block that says "New York: … hotel limit USD 360 per night". The entailment
+model is right to call that neutral: "current" and "for business trips" came from the request
+(and the decomposer's sub-query), not from the block. The synthesis prompt now asks for each
+fact in the block's own terms, without the request's framing, and says why: every sentence is
+checked against the block it cites. It also asks that every name, date and number appear in
+the cited block, and a sub-question naming a number no retrieved block contains is marked
+so, so the model writes the UNCERTAIN line rather than a remembered answer.
+
+Full benchmark after the change: enterprise support 89.5% (85 of 95; baseline 87.7%), all six
+gates green, time to first token 2.49 s against the baseline's 2.29 s. ASQA stays at 78.8%
+(156 of 198) against the baseline's 87.9%, and the split explains it: single-reading turns
+reach 85.1% (57 of 67), turns split into readings 70.5% (62 of 88). A reading the corpus has
+no passage for is where the model reaches for what it remembers, and the verifier withholds
+it. The baseline asks one question per turn, so it never writes those sentences, and it also
+answers none of the other readings (recall 62.2% against 78.8%). Raising G3 on ASQA would
+move more turns into the weaker bucket; the report shows both numbers rather than trading
+one for the other.

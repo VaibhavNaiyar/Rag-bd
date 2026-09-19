@@ -155,6 +155,7 @@ ablations flip:
 | `SLR_BRANCHES` | `bm25,dense` | retrieval branches |
 | `SLR_CONTROLLER` | `rule` | `model` puts an LLM call on every transcript chunk; `batch` is the baseline (acts only when the speaker stops) |
 | `SLR_DECOMPOSE` | `true` | `false`: the whole utterance is one search (the baseline) |
+| `SLR_SPECULATE` | `true` | at the end of speech, start the answer from the search that began mid-utterance while the decomposer runs; kept only when it finds one reading that reuses that search |
 | `SLR_DECOMPOSE_MODEL` | `gpt-4.1` | model that splits an utterance and plans a refinement; the answer model is `SLR_LLM_MODEL` |
 | `SLR_QUOTA_PER_INTENT` | `2` | `0` removes the per-intent coverage guarantee |
 | `SLR_LLM` | `auto` | `offline` forces the deterministic arms |

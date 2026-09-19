@@ -266,3 +266,63 @@ async def test_a_verified_answer_asks_nothing(llm, recorder):
     await runner.replay("compound_01", 40.0)
     version = recorder.one("answer.version")
     assert version["claims"] and "clarification" not in version
+
+
+class SlowDecomposer(FakeChatModel):
+    """The decomposer takes a moment, as a real one does, so the speculative answer is already streaming."""
+
+    async def complete(self, system, user, *, ledger, step, json_mode=False, max_tokens=600) -> str:
+        import asyncio
+
+        reply = await super().complete(system, user, ledger=ledger, step=step, json_mode=json_mode, max_tokens=max_tokens)
+        await asyncio.sleep(0.3)
+        return reply
+
+
+async def test_one_reading_keeps_the_answer_started_from_the_mid_utterance_search(engine, settings, recorder):
+    from slr.stream.engine import SessionRunner
+
+    clone = engine.with_settings(settings.with_overrides(llm="openai", reuse_cos=-1.0))
+    prompts: list[str] = []
+
+    def synthesise(prompt: str) -> str:
+        prompts.append(prompt)
+        return "{} {}.".format(*quote(prompt, 0))
+
+    clone.model = SlowDecomposer(completions=[DECOMPOSE_ONE], streams=[synthesise])
+    runner = SessionRunner(clone, recorder)
+    await runner.start()
+    await runner.replay("single_01", 40.0)
+
+    trace = runner.completed[-1]
+    assert trace["speculation"]["kept"] is True and trace["speculation"]["reason"] == "one_reading"
+    assert sorted(step for step, _ in clone.model.calls) == ["decompose", "synthesise"], "still two model calls"
+    assert "What is the cancellation policy for workshop venues?" in prompts[0], "asked as spoken"
+    decomposed = [s for s in trace["sub_queries"] if s["source"] == "decomposed"]
+    assert len(decomposed) == 1 and decomposed[0]["reused_from"] == trace["speculation"]["reused"]
+    assert trace["answer"]["claim_count"] == 1
+
+
+async def test_several_readings_drop_the_speculative_answer_and_answer_each_one(llm, recorder):
+    first_prompts: list[str] = []
+
+    def speculative(prompt: str) -> str:
+        first_prompts.append(prompt)
+        return "The moon is made of green cheese [Doc_1 §1]."
+
+    def per_reading(prompt: str) -> str:
+        return "{} {}.".format(*quote(prompt, 0))
+
+    model = SlowDecomposer(completions=[DECOMPOSE_TWO], streams=[speculative, per_reading])
+    runner = runner_for(llm, model, recorder)
+    await runner.start()
+    await runner.replay("compound_01", 40.0)
+
+    trace = runner.completed[-1]
+    assert trace["speculation"]["kept"] is False and trace["speculation"]["reason"] == "several_readings"
+    assert first_prompts, "the speculative answer should have started"
+    assert "green cheese" not in recorder.answer()
+    assert trace["answer"]["claim_count"] >= 1
+    assert len([s for s in trace["sub_queries"] if s["source"] == "decomposed"]) == 2
+    # the dropped answer's tokens are still paid for, and still counted
+    assert [s for s, _ in model.calls].count("synthesise") == 2

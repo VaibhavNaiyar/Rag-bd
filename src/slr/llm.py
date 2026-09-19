@@ -223,6 +223,7 @@ class OpenAIChatModel:
         started = time.perf_counter()
         readings = []
         completed = False
+        written = 0
         try:
             stream = await self._client.chat.completions.create(
                 model=self.name,
@@ -235,6 +236,7 @@ class OpenAIChatModel:
                 if chunk.usage:
                     readings.append(chunk.usage)
                 if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                    written += len(chunk.choices[0].delta.content)
                     yield chunk.choices[0].delta.content
             completed = True
         except Exception as exc:
@@ -244,6 +246,10 @@ class OpenAIChatModel:
             if completed:
                 self.breaker.success()
             u = usage_of_stream(readings)
+            if not readings:
+                # Stopped before the provider's usage chunk (the engine dropped a
+                # speculative answer): bill an estimate rather than nothing.
+                u = {"prompt_tokens": (len(system) + len(user)) // 4, "completion_tokens": written // 4}
             ledger.record_llm(
                 step, self.name, u["prompt_tokens"], u["completion_tokens"], (time.perf_counter() - started) * 1000
             )

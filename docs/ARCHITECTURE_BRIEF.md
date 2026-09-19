@@ -104,6 +104,14 @@ and both run concurrently. Reuse is decided on the *queries*, which are known im
 the fresh searches never wait behind the speculative ones. That overlap is what converts
 early retrieval into a latency win instead of a wasted call.
 
+**The answer does not wait for the decomposer either.** At the end of speech the answer model
+starts on the mid-utterance search's evidence while the decomposer runs. If the decomposer
+returns one reading that reuses that same search, the normal path would have answered from
+exactly this evidence, so the answer already under way is kept; with several readings it is
+cancelled and each reading is searched and answered. Nothing is shown before the decomposer
+decides. On single-reading questions this took the median time to first token from 2.57 s to
+1.88 s (D25).
+
 Without an API key a deterministic clause splitter runs instead, and the trace records which
 path ran (`decomposition.method`).
 
