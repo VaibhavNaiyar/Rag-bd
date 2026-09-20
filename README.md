@@ -156,6 +156,9 @@ ablations flip:
 | `SLR_CONTROLLER` | `rule` | `model` puts an LLM call on every transcript chunk; `batch` is the baseline (acts only when the speaker stops) |
 | `SLR_DECOMPOSE` | `true` | `false`: the whole utterance is one search (the baseline) |
 | `SLR_SPECULATE` | `true` | at the end of speech, start the answer from the search that began mid-utterance while the decomposer runs; kept only when it finds one reading that reuses that search |
+| `SLR_DECOMPOSE_EXAMPLES` | empty | few-shot bank for the decomposer; the ASQA harness uses `data/decompose_examples.jsonl`, built from ASQA's train split |
+| `SLR_DECOMPOSE_SHOTS` / `SLR_DECOMPOSE_SINGLE_SHOTS` | `8` / `4` | nearest bank questions shown per utterance: ones that split, and ones that did not |
+| `SLR_NLI_FALLBACK_MODEL` | `lytang/MiniCheck-RoBERTa-Large` | second reading for sentences the NLI model scores below `SLR_NLI_FALLBACK_BELOW` (0.75); empty = NLI alone |
 | `SLR_DECOMPOSE_MODEL` | `gpt-4.1` | model that splits an utterance and plans a refinement; the answer model is `SLR_LLM_MODEL` |
 | `SLR_QUOTA_PER_INTENT` | `2` | `0` removes the per-intent coverage guarantee |
 | `SLR_LLM` | `auto` | `offline` forces the deterministic arms |

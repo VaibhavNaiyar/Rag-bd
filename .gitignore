@@ -10,3 +10,4 @@ data/traces/
 *.egg-info/
 freeze.txt
 data/logs/
+data/decompose_examples*

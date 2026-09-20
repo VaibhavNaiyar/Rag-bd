@@ -73,13 +73,32 @@ def is_number(token: str) -> bool:
 _SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'(\[])")
 
 
+#: a word that ends with a full stop without ending the sentence ("St. John", "Dr. Smith", "U.S. Army")
+ABBREVIATION = re.compile(
+    r"(?:^|[\s(\"'])(?:St|Mr|Mrs|Ms|Dr|Jr|Sr|Mt|Ft|No|vs|Inc|Co|Ltd|Gen|Col|Lt|Sgt|Capt|Rev|Prof|"
+    r"Jan|Feb|Mar|Apr|Aug|Sep|Sept|Oct|Nov|Dec|approx|[A-Z]|U\.S|U\.K|e\.g|i\.e)\.$"
+)
+
+
+#: a list number opening a line ("1. The first …"), not a sentence that ends in a number
+LIST_NUMBER = re.compile(r"(?:^|\n)\s*\d{1,2}\.$")
+
+
+def ends_with_abbreviation(text: str) -> bool:
+    return ABBREVIATION.search(text) is not None or LIST_NUMBER.search(text) is not None
+
+
 def sentences(text: str) -> list[str]:
     parts = []
     for block in re.split(r"\n\s*\n|\n(?=\s*[-*•]\s)", text):
         block = " ".join(block.split())
         if not block:
             continue
-        parts.extend(s.strip() for s in _SENT_SPLIT.split(block) if s.strip())
+        for piece in (s.strip() for s in _SENT_SPLIT.split(block) if s.strip()):
+            if parts and ends_with_abbreviation(parts[-1]):
+                parts[-1] = f"{parts[-1]} {piece}"
+            else:
+                parts.append(piece)
     return parts
 
 

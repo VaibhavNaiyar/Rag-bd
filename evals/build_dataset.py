@@ -460,12 +460,39 @@ def _reset_outputs(families: list[str]) -> None:
 # --------------------------------------------------------------------------
 
 
+def write_examples(train: list[dict[str, Any]], out: Path) -> int:
+    """The decomposer's few-shot bank: each TRAIN question with the readings ASQA split it into.
+
+    Fixtures are drawn from the dev split only, so no fixture question can be its own
+    example; the engine also skips any example near-identical to the question it is
+    decomposing. Nearest-neighbour examples from the training split are how Tree of
+    Clarifications (Kim et al., EMNLP 2023) and DIVA (In et al., NAACL 2025) prompt for
+    ASQA's readings.
+    """
+    out.parent.mkdir(parents=True, exist_ok=True)
+    n = 0
+    with out.open("w", encoding="utf-8") as fh:
+        for r in train:
+            readings = list(dict.fromkeys(_question(p) for p in r["qa_pairs"] if _question(p)))
+            if len(readings) < 2:
+                continue
+            record = {"question": _clean(r["ambiguous_question"]), "readings": readings}
+            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+            # Each reading is itself a question with one answer, so the bank also
+            # teaches what a question that must NOT be split looks like.
+            for reading in readings:
+                fh.write(json.dumps({"question": reading, "readings": [reading]}, ensure_ascii=False) + "\n")
+            n += 1 + len(readings)
+    return n
+
+
 def build(counts: dict[str, int], seed: int = SEED, corpus_out: Path = CORPUS) -> dict[str, Any]:
     records = {split: load_split(split) for split in SPLITS}
     everything = [r for split in SPLITS for r in records[split]]
 
     corpus = build_corpus(everything)
     corpus_info = corpus.write(corpus_out)
+    examples = write_examples(records["train"], corpus_out.parent / "decompose_examples.jsonl")
 
     gold = [gold_record(r, split, corpus) for split in SPLITS for r in records[split]]
     with GOLD.open("w", encoding="utf-8") as fh:
@@ -483,6 +510,7 @@ def build(counts: dict[str, int], seed: int = SEED, corpus_out: Path = CORPUS) -
         "samples": {split: len(records[split]) for split in SPLITS},
         "qa_pairs_per_sample": dict(sorted(Counter(len(r["qa_pairs"]) for r in everything).items())),
         "corpus": {**corpus_info, "dir": str(corpus_out)},
+        "decompose_examples": examples,
         "gold": {"samples": len(gold), "sub_questions": len(subs), "label_source": dict(sources)},
         "fixtures": dict(Counter(c["family"] for c in cases)),
     }

@@ -200,3 +200,42 @@ def test_an_opening_connective_does_not_change_what_a_claim_asserts():
         pytest.skip(f"NLI model unavailable: {exc}")
     bare = "Cancellations made fewer than 7 calendar days before the event are not refunded."
     assert verifier.support("However, " + bare, [TEXT_A]) == verifier.support(bare, [TEXT_A])
+
+
+def test_an_evidence_line_is_kept_whole_and_never_shown():
+    splitter = SentenceStream()
+    g = grounder()
+    text = (
+        'EVIDENCE: [Doc_8 §1] "The catering budget for a customer workshop is INR 900. Per attendee per day."\n'
+        "The catering budget for a customer workshop is INR 900 per attendee per day [Doc_8 §1].\n"
+        "EVIDENCE: NONE\n"
+    )
+    shipped = []
+    for i in range(0, len(text), 5):
+        for seg in splitter.feed(text[i : i + 5]):
+            shipped.append(g.process(seg).text)
+    for seg in splitter.flush():
+        shipped.append(g.process(seg).text)
+    body = "".join(shipped)
+    assert "EVIDENCE" not in body and "Per attendee per day." not in body.split("[Doc_8 §1]")[-1]
+    assert g.generated == 1 and g.supported == 1, "the quote is not a claim"
+    assert g.attributions[0].startswith("[Doc_8 §1]") and g.attributions[1] == "NONE"
+
+
+def test_the_cascade_only_asks_the_second_verifier_about_weak_scores():
+    from slr.synthesis.grounding import CascadeVerifier
+
+    class Fixed:
+        def __init__(self, name, scores):
+            self.name, self.scores, self.asked = name, scores, []
+
+        def support(self, claim, sources, contexts=None):
+            self.asked.append(list(sources))
+            return [self.scores[s] for s in sources]
+
+    first = Fixed("small", {"a": 0.9, "b": 0.3, "c": 0.6})
+    second = Fixed("checker", {"b": 0.8, "c": 0.2})
+    cascade = CascadeVerifier(first, second, below=0.75)
+    assert cascade.support("claim", ["a", "b", "c"]) == [0.9, 0.8, 0.6], "a second reading never lowers a score"
+    assert second.asked == [["b", "c"]], "a confident first reading is not re-checked"
+    assert cascade.name == "small + checker"

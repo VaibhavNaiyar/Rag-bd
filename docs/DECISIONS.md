@@ -362,3 +362,56 @@ it. The baseline asks one question per turn, so it never writes those sentences,
 answers none of the other readings (recall 62.2% against 78.8%). Raising G3 on ASQA would
 move more turns into the weaker bucket; the report shows both numbers rather than trading
 one for the other.
+
+### D29 — Nearest-neighbour examples for the decomposer, from ASQA's train split
+
+Tree of Clarifications (Kim et al., EMNLP 2023) and DIVA (In et al., NAACL 2025) both prompt
+for the readings of an ambiguous question with examples chosen per question by nearest
+neighbour from a training set. The dataset builder now writes such a bank from ASQA's train
+split only (`data/decompose_examples.jsonl`: 4,353 questions with their readings, plus each
+reading as a question that must not be split). Every fixture comes from the dev split, and
+the engine skips any example 0.90 cosine or closer to the utterance, because ASQA itself has
+near-duplicate questions across its splits (6 of our 75 dev fixture questions have a train
+twin at 0.90 or above). The enterprise corpus has no bank and gets no examples.
+
+Measured with the decomposer alone over all labelled utterances (G3 matcher, unchanged):
+no examples 22/40; nearest questions that split only, 32/40 but single questions kept single
+fell to 12/20; nearest of both kinds pooled, 20/40 (an ambiguous question's nearest
+neighbours are its own readings); the nearest *k* that split plus the nearest *m* that did not,
+27/40 at 5+2, 29/40 at 8+2 and 8+4. Adding the mid-utterance passages, ToC's other input,
+did not help (26/40) and stays off (`SLR_DECOMPOSE_PASSAGES=0`). Full benchmark at 8+4:
+ASQA G3 **72.5%** (29/40), single questions kept single 85%.
+
+### D30 — Evidence first, and a trained fact-checker as the second reading
+
+Two published ideas, both aimed at the ASQA sentences the verifier rejected.
+
+*Attribute first, then generate* (Slobodkin et al., ACL 2024): the synthesis prompt now asks
+for one hidden `EVIDENCE:` line per sub-question, copying the span that answers it, or
+`EVIDENCE: NONE`, in which case the sub-question gets only an UNCERTAIN line. The line is kept
+whole by the sentence splitter, never shown, never counted as a claim, and recorded in the
+trace as `attributions`.
+
+*MiniCheck* (Tang, Laban and Durrett, EMNLP 2024; MIT licence): a model trained for "is this
+sentence supported by this document". Re-scoring the previous run's sentences offline showed
+the small NLI model rejecting true ones ("France is the most recent winner, having won in
+2018" against "The current champion is France, who won the title in 2018"). The verifier is now
+a cascade: the NLI model decides, and a sentence it scores below 0.75 is read again by
+MiniCheck-RoBERTa-Large; the grounder's bars (0.5 for the model's citation, 0.75 for one the
+engine picks) are unchanged. The DeBERTa variant was slower and rejected the France sentence.
+
+Reading the withheld sentences also found splitter bugs that had been counted as claims: cuts
+at "St.", "Dr." and list numbers ("Community of St", "Dr .", "1 ."). Abbreviations and a list
+number opening a line no longer end a sentence. "65.46%" and "65.46 percent" are read as one
+quantity.
+
+Full benchmark after D29 and D30: enterprise G4 **93.1%** (81/87), all six gates green; ASQA G4
+**84.3%** (166/197), 0.7 points and two sentences under the bar, from 78.8%. What remains
+withheld on ASQA is mostly the answer model adding what the quoted span does not say ("India
+won in 1983 and 2011" from a span that names 1983). The independent audit agrees with 98.8% of
+enterprise and 85.5% of ASQA shipped claims, down from 95.5%: reading the disagreements, most
+are the audit model rejecting true claims ("the 2001 Finals opponent was the Philadelphia
+76ers"), and about five of 166 are claims MiniCheck accepted that stretch their passage (a
+Test-cricket record cited to a sentence about international cricket). The cost is time:
+MiniCheck runs on CPU on every weak sentence, and first-token latency rose to 3.4 s
+(enterprise) and 4.5 s (ASQA) against the baseline's 2.5 s.

@@ -72,6 +72,10 @@ class Settings:
     rerank_provisional_pairs: int = 12
     verifier: str = "auto"  # auto | nli | lexical
     nli_model: str = "cross-encoder/nli-deberta-v3-xsmall"
+    #: second reading for sentences the NLI model scores below ``nli_fallback_below``:
+    #: MiniCheck, trained for grounding checks (EMNLP 2024). Empty = NLI alone.
+    nli_fallback_model: str = "lytang/MiniCheck-RoBERTa-Large"
+    nli_fallback_below: float = 0.75
     llm: str = "auto"  # auto | openai | offline
     llm_model: str = "gpt-4o-mini"
     #: the model that splits an utterance into sub-queries (and plans a refinement).
@@ -122,9 +126,18 @@ class Settings:
     # --- decomposition ---------------------------------------------------
     #: off = one search for the whole utterance, the baseline pipeline
     decompose: bool = True
-    #: At the end of speech, search the whole utterance and start the answer while
+    #: few-shot bank for the decomposer (JSONL of question + readings); empty = none.
+    #: The ASQA harness points it at examples built from ASQA's train split.
+    decompose_examples: str = ""
+    #: nearest examples shown per utterance: questions that split, and questions that did not
+    decompose_shots: int = 8
+    decompose_single_shots: int = 4
+    #: passages from the mid-utterance search shown to the decomposer (0 = none).
+    #: Measured and left off: see DECISIONS D29.
+    decompose_passages: int = 0
+    #: At the end of speech, start the answer from the mid-utterance search while
     #: the decomposer runs; keep it when the decomposer finds one reading that
-    #: means the same thing (``reuse_cos``). Takes the decomposer off the path to
+    #: reuses that search (``reuse_cos``). Takes the decomposer off the path to
     #: the first word for single-reading turns.
     speculate: bool = True
     max_subqueries: int = 4

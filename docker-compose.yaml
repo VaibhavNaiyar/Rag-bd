@@ -10,10 +10,12 @@ services:
     environment:
       # Serves the enterprise corpus shipped in the image by default. To serve the ASQA
       # corpus built by `make dataset` (./data/corpus, index in ./data/index_asqa):
-      #   SLR_CORPUS_DIR=/data/corpus SLR_INDEX_DIR=/data/index_asqa SLR_FIXTURE_CORPUS=asqa docker compose up
+      #   SLR_CORPUS_DIR=/data/corpus SLR_INDEX_DIR=/data/index_asqa SLR_FIXTURE_CORPUS=asqa \
+      #   SLR_DECOMPOSE_EXAMPLES=/data/decompose_examples.jsonl docker compose up
       SLR_CORPUS_DIR: ${SLR_CORPUS_DIR:-/app/evals/corpora/enterprise}
       SLR_INDEX_DIR: ${SLR_INDEX_DIR:-/data/index}
       SLR_FIXTURE_CORPUS: ${SLR_FIXTURE_CORPUS:-enterprise}
+      SLR_DECOMPOSE_EXAMPLES: ${SLR_DECOMPOSE_EXAMPLES:-}
       SLR_TRACE_PATH: /data/traces/trace.jsonl
       # Unset -> the deterministic offline arms run, and the suite still passes.
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}

@@ -1,11 +1,11 @@
 {
-  "generated_at": 1789835241969,
-  "seconds": 4905.7,
+  "generated_at": 1789847404205,
+  "seconds": 5875.4,
   "engine": {
     "models": {
       "embedder": "BAAI/bge-small-en-v1.5",
       "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-      "verifier": "cross-encoder/nli-deberta-v3-xsmall",
+      "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large",
       "llm": "gpt-4o-mini",
       "decomposer": "gpt-4.1",
       "controller": "rule",
@@ -59,11 +59,11 @@
           "eligible_turns": 18,
           "retrieved_before_end": 16,
           "before_last_word_pct": 22.2,
-          "median_lead_ms": 259,
-          "max_lead_ms": 6499,
-          "median_lead_multi_intent_ms": 3786,
-          "median_lead_single_intent_ms": 258,
-          "multi_intent_turns": 6,
+          "median_lead_ms": 264,
+          "max_lead_ms": 6637,
+          "median_lead_multi_intent_ms": 3186,
+          "median_lead_single_intent_ms": 256,
+          "multi_intent_turns": 7,
           "suppression_turns": 4,
           "false_trigger_rate_pct": 0.0,
           "late_turns": [
@@ -83,7 +83,7 @@
         "detail": {
           "compound_utterances": 4,
           "identified": 3,
-          "full_coverage_pct": 50.0,
+          "full_coverage_pct": 25.0,
           "over_fragmentation_pct": 12.5,
           "single_intent_kept_single_pct": 75.0,
           "by_family": {
@@ -97,8 +97,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.754,
-                0.886
+                0.8,
+                0.862
               ],
               "method": "llm"
             },
@@ -107,11 +107,11 @@
               "family": "compound",
               "gold": 3,
               "predicted": 3,
-              "matched": 3,
+              "matched": 2,
               "best_scores": [
                 0.918,
-                0.882,
-                0.796
+                0.701,
+                0.788
               ],
               "method": "llm"
             },
@@ -122,7 +122,7 @@
               "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.689,
+                0.675,
                 0.962
               ],
               "method": "llm"
@@ -134,8 +134,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.931,
-                0.961
+                0.923,
+                0.946
               ],
               "method": "llm"
             },
@@ -146,7 +146,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.942
+                0.952
               ],
               "method": "llm"
             },
@@ -168,7 +168,7 @@
               "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.856
+                0.853
               ],
               "method": "llm"
             },
@@ -179,7 +179,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.885
+                0.907
               ],
               "method": "llm"
             }
@@ -189,29 +189,35 @@
       {
         "id": "G4",
         "name": "Factual grounding",
-        "value": 89.5,
+        "value": 93.1,
         "threshold": ">= 85% citation support and zero fabricated citations",
         "passed": true,
         "applicable": true,
         "note": "",
         "detail": {
-          "claims_written": 95,
-          "claims_supported": 85,
-          "per_turn_mean_support_pct": 88.0,
+          "claims_written": 87,
+          "claims_supported": 81,
+          "per_turn_mean_support_pct": 90.5,
           "turns_with_claims": 20,
           "fabricated_citations": 0,
-          "fabricated_blocked_before_shipping": 0,
+          "fabricated_blocked_before_shipping": 2,
           "claims_without_a_citation": 0,
           "recall_at_k_pct": null,
           "recall_samples": 0,
-          "doc_recall_at_k_pct": 87.9,
+          "doc_recall_at_k_pct": 92.4,
           "doc_recall_samples": 11,
-          "turns_flagging_uncertainty": 19,
-          "total_claims": 85,
+          "turns_flagging_uncertainty": 15,
+          "total_claims": 81,
           "auditor": "cross-encoder/nli-deberta-v3-base",
-          "shipped_claims_checked": 85,
-          "shipped_claims_supported_pct": 100.0,
-          "shipped_claims_failing_examples": []
+          "shipped_claims_checked": 81,
+          "shipped_claims_supported_pct": 98.8,
+          "shipped_claims_failing_examples": [
+            {
+              "fixture": "late_detail_03",
+              "claim": "The Innovation Room seats 30 people in classroom layout and 24 people at lab benches with power at every seat; it allows outside catering through approved vendors since it has no in-house kitchen .",
+              "support": 0.003
+            }
+          ]
         }
       },
       {
@@ -230,11 +236,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 7,
-              "mutated": 0,
+              "preserved": 3,
+              "mutated": 1,
               "full_corpus_search": false,
               "carried_from_session": 3,
-              "parent_claims": 8,
+              "parent_claims": 5,
               "passed": true
             },
             {
@@ -242,11 +248,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 5,
+              "preserved": 2,
               "mutated": 1,
               "full_corpus_search": false,
-              "carried_from_session": 4,
-              "parent_claims": 7,
+              "carried_from_session": 7,
+              "parent_claims": 4,
               "passed": true
             },
             {
@@ -254,11 +260,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 1,
+              "preserved": 3,
               "mutated": 1,
               "full_corpus_search": false,
               "carried_from_session": 3,
-              "parent_claims": 3,
+              "parent_claims": 5,
               "passed": true
             }
           ]
@@ -309,11 +315,11 @@
           "eligible_turns": 105,
           "retrieved_before_end": 92,
           "before_last_word_pct": 10.5,
-          "median_lead_ms": 258,
-          "max_lead_ms": 3069,
-          "median_lead_multi_intent_ms": 256,
-          "median_lead_single_intent_ms": 262,
-          "multi_intent_turns": 35,
+          "median_lead_ms": 260,
+          "max_lead_ms": 2783,
+          "median_lead_multi_intent_ms": 259,
+          "median_lead_single_intent_ms": 261,
+          "multi_intent_turns": 49,
           "suppression_turns": 15,
           "false_trigger_rate_pct": 0.0,
           "late_turns": [
@@ -336,29 +342,30 @@
       {
         "id": "G3",
         "name": "Multi-intent identification",
-        "value": 60.0,
+        "value": 72.5,
         "threshold": ">= 70% of compound utterances isolate >= 2 distinct sub-intents",
-        "passed": false,
+        "passed": true,
         "applicable": true,
         "note": "",
         "detail": {
           "compound_utterances": 40,
-          "identified": 24,
+          "identified": 29,
           "full_coverage_pct": 17.5,
-          "over_fragmentation_pct": 1.7,
-          "single_intent_kept_single_pct": 100.0,
+          "over_fragmentation_pct": 6.7,
+          "single_intent_kept_single_pct": 85.0,
           "by_family": {
-            "compound": 60.0
+            "compound": 72.5
           },
           "rows": [
             {
               "fixture": "asqa_compound_01",
               "family": "compound",
               "gold": 5,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.939
+                0.872,
+                0.907
               ],
               "method": "llm"
             },
@@ -366,10 +373,11 @@
               "fixture": "asqa_compound_02",
               "family": "compound",
               "gold": 2,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.931
+                0.779,
+                0.886
               ],
               "method": "llm"
             },
@@ -380,9 +388,9 @@
               "predicted": 3,
               "matched": 3,
               "best_scores": [
-                0.899,
-                0.895,
-                0.788
+                0.889,
+                0.887,
+                0.759
               ],
               "method": "llm"
             },
@@ -393,8 +401,8 @@
               "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.86,
-                0.651
+                0.846,
+                0.695
               ],
               "method": "llm"
             },
@@ -403,10 +411,10 @@
               "family": "compound",
               "gold": 6,
               "predicted": 2,
-              "matched": 1,
+              "matched": 2,
               "best_scores": [
-                0.792,
-                0.735
+                0.854,
+                0.756
               ],
               "method": "llm"
             },
@@ -414,10 +422,11 @@
               "fixture": "asqa_compound_06",
               "family": "compound",
               "gold": 3,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.854
+                0.863,
+                0.846
               ],
               "method": "llm"
             },
@@ -428,8 +437,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.808,
-                0.873
+                0.933,
+                0.781
               ],
               "method": "llm"
             },
@@ -440,8 +449,8 @@
               "predicted": 3,
               "matched": 1,
               "best_scores": [
-                0.746,
-                0.805
+                0.717,
+                0.785
               ],
               "method": "llm"
             },
@@ -449,10 +458,11 @@
               "fixture": "asqa_compound_09",
               "family": "compound",
               "gold": 2,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.776
+                0.824,
+                0.661
               ],
               "method": "llm"
             },
@@ -463,8 +473,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.922,
-                0.903
+                0.952,
+                0.917
               ],
               "method": "llm"
             },
@@ -472,10 +482,11 @@
               "fixture": "asqa_compound_11",
               "family": "compound",
               "gold": 4,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 0,
               "best_scores": [
-                0.658
+                0.61,
+                0.625
               ],
               "method": "llm"
             },
@@ -486,8 +497,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.872,
-                0.882
+                0.907,
+                0.883
               ],
               "method": "llm"
             },
@@ -498,8 +509,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.825,
-                0.894
+                0.772,
+                0.844
               ],
               "method": "llm"
             },
@@ -507,10 +518,11 @@
               "fixture": "asqa_compound_14",
               "family": "compound",
               "gold": 4,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.806
+                0.812,
+                0.783
               ],
               "method": "llm"
             },
@@ -518,12 +530,13 @@
               "fixture": "asqa_compound_15",
               "family": "compound",
               "gold": 4,
-              "predicted": 3,
+              "predicted": 4,
               "matched": 2,
               "best_scores": [
-                0.783,
-                0.781,
-                0.691
+                0.788,
+                0.778,
+                0.668,
+                0.685
               ],
               "method": "llm"
             },
@@ -543,10 +556,12 @@
               "fixture": "asqa_compound_17",
               "family": "compound",
               "gold": 6,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 3,
+              "matched": 3,
               "best_scores": [
-                0.923
+                0.915,
+                0.962,
+                0.961
               ],
               "method": "llm"
             },
@@ -554,11 +569,13 @@
               "fixture": "asqa_compound_18",
               "family": "compound",
               "gold": 6,
-              "predicted": 2,
-              "matched": 2,
+              "predicted": 4,
+              "matched": 4,
               "best_scores": [
-                0.849,
-                0.785
+                0.826,
+                0.808,
+                0.767,
+                0.789
               ],
               "method": "llm"
             },
@@ -569,7 +586,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.876
+                0.862
               ],
               "method": "llm"
             },
@@ -580,8 +597,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.933,
-                0.791
+                0.93,
+                0.776
               ],
               "method": "llm"
             },
@@ -590,10 +607,10 @@
               "family": "compound",
               "gold": 2,
               "predicted": 2,
-              "matched": 2,
+              "matched": 1,
               "best_scores": [
-                0.792,
-                0.821
+                0.884,
+                0.683
               ],
               "method": "llm"
             },
@@ -602,10 +619,10 @@
               "family": "compound",
               "gold": 2,
               "predicted": 2,
-              "matched": 2,
+              "matched": 1,
               "best_scores": [
-                0.826,
-                0.868
+                0.824,
+                0.747
               ],
               "method": "llm"
             },
@@ -616,8 +633,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.918,
-                0.957
+                0.779,
+                0.904
               ],
               "method": "llm"
             },
@@ -649,11 +666,10 @@
               "fixture": "asqa_compound_26",
               "family": "compound",
               "gold": 2,
-              "predicted": 2,
-              "matched": 2,
+              "predicted": 1,
+              "matched": 1,
               "best_scores": [
-                0.818,
-                0.812
+                0.818
               ],
               "method": "llm"
             },
@@ -661,11 +677,13 @@
               "fixture": "asqa_compound_27",
               "family": "compound",
               "gold": 6,
-              "predicted": 2,
-              "matched": 2,
+              "predicted": 4,
+              "matched": 4,
               "best_scores": [
-                0.842,
-                0.827
+                0.844,
+                0.812,
+                0.816,
+                0.846
               ],
               "method": "llm"
             },
@@ -673,11 +691,12 @@
               "fixture": "asqa_compound_28",
               "family": "compound",
               "gold": 3,
-              "predicted": 2,
-              "matched": 1,
+              "predicted": 3,
+              "matched": 3,
               "best_scores": [
-                0.924,
-                0.749
+                0.871,
+                0.773,
+                0.764
               ],
               "method": "llm"
             },
@@ -688,9 +707,9 @@
               "predicted": 3,
               "matched": 3,
               "best_scores": [
-                0.922,
-                0.955,
-                0.872
+                0.933,
+                0.931,
+                0.862
               ],
               "method": "llm"
             },
@@ -699,9 +718,9 @@
               "family": "compound",
               "gold": 2,
               "predicted": 1,
-              "matched": 0,
+              "matched": 1,
               "best_scores": [
-                0.738
+                0.755
               ],
               "method": "llm"
             },
@@ -712,8 +731,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.909,
-                0.898
+                0.886,
+                0.883
               ],
               "method": "llm"
             },
@@ -721,11 +740,10 @@
               "fixture": "asqa_compound_32",
               "family": "compound",
               "gold": 4,
-              "predicted": 2,
-              "matched": 2,
+              "predicted": 1,
+              "matched": 1,
               "best_scores": [
-                0.873,
-                0.927
+                0.93
               ],
               "method": "llm"
             },
@@ -736,8 +754,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.908,
-                0.783
+                0.946,
+                0.949
               ],
               "method": "llm"
             },
@@ -745,10 +763,11 @@
               "fixture": "asqa_compound_34",
               "family": "compound",
               "gold": 5,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.804
+                0.83,
+                0.78
               ],
               "method": "llm"
             },
@@ -756,11 +775,12 @@
               "fixture": "asqa_compound_35",
               "family": "compound",
               "gold": 6,
-              "predicted": 2,
-              "matched": 2,
+              "predicted": 3,
+              "matched": 3,
               "best_scores": [
-                0.805,
-                0.768
+                0.771,
+                0.792,
+                0.784
               ],
               "method": "llm"
             },
@@ -772,7 +792,7 @@
               "matched": 2,
               "best_scores": [
                 0.835,
-                0.818
+                0.806
               ],
               "method": "llm"
             },
@@ -780,10 +800,11 @@
               "fixture": "asqa_compound_37",
               "family": "compound",
               "gold": 2,
-              "predicted": 1,
-              "matched": 1,
+              "predicted": 2,
+              "matched": 2,
               "best_scores": [
-                0.929
+                0.874,
+                0.897
               ],
               "method": "llm"
             },
@@ -794,10 +815,10 @@
               "predicted": 4,
               "matched": 4,
               "best_scores": [
-                0.903,
-                0.909,
-                0.906,
-                0.911
+                0.898,
+                0.896,
+                0.894,
+                0.89
               ],
               "method": "llm"
             },
@@ -808,8 +829,8 @@
               "predicted": 2,
               "matched": 2,
               "best_scores": [
-                0.798,
-                0.831
+                0.818,
+                0.811
               ],
               "method": "llm"
             },
@@ -842,7 +863,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.929
+                0.886
               ],
               "method": "llm"
             },
@@ -853,7 +874,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.913
+                0.899
               ],
               "method": "llm"
             },
@@ -875,7 +896,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.877
+                0.908
               ],
               "method": "llm"
             },
@@ -886,7 +907,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.903
+                0.893
               ],
               "method": "llm"
             },
@@ -897,7 +918,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.96
+                0.925
               ],
               "method": "llm"
             },
@@ -908,7 +929,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.938
+                0.952
               ],
               "method": "llm"
             },
@@ -941,7 +962,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.905
+                0.914
               ],
               "method": "llm"
             },
@@ -952,7 +973,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.951
+                0.943
               ],
               "method": "llm"
             },
@@ -963,7 +984,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.898
+                0.844
               ],
               "method": "llm"
             },
@@ -971,10 +992,10 @@
               "fixture": "asqa_single_14",
               "family": "single",
               "gold": 1,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.929
+                0.863
               ],
               "method": "llm"
             },
@@ -985,7 +1006,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.964
+                0.923
               ],
               "method": "llm"
             },
@@ -993,10 +1014,10 @@
               "fixture": "asqa_single_16",
               "family": "single",
               "gold": 1,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.884
+                0.907
               ],
               "method": "llm"
             },
@@ -1018,7 +1039,7 @@
               "predicted": 1,
               "matched": 1,
               "best_scores": [
-                0.886
+                0.871
               ],
               "method": "llm"
             },
@@ -1037,10 +1058,10 @@
               "fixture": "asqa_single_20",
               "family": "single",
               "gold": 1,
-              "predicted": 1,
+              "predicted": 2,
               "matched": 1,
               "best_scores": [
-                0.848
+                0.865
               ],
               "method": "llm"
             }
@@ -1050,29 +1071,64 @@
       {
         "id": "G4",
         "name": "Factual grounding",
-        "value": 78.8,
+        "value": 84.3,
         "threshold": ">= 85% citation support and zero fabricated citations",
         "passed": false,
         "applicable": true,
         "note": "",
         "detail": {
-          "claims_written": 198,
-          "claims_supported": 156,
-          "per_turn_mean_support_pct": 81.6,
-          "turns_with_claims": 99,
+          "claims_written": 197,
+          "claims_supported": 166,
+          "per_turn_mean_support_pct": 85.9,
+          "turns_with_claims": 101,
           "fabricated_citations": 0,
-          "fabricated_blocked_before_shipping": 1,
+          "fabricated_blocked_before_shipping": 0,
           "claims_without_a_citation": 0,
-          "recall_at_k_pct": 78.8,
+          "recall_at_k_pct": 79.9,
           "recall_samples": 74,
           "doc_recall_at_k_pct": null,
           "doc_recall_samples": 0,
-          "turns_flagging_uncertainty": 108,
-          "total_claims": 156,
+          "turns_flagging_uncertainty": 96,
+          "total_claims": 166,
           "auditor": "cross-encoder/nli-deberta-v3-base",
-          "shipped_claims_checked": 156,
-          "shipped_claims_supported_pct": 95.5,
+          "shipped_claims_checked": 166,
+          "shipped_claims_supported_pct": 85.5,
           "shipped_claims_failing_examples": [
+            {
+              "fixture": "asqa_compound_05",
+              "claim": "The highest number of runs in men's test cricket career record holder is Sachin Tendulkar, who has scored the most runs in international cricket, including Test matches .",
+              "support": 0.018
+            },
+            {
+              "fixture": "asqa_compound_06",
+              "claim": "The Federal Reserve's authority is also described as being subject to Congressional modification or repeal, indicating its foundation in federal statutes .",
+              "support": 0.008
+            },
+            {
+              "fixture": "asqa_compound_09",
+              "claim": "New York City first European settlement founding date New Amsterdam is 1626, when the post was named New Amsterdam, although the trading post was founded in 1624 .",
+              "support": 0.062
+            },
+            {
+              "fixture": "asqa_compound_11",
+              "claim": "Daenerys Targaryen was also married to Khal Drogo in the A Song of Ice and Fire books .",
+              "support": 0.0
+            },
+            {
+              "fixture": "asqa_compound_23",
+              "claim": "The main characters in the Call the Midwife TV series are associated with the Community of St. John the Divine, which is an Anglican religious order .",
+              "support": 0.0
+            },
+            {
+              "fixture": "asqa_compound_27",
+              "claim": "James Earl Jones reprised the voice role for Darth Vader in the Star Wars The Clone Wars TV series .",
+              "support": 0.049
+            },
+            {
+              "fixture": "asqa_compound_28",
+              "claim": "A notable cover version of \"Stuck in the Middle with You\" was sung by Juice Newton .",
+              "support": 0.023
+            },
             {
               "fixture": "asqa_compound_36",
               "claim": "Additional filming locations included Dyersburg and Union City, Tennessee, as well as Chester and Freeburg, Illinois .",
@@ -1080,33 +1136,13 @@
             },
             {
               "fixture": "asqa_compound_38",
-              "claim": "In 2009, Kobe Bryant played against the Orlando Magic in the NBA Finals, and the Lakers won the series 4 games to 1 .",
-              "support": 0.005
-            },
-            {
-              "fixture": "asqa_late_detail_09",
-              "claim": "The theme tune for the British series Dear John was sung by Joan Baxter .",
-              "support": 0.228
-            },
-            {
-              "fixture": "asqa_late_detail_11",
-              "claim": "Hank Aaron is the MLB all-time career RBI leader with 2,297 RBIs .",
-              "support": 0.151
-            },
-            {
-              "fixture": "asqa_late_detail_11",
-              "claim": "Hank Aaron is the MLB all-time career RBI leader with 2,297 RBIs .",
-              "support": 0.151
-            },
-            {
-              "fixture": "asqa_suppression_05",
-              "claim": "The reception-ready phase of the endometrium, known as the \"implantation window,\" lasts about four days and typically occurs from six to ten days post-ovulation .",
-              "support": 0.017
-            },
-            {
-              "fixture": "asqa_suppression_05",
-              "claim": "The \"implantation window,\" when the endometrium is ready for reception, lasts about four days, typically from six to ten days post-ovulation .",
+              "claim": "Kobe Bryant's opponent team in the 2001 NBA Finals was the Philadelphia 76ers .",
               "support": 0.002
+            },
+            {
+              "fixture": "asqa_compound_38",
+              "claim": "Kobe Bryant's opponent team in the 2009 NBA Finals was the Orlando Magic .",
+              "support": 0.035
             }
           ]
         }
@@ -1128,10 +1164,10 @@
               "version": 2,
               "parent": 1,
               "preserved": 1,
-              "mutated": 0,
+              "mutated": 1,
               "full_corpus_search": false,
               "carried_from_session": 3,
-              "parent_claims": 1,
+              "parent_claims": 2,
               "passed": true
             },
             {
@@ -1139,11 +1175,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 2,
+              "preserved": 4,
               "mutated": 0,
               "full_corpus_search": false,
               "carried_from_session": 6,
-              "parent_claims": 2,
+              "parent_claims": 4,
               "passed": true
             },
             {
@@ -1152,10 +1188,10 @@
               "version": 2,
               "parent": 1,
               "preserved": 1,
-              "mutated": 0,
+              "mutated": 1,
               "full_corpus_search": false,
               "carried_from_session": 3,
-              "parent_claims": 1,
+              "parent_claims": 3,
               "passed": true
             },
             {
@@ -1187,11 +1223,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 1,
+              "preserved": 0,
               "mutated": 0,
               "full_corpus_search": false,
               "carried_from_session": 5,
-              "parent_claims": 1,
+              "parent_claims": 0,
               "passed": true
             },
             {
@@ -1200,10 +1236,10 @@
               "version": 2,
               "parent": 1,
               "preserved": 1,
-              "mutated": 0,
+              "mutated": 1,
               "full_corpus_search": false,
-              "carried_from_session": 5,
-              "parent_claims": 1,
+              "carried_from_session": 3,
+              "parent_claims": 2,
               "passed": true
             },
             {
@@ -1211,11 +1247,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 2,
+              "preserved": 1,
               "mutated": 1,
               "full_corpus_search": false,
-              "carried_from_session": 3,
-              "parent_claims": 4,
+              "carried_from_session": 4,
+              "parent_claims": 2,
               "passed": true
             },
             {
@@ -1235,11 +1271,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 1,
+              "preserved": 2,
               "mutated": 0,
               "full_corpus_search": false,
-              "carried_from_session": 6,
-              "parent_claims": 1,
+              "carried_from_session": 8,
+              "parent_claims": 2,
               "passed": true
             },
             {
@@ -1247,11 +1283,11 @@
               "routed_as_refine": true,
               "version": 2,
               "parent": 1,
-              "preserved": 2,
+              "preserved": 1,
               "mutated": 0,
               "full_corpus_search": false,
-              "carried_from_session": 8,
-              "parent_claims": 2,
+              "carried_from_session": 7,
+              "parent_claims": 1,
               "passed": true
             },
             {
@@ -1262,7 +1298,7 @@
               "preserved": 0,
               "mutated": 0,
               "full_corpus_search": false,
-              "carried_from_session": 5,
+              "carried_from_session": 4,
               "parent_claims": 0,
               "passed": true
             },
@@ -1284,10 +1320,10 @@
               "version": 2,
               "parent": 1,
               "preserved": 1,
-              "mutated": 0,
+              "mutated": 1,
               "full_corpus_search": false,
-              "carried_from_session": 4,
-              "parent_claims": 1,
+              "carried_from_session": 5,
+              "parent_claims": 2,
               "passed": true
             },
             {
@@ -1324,48 +1360,48 @@
     "enterprise": {
       "turns": 22,
       "retrieval_lead_ms": {
-        "median": 259,
-        "p90": 4454
+        "median": 264,
+        "p90": 4424
       },
       "time_to_first_token_ms": {
-        "median": 2493,
-        "p90": 4228
+        "median": 3414,
+        "p90": 12039
       },
       "turn_complete_ms": {
-        "median": 3795,
-        "p90": 5228
+        "median": 8004,
+        "p90": 19349
       },
       "cost_per_turn_usd": {
-        "mean": 0.00223236,
-        "total": 0.049112
+        "mean": 0.00252245,
+        "total": 0.055494
       },
       "tokens_per_turn": {
-        "mean": 2143.6818
+        "mean": 2425.5
       },
-      "wall_clock_seconds": 199.8
+      "wall_clock_seconds": 325.0
     },
     "asqa": {
       "turns": 120,
       "retrieval_lead_ms": {
-        "median": 258,
-        "p90": 762
+        "median": 260,
+        "p90": 783
       },
       "time_to_first_token_ms": {
-        "median": 3414,
-        "p90": 5720
+        "median": 4516,
+        "p90": 10358
       },
       "turn_complete_ms": {
-        "median": 3838,
-        "p90": 6327
+        "median": 5328,
+        "p90": 15547
       },
       "cost_per_turn_usd": {
-        "mean": 0.00228149,
-        "total": 0.273779
+        "mean": 0.0036556,
+        "total": 0.438672
       },
       "tokens_per_turn": {
-        "mean": 2257.5083
+        "mean": 3126.1083
       },
-      "wall_clock_seconds": 944.8
+      "wall_clock_seconds": 1364.0
     }
   },
   "baseline": {
@@ -1376,22 +1412,22 @@
         "early_retrieval_pct": 88.9,
         "false_trigger_pct": 0.0,
         "multi_intent_pct": 75.0,
-        "citation_support_pct": 89.5,
-        "recall_at_k_pct": 87.9,
+        "citation_support_pct": 93.1,
+        "recall_at_k_pct": 92.4,
         "recall_unit": "documents",
         "fabricated_citations": 0,
         "refined_not_restarted_pct": 100.0,
         "intent_coverage": {
-          "multi_intent_sub_queries": 15,
+          "multi_intent_sub_queries": 18,
           "with_evidence_pct": 100.0,
           "starved": 0,
           "starved_examples": []
         },
-        "median_ttft_ms": 2493,
-        "median_complete_ms": 3795,
-        "mean_cost_usd": 0.002232,
-        "mean_tokens": 2144,
-        "wall_clock_s": 199.8,
+        "median_ttft_ms": 3414,
+        "median_complete_ms": 8004,
+        "mean_cost_usd": 0.002522,
+        "mean_tokens": 2426,
+        "wall_clock_s": 325.0,
         "knobs": {
           "controller": "rule",
           "branches": "bm25,dense",
@@ -1411,7 +1447,7 @@
         "early_retrieval_pct": 0.0,
         "false_trigger_pct": 100.0,
         "multi_intent_pct": 0.0,
-        "citation_support_pct": 87.7,
+        "citation_support_pct": 95.6,
         "recall_at_k_pct": 81.8,
         "recall_unit": "documents",
         "fabricated_citations": 0,
@@ -1422,11 +1458,11 @@
           "starved": 0,
           "starved_examples": []
         },
-        "median_ttft_ms": 2290,
-        "median_complete_ms": 3292,
-        "mean_cost_usd": 0.000307,
-        "mean_tokens": 1249,
-        "wall_clock_s": 225.5,
+        "median_ttft_ms": 2450,
+        "median_complete_ms": 4431,
+        "mean_cost_usd": 0.00044,
+        "mean_tokens": 1432,
+        "wall_clock_s": 350.8,
         "knobs": {
           "controller": "batch",
           "branches": "bm25,dense",
@@ -1447,23 +1483,23 @@
         "turns": 120,
         "early_retrieval_pct": 87.6,
         "false_trigger_pct": 0.0,
-        "multi_intent_pct": 60.0,
-        "citation_support_pct": 78.8,
-        "recall_at_k_pct": 78.8,
+        "multi_intent_pct": 72.5,
+        "citation_support_pct": 84.3,
+        "recall_at_k_pct": 79.9,
         "recall_unit": "passages",
         "fabricated_citations": 0,
         "refined_not_restarted_pct": 100.0,
         "intent_coverage": {
-          "multi_intent_sub_queries": 92,
+          "multi_intent_sub_queries": 139,
           "with_evidence_pct": 100.0,
           "starved": 0,
           "starved_examples": []
         },
-        "median_ttft_ms": 3414,
-        "median_complete_ms": 3838,
-        "mean_cost_usd": 0.002281,
-        "mean_tokens": 2258,
-        "wall_clock_s": 944.8,
+        "median_ttft_ms": 4516,
+        "median_complete_ms": 5328,
+        "mean_cost_usd": 0.003656,
+        "mean_tokens": 3126,
+        "wall_clock_s": 1364.0,
         "knobs": {
           "controller": "rule",
           "branches": "bm25,dense",
@@ -1483,7 +1519,7 @@
         "early_retrieval_pct": 0.0,
         "false_trigger_pct": 100.0,
         "multi_intent_pct": 0.0,
-        "citation_support_pct": 87.9,
+        "citation_support_pct": 96.9,
         "recall_at_k_pct": 62.2,
         "recall_unit": "passages",
         "fabricated_citations": 0,
@@ -1494,11 +1530,11 @@
           "starved": 0,
           "starved_examples": []
         },
-        "median_ttft_ms": 2260,
-        "median_complete_ms": 2835,
-        "mean_cost_usd": 0.000264,
-        "mean_tokens": 1232,
-        "wall_clock_s": 884.4,
+        "median_ttft_ms": 2528,
+        "median_complete_ms": 3178,
+        "mean_cost_usd": 0.000316,
+        "mean_tokens": 1394,
+        "wall_clock_s": 983.0,
         "knobs": {
           "controller": "batch",
           "branches": "bm25,dense",
@@ -1524,23 +1560,23 @@
           "turns": 44,
           "early_retrieval_pct": 79.5,
           "false_trigger_pct": null,
-          "multi_intent_pct": 54.5,
-          "citation_support_pct": 77.4,
-          "recall_at_k_pct": 69.1,
+          "multi_intent_pct": 72.7,
+          "citation_support_pct": 80.2,
+          "recall_at_k_pct": 73.1,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 63,
+            "multi_intent_sub_queries": 94,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 2856,
-          "median_complete_ms": 3349,
-          "mean_cost_usd": 0.003083,
-          "mean_tokens": 3256,
-          "wall_clock_s": 386.8,
+          "median_ttft_ms": 3594,
+          "median_complete_ms": 4279,
+          "mean_cost_usd": 0.004909,
+          "mean_tokens": 4370,
+          "wall_clock_s": 412.2,
           "knobs": {
             "controller": "rule",
             "branches": "bm25,dense",
@@ -1559,23 +1595,23 @@
           "turns": 44,
           "early_retrieval_pct": 79.5,
           "false_trigger_pct": null,
-          "multi_intent_pct": 59.1,
-          "citation_support_pct": 82.1,
-          "recall_at_k_pct": 72.9,
+          "multi_intent_pct": 70.5,
+          "citation_support_pct": 81.9,
+          "recall_at_k_pct": 73.5,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 63,
+            "multi_intent_sub_queries": 93,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 3966,
-          "median_complete_ms": 4556,
-          "mean_cost_usd": 0.003071,
-          "mean_tokens": 3251,
-          "wall_clock_s": 405.8,
+          "median_ttft_ms": 3332,
+          "median_complete_ms": 4230,
+          "mean_cost_usd": 0.004877,
+          "mean_tokens": 4383,
+          "wall_clock_s": 416.6,
           "knobs": {
             "controller": "rule",
             "branches": "dense",
@@ -1600,23 +1636,23 @@
           "turns": 44,
           "early_retrieval_pct": 79.5,
           "false_trigger_pct": null,
-          "multi_intent_pct": 50.0,
-          "citation_support_pct": 78.2,
-          "recall_at_k_pct": 66.8,
+          "multi_intent_pct": 72.7,
+          "citation_support_pct": 80.8,
+          "recall_at_k_pct": 73.7,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 55,
+            "multi_intent_sub_queries": 101,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 2724,
-          "median_complete_ms": 3381,
-          "mean_cost_usd": 0.003035,
-          "mean_tokens": 3231,
-          "wall_clock_s": 351.1,
+          "median_ttft_ms": 3190,
+          "median_complete_ms": 3974,
+          "mean_cost_usd": 0.004945,
+          "mean_tokens": 4415,
+          "wall_clock_s": 400.6,
           "knobs": {
             "controller": "rule",
             "branches": "bm25,dense",
@@ -1635,23 +1671,23 @@
           "turns": 44,
           "early_retrieval_pct": 79.5,
           "false_trigger_pct": null,
-          "multi_intent_pct": 54.5,
-          "citation_support_pct": 77.5,
-          "recall_at_k_pct": 67.4,
+          "multi_intent_pct": 72.7,
+          "citation_support_pct": 79.7,
+          "recall_at_k_pct": 72.0,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 62,
+            "multi_intent_sub_queries": 94,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 2760,
-          "median_complete_ms": 3292,
-          "mean_cost_usd": 0.003034,
-          "mean_tokens": 3228,
-          "wall_clock_s": 362.1,
+          "median_ttft_ms": 2929,
+          "median_complete_ms": 3415,
+          "mean_cost_usd": 0.004854,
+          "mean_tokens": 4435,
+          "wall_clock_s": 372.5,
           "knobs": {
             "controller": "rule",
             "branches": "bm25,dense",
@@ -1676,23 +1712,23 @@
           "turns": 44,
           "early_retrieval_pct": 79.5,
           "false_trigger_pct": null,
-          "multi_intent_pct": 54.5,
-          "citation_support_pct": 82.4,
-          "recall_at_k_pct": 70.0,
+          "multi_intent_pct": 72.7,
+          "citation_support_pct": 80.7,
+          "recall_at_k_pct": 72.8,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 61,
+            "multi_intent_sub_queries": 92,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 2686,
-          "median_complete_ms": 2975,
-          "mean_cost_usd": 0.003062,
-          "mean_tokens": 3216,
-          "wall_clock_s": 354.5,
+          "median_ttft_ms": 3102,
+          "median_complete_ms": 3612,
+          "mean_cost_usd": 0.004856,
+          "mean_tokens": 4371,
+          "wall_clock_s": 388.5,
           "knobs": {
             "controller": "rule",
             "branches": "bm25,dense",
@@ -1711,23 +1747,23 @@
           "turns": 44,
           "early_retrieval_pct": 0.0,
           "false_trigger_pct": null,
-          "multi_intent_pct": 54.5,
-          "citation_support_pct": 77.9,
-          "recall_at_k_pct": 68.4,
+          "multi_intent_pct": 72.7,
+          "citation_support_pct": 78.6,
+          "recall_at_k_pct": 67.9,
           "recall_unit": "passages",
           "fabricated_citations": 0,
           "refined_not_restarted_pct": null,
           "intent_coverage": {
-            "multi_intent_sub_queries": 60,
+            "multi_intent_sub_queries": 95,
             "with_evidence_pct": 100.0,
             "starved": 0,
             "starved_examples": []
           },
-          "median_ttft_ms": 3288,
-          "median_complete_ms": 3866,
-          "mean_cost_usd": 0.003107,
-          "mean_tokens": 3249,
-          "wall_clock_s": 499.8,
+          "median_ttft_ms": 3552,
+          "median_complete_ms": 4308,
+          "mean_cost_usd": 0.004922,
+          "mean_tokens": 4192,
+          "wall_clock_s": 569.6,
           "knobs": {
             "controller": "model",
             "branches": "bm25,dense",
@@ -1758,26 +1794,11 @@
           "catering options for a workshop in Pune"
         ],
         "predicted": [
-          "customer workshop Pune 30 people cancellation policy",
-          "customer workshop Pune 30 people catering options"
+          "customer workshop venue Pune current cancellation policy",
+          "customer workshop Pune catering options for 30 people"
         ],
         "merged_by_guard": 0,
         "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "enterprise",
-      "fixture": "compound_03",
-      "utterance": "Can you tell me how far in advance a venue has to be booked, and also which external caterers are approved for Baner Tech Hub?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: Venues, including Baner Tech Hub, must be booked at least 10 working days before the event",
-          "The complete list of approved external caterers for Baner Tech Hub could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.8,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -1787,8 +1808,8 @@
       "utterance": "how much is the hotel limit for business trips in New York and what is the catering budget per attendee for a customer workshop",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 11553,
-        "utterance_end_ms": 10082,
+        "first_retrieval_ms": 15087,
+        "utterance_end_ms": 13245,
         "decisions": [
           [
             "wait",
@@ -1829,11 +1850,11 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The current hotel nightly rate limit for business trips in New York is USD 360 per night",
-          "The hotel limit for business trips in New York in INR could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The hotel limit for business trips in New York is USD 360 per night",
+          "The catering budget for internal events could not be verified from the retrieved documents."
         ],
         "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -1844,7 +1865,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "employee travel reimbursement policy summary"
+          "employee trip travel reimbursement rule summary current"
         ],
         "quota_applied": false
       }
@@ -1857,25 +1878,12 @@
       "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: Every trip must have a travel request approved by the employee's line manager before any booking is made, unless it is a late booking which requires additional approval",
-          "Not verified in the cited documents: For international trips, approval is required from both the line manager and the department head before booking, and late bookings require additional verification from the finance controller",
-          "Whether the late booking exception applies to all types of expenses or only specific ones."
+          "Not verified in the cited documents: Flights, rail and hotel stays must be booked through the corporate travel portal, and late bookings require written approval from a senior director",
+          "Not verified in the cited documents: Economy class is the standard for all flights under 6 hours, but late-booked international travel requires additional verification of foreign currency receipts",
+          "Whether the late booking exception applies in this specific case, as it requires justification and approval from a senior director."
         ],
-        "support_rate": 0.8,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "enterprise",
-      "fixture": "late_detail_02",
-      "utterance": "What are the hotel limits for business travel?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "business travel hotel limits company policy current"
-        ],
-        "quota_applied": false
+        "support_rate": 0.7143,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -1886,11 +1894,12 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the retrieved documents: The hotel limits for business travel vary by location",
-          "Specific hotel limits for other locations not mentioned in the retrieved documents could not be verified."
+          "Not verified in the retrieved documents: The hotel limit for business travel in London is GBP 230 per night",
+          "The evidence does not specify any star rating class limits for hotels used during business travel.",
+          "The star rating class limit policy for business travel hotels could not be verified from the retrieved documents."
         ],
-        "support_rate": 0.875,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.8,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -1901,25 +1910,9 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "best Pune venue hands-on workshop 24 people recommendation"
+          "best Pune venue for hands-on workshop 24 people"
         ],
         "quota_applied": false
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "enterprise",
-      "fixture": "late_detail_03",
-      "utterance": "Which Pune venue should I book for a hands-on workshop with 24 people?",
-      "what_happened": "3 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: You should book the Baner Tech Hub for a hands-on workshop with 24 people",
-          "Not verified in the cited documents: Riverside Hall can also accommodate your group size, seating 32 people in boardroom layout and 40 people in classroom layout",
-          "Not verified in the cited documents: Hinjewadi Convention Suites is not suitable for your needs as it is not recommended for groups smaller than 50 people"
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -1930,7 +1923,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "workshop venue cancellation policy current"
+          "workshop venues cancellation policy current"
         ],
         "quota_applied": false
       }
@@ -1959,8 +1952,8 @@
           "What is the per diem rate and hotel limit when travelling to London for work?"
         ],
         "predicted": [
-          "current per diem rate business travel London",
-          "current hotel reimbursement limit business travel London"
+          "current per diem rate London business travel",
+          "current hotel reimbursement limit London business travel"
         ]
       }
     },
@@ -1972,12 +1965,25 @@
       "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The current per diem rate for business travel to London is GBP 85 per day",
-          "Not verified in the cited documents: The hotel reimbursement limit for business travel to London is GBP 230 per night",
-          "The hotel reimbursement limit for business travel to London under domestic travel policies could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The current per diem rate for London business travel is GBP 85 per day, and the hotel reimbursement limit is GBP 230 per night",
+          "Not verified in the retrieved documents: Hotel reimbursement for London business travel is up to the city limits in the international per diem schedule, which is GBP 230 per night",
+          "Current hotel reimbursement limit for domestic travel in London could not be verified from the retrieved documents."
         ],
         "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
+      }
+    },
+    {
+      "category": "starved_sub_intent",
+      "corpus": "enterprise",
+      "fixture": "single_04",
+      "utterance": "How long do I have to submit an expense claim after a business trip ends?",
+      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "evidence": {
+        "sub_queries": [
+          "expense claim submission deadline after business trip ends current policy"
+        ],
+        "quota_applied": false
       }
     },
     {
@@ -1987,8 +1993,8 @@
       "utterance": "What is the venue cancellation policy?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 3674,
-        "utterance_end_ms": 2722,
+        "first_retrieval_ms": 3705,
+        "utterance_end_ms": 2710,
         "decisions": [
           [
             "wait",
@@ -2006,37 +2012,11 @@
       }
     },
     {
-      "category": "starved_sub_intent",
-      "corpus": "enterprise",
-      "fixture": "presentation_03",
-      "utterance": "What happens if a company laptop is lost?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "company policy procedure lost laptop"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_01",
-      "utterance": "Who took control of the italian government in 1922?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "Italian government 1922 who took control"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
       "category": "under_decomposition",
       "corpus": "asqa",
       "fixture": "asqa_compound_01",
       "utterance": "Who took control of the italian government in 1922?",
-      "what_happened": "5 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "5 gold sub-intents, 2 sub-queries produced.",
       "evidence": {
         "gold": [
           "What party took control of the Italian government in 1922?",
@@ -2046,7 +2026,8 @@
           "Who is the prime minister that took control of the italian government in 1922?"
         ],
         "predicted": [
-          "Italian government 1922 who took control"
+          "Italy head of government 1922",
+          "Italy ruling political party 1922"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2059,8 +2040,8 @@
       "utterance": "Who did we buy the gadsden purchase from?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4526,
-        "utterance_end_ms": 3570,
+        "first_retrieval_ms": 4965,
+        "utterance_end_ms": 3583,
         "decisions": [
           [
             "wait",
@@ -2082,37 +2063,18 @@
       }
     },
     {
-      "category": "under_decomposition",
+      "category": "claim_withheld",
       "corpus": "asqa",
       "fixture": "asqa_compound_02",
       "utterance": "Who did we buy the gadsden purchase from?",
-      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
-      "evidence": {
-        "gold": [
-          "Who did the United States buy the Gadsden purchase from?",
-          "How did the United States buy the Gadsden purchase?"
-        ],
-        "predicted": [
-          "Gadsden Purchase seller country United States bought from"
-        ],
-        "merged_by_guard": 0,
-        "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_03",
-      "utterance": "Where does the new fallout game take place?",
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "The evidence does not mention a specific game setting location for the Fallout TV series tie-in game.",
-          "Not verified in the retrieved documents: discusses \"Fallout Shelter,\" but it does not provide a setting location for a tie-in game related to the TV series",
-          "The setting location for the Fallout TV series tie-in game could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The negotiation leaders representing the sellers in the Gadsden Purchase were from the financially strapped government of Santa Anna, who agreed to the sale",
+          "The specific names of the negotiation leaders for the Gadsden Purchase could not be verified from the retrieved documents."
         ],
-        "support_rate": 0.6667,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2128,26 +2090,11 @@
           "Who played the Chicago Cubs in the 1907 World Series?"
         ],
         "predicted": [
-          "Chicago Cubs opponent in World Series 2023",
-          "Chicago Cubs opponent in World Series 2016"
+          "2017 World Series Chicago Cubs opponent",
+          "2016 World Series Chicago Cubs opponent"
         ],
         "merged_by_guard": 0,
         "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_04",
-      "utterance": "Who played the chicago cubs in the world series last year?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: The Chicago Cubs did not play in the World Series in 2023; therefore, their opponent in that year is not available in the retrieved documents",
-          "Chicago Cubs opponent in World Series 2023 could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -2166,8 +2113,8 @@
           "Who has scored the highest number of runs in test cricket in an over?"
         ],
         "predicted": [
-          "test cricket highest run scorer all-time men's",
-          "test cricket highest run scorer all-time women's"
+          "highest number of runs in men's test cricket career record holder",
+          "highest number of runs in women's test cricket career record holder"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2180,8 +2127,8 @@
       "utterance": "Where does the federal reserve get its authority?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4699,
-        "utterance_end_ms": 3517,
+        "first_retrieval_ms": 4932,
+        "utterance_end_ms": 3521,
         "decisions": [
           [
             "wait",
@@ -2207,7 +2154,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_06",
       "utterance": "Where does the federal reserve get its authority?",
-      "what_happened": "3 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
       "evidence": {
         "gold": [
           "Which body does the federal reserve get its authority from originally?",
@@ -2215,7 +2162,8 @@
           "From which act does the federal reserve get its authority?"
         ],
         "predicted": [
-          "Federal Reserve source of authority US law"
+          "federal reserve source of authority US Constitution",
+          "federal reserve source of authority federal statutes"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2228,8 +2176,8 @@
       "utterance": "Who is in charge of the hollywood walk of fame?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5645,
-        "utterance_end_ms": 4385,
+        "first_retrieval_ms": 6217,
+        "utterance_end_ms": 4453,
         "decisions": [
           [
             "wait",
@@ -2263,8 +2211,8 @@
           "Who is in charge of choosing celebrities for the hollywood walk of fame?"
         ],
         "predicted": [
-          "Hollywood Walk of Fame managing organization",
-          "Hollywood Walk of Fame current chairperson or president"
+          "Hollywood Walk of Fame administering organization",
+          "Hollywood Walk of Fame current director manager"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2282,9 +2230,9 @@
           "Who was the first person who made a careful study of electricity and magnetism?"
         ],
         "predicted": [
-          "first person to observe electricity in nature",
-          "first person to conduct scientific experiments on electricity",
-          "first person to invent practical use of electricity"
+          "first person to observe and describe electrical phenomena ancient times",
+          "first person to conduct scientific experiments on electricity 17th 18th centuries",
+          "first person to generate and study static electricity in laboratory"
         ]
       }
     },
@@ -2296,43 +2244,12 @@
       "what_happened": "3 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: William Gilbert was the first person to observe electricity in nature, as he made a careful study of electricity and magnetism in 1600 and distinguished the lodestone effect from static electricity produced by rubbing amber",
-          "Not verified in the cited documents: Henry Elles is noted for being one of the first to conduct scientific experiments on electricity, as he claimed to have written to the Royal Society in 1755 about the links between electricity and magnetism",
-          "Not verified in the cited documents: The first person to invent a practical use of electricity is attributed to Hippolyte Pixii, who constructed the first alternator to produce alternating current based on Michael Faraday's principles in 1832"
+          "Not verified in the retrieved documents: The first person to observe and describe electrical phenomena in ancient times was likely those who noted the shocks from electric fish, as ancient Egyptian texts from 2750 BCE referred to these fish and their numbing effects",
+          "Not verified in the cited documents: The first person to conduct scientific experiments on electricity in the 17th and 18th centuries was William Gilbert, who in 1600 wrote \"De Magnete,\" making a careful study of electricity and magnetism",
+          "Not verified in the cited documents: The first person to generate and study static electricity in a laboratory was also William Gilbert, as he distinguished the lodestone effect from static electricity produced by rubbing amber in his work"
         ],
-        "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_09",
-      "utterance": "When was the city of new york founded?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "New York City founding date"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "under_decomposition",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_09",
-      "utterance": "When was the city of new york founded?",
-      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
-      "evidence": {
-        "gold": [
-          "When was the city of new york founded by the Dutch and initially called New Amsterdam?",
-          "When was the city of new york under English control and renamed to New York?"
-        ],
-        "predicted": [
-          "New York City founding date"
-        ],
-        "merged_by_guard": 0,
-        "method": "llm"
+        "support_rate": 0.25,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2348,8 +2265,8 @@
           "Who played flash gordon in the 2007tv series?"
         ],
         "predicted": [
-          "Flash Gordon 1954 TV series lead actor",
-          "Flash Gordon 2007 TV series lead actor"
+          "Flash Gordon 1954 TV series actor who played Flash Gordon",
+          "Flash Gordon 2007 TV series actor who played Flash Gordon"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2362,8 +2279,8 @@
       "utterance": "Who was the mother of dragons married to?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4918,
-        "utterance_end_ms": 3534,
+        "first_retrieval_ms": 4887,
+        "utterance_end_ms": 3526,
         "decisions": [
           [
             "wait",
@@ -2389,7 +2306,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_11",
       "utterance": "Who was the mother of dragons married to?",
-      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "4 gold sub-intents, 2 sub-queries produced.",
       "evidence": {
         "gold": [
           "Who was the mother of dragons first married to?",
@@ -2398,9 +2315,10 @@
           "What Ghiscari noble is the mother of dragons married to?"
         ],
         "predicted": [
-          "Game of Thrones Daenerys Targaryen husband"
+          "Daenerys Targaryen spouse Game of Thrones TV series",
+          "Daenerys Targaryen spouse A Song of Ice and Fire books"
         ],
-        "merged_by_guard": 1,
+        "merged_by_guard": 0,
         "method": "llm"
       }
     },
@@ -2419,11 +2337,26 @@
           "What is the alternative rap name of the rapper in the Gorillaz song \"Clint Eastwood\"?"
         ],
         "predicted": [
-          "Clint Eastwood original 2001 Gorillaz recording rapper",
-          "Clint Eastwood Gorillaz live performances rapper"
+          "Gorillaz Clint Eastwood original studio version rapper",
+          "Gorillaz Clint Eastwood live performances rapper"
         ],
         "merged_by_guard": 0,
         "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_12",
+      "utterance": "Who raps in the gorillaz song clint eastwood?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The original studio version of \"Clint Eastwood\" by Gorillaz features British hip hop group Phi Life Cypher in some of the single releases",
+          "The specific rapper for the original studio version of \"Clint Eastwood\" could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2433,8 +2366,8 @@
       "utterance": "Who did the virginia plan give more power to?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5069,
-        "utterance_end_ms": 3968,
+        "first_retrieval_ms": 5373,
+        "utterance_end_ms": 3985,
         "decisions": [
           [
             "wait",
@@ -2460,28 +2393,13 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_13",
       "utterance": "Who did the virginia plan give more power to?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The Virginia Plan gave more power to larger states by providing them with more representation than they had under the Articles of Confederation, which had given each state equal representation regardless of population",
-          "Not verified in the cited documents: The Virginia Plan also gave more power to the national government by proposing the creation of a supreme national government with three branches and a bicameral legislature",
-          "Specific details on how the Virginia Plan's power distribution affected smaller states could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The Virginia Plan gave more power to the federal government compared to the states, as it proposed a legislative branch with the authority to veto state laws deemed incompatible with the articles of union"
         ],
-        "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_14",
-      "utterance": "What are the 3 types of enzymes in digestion?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "three main types classes of digestive enzymes human digestion"
-        ],
-        "quota_applied": false
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2489,7 +2407,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_14",
       "utterance": "What are the 3 types of enzymes in digestion?",
-      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "4 gold sub-intents, 2 sub-queries produced.",
       "evidence": {
         "gold": [
           "What are the types of enzymes in digestion that split fatty acids?",
@@ -2498,9 +2416,10 @@
           "What are the types of enzymes in digestion that split nucleic acids?"
         ],
         "predicted": [
-          "three main types classes of digestive enzymes human digestion"
+          "three main classes of digestive enzymes by function proteases lipases carbohydrases",
+          "three types of enzymes in digestion in animals other than humans"
         ],
-        "merged_by_guard": 0,
+        "merged_by_guard": 1,
         "method": "llm"
       }
     },
@@ -2512,33 +2431,12 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the retrieved documents: The three types of enzymes in digestion are lipases, proteases (and peptidases), and amylases",
-          "The specific details about nucleases and their role in digestion could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The three main classes of digestive enzymes by function are proteases, lipases, and carbohydrases",
+          "The evidence does not specify three types of enzymes in digestion in animals other than humans.",
+          "Three types of enzymes in digestion in animals other than humans could not be verified from the retrieved documents."
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "under_decomposition",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_15",
-      "utterance": "Who plays cat in beauty and the beast?",
-      "what_happened": "4 gold sub-intents, 3 sub-queries produced.",
-      "evidence": {
-        "gold": [
-          "Who plays cat in the 2012 reboot of beauty and the beast tv series?",
-          "Who plays cat in the 1987 beauty and the beast tv series?",
-          "Who plays Catherine in the 2012 reboot of the beauty and the beast tv series?",
-          "Who plays Catherine in the 1987 beauty and the beast tv series?"
-        ],
-        "predicted": [
-          "Beauty and the Beast original stage musical cat character actor",
-          "Beauty and the Beast 1991 animated film cat character voice actor",
-          "Beauty and the Beast 2017 live action film cat character actor"
-        ],
-        "merged_by_guard": 0,
-        "method": "llm"
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2563,24 +2461,11 @@
       }
     },
     {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_17",
-      "utterance": "According to 2011 census the literacy rate of india is?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "India literacy rate 2011 census"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
       "category": "under_decomposition",
       "corpus": "asqa",
       "fixture": "asqa_compound_17",
       "utterance": "According to 2011 census the literacy rate of india is?",
-      "what_happened": "6 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "6 gold sub-intents, 3 sub-queries produced.",
       "evidence": {
         "gold": [
           "According to the 2011 census the combined literacy rate of India is?",
@@ -2591,10 +2476,27 @@
           "According to the 2001 census the female literacy rate of India is?"
         ],
         "predicted": [
-          "India literacy rate 2011 census"
+          "India overall literacy rate 2011 census",
+          "India male literacy rate 2011 census",
+          "India female literacy rate 2011 census"
         ],
         "merged_by_guard": 0,
         "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_17",
+      "utterance": "According to 2011 census the literacy rate of india is?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: The male literacy rate in India according to the 2011 census was 82.14 percent",
+          "The specific male and female literacy rates for India in the 2011 census could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2602,7 +2504,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_18",
       "utterance": "Who won the men's french open title?",
-      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "what_happened": "6 gold sub-intents, 4 sub-queries produced.",
       "evidence": {
         "gold": [
           "Who won the singles men's French Open title in 2017?",
@@ -2613,8 +2515,10 @@
           "Who won the doubles men's French Open title in 2015?"
         ],
         "predicted": [
-          "men's French Open singles champion most recent year",
-          "men's French Open singles champion all time first winner"
+          "men's singles french open tennis winner 2023",
+          "men's singles french open tennis winner 2022",
+          "men's singles french open tennis winner 2021",
+          "men's singles french open tennis winner 2020"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2632,7 +2536,7 @@
           "Where can you find your taste buds on your tongue?"
         ],
         "predicted": [
-          "location of most taste buds on human tongue"
+          "most taste buds location human tongue"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2651,8 +2555,8 @@
           "Who acted as harley quinn in suicide squad 2?"
         ],
         "predicted": [
-          "Harley Quinn actress Suicide Squad 2016 film",
-          "Harley Quinn actress Suicide Squad 2021 film"
+          "Harley Quinn actress 2016 film Suicide Squad",
+          "Harley Quinn actress 2021 film The Suicide Squad"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2665,8 +2569,8 @@
       "utterance": "Who did raven marry in that's so raven?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5009,
-        "utterance_end_ms": 3574,
+        "first_retrieval_ms": 5019,
+        "utterance_end_ms": 3562,
         "decisions": [
           [
             "wait",
@@ -2688,14 +2592,29 @@
       }
     },
     {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_22",
+      "utterance": "Who plays the skin changer in the hobbit?",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Mikael Persbrandt portrays Beorn in The Hobbit: The Desolation of Smaug (2013)",
+          "Not verified in the cited documents: Mikael Persbrandt also portrays Beorn in The Hobbit: The Battle of the Five Armies (2014)"
+        ],
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
+      }
+    },
+    {
       "category": "late_trigger",
       "corpus": "asqa",
       "fixture": "asqa_compound_23",
       "utterance": "What religion are they in call the midwife?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5215,
-        "utterance_end_ms": 3607,
+        "first_retrieval_ms": 5045,
+        "utterance_end_ms": 3575,
         "decisions": [
           [
             "wait",
@@ -2730,8 +2649,8 @@
           "What religion are the nuns in Call the Midwife?"
         ],
         "predicted": [
-          "Call the Midwife main characters religion",
-          "Call the Midwife nuns religion"
+          "Call the Midwife TV series main characters religion",
+          "Call the Midwife book Jennifer Worth main characters religion"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2742,31 +2661,13 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_23",
       "utterance": "What religion are they in call the midwife?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the retrieved documents: The main characters in \"Call the Midwife\" are associated with the Anglican religion, as they work with the Community of St",
-          "Not verified in the retrieved documents: The nuns in \"Call the Midwife\" belong to the Community of St",
-          "The specific religious beliefs or practices of the main characters beyond their association with the Anglican order could not be verified from the retrieved documents."
+          "Not verified in the cited documents: In the Call the Midwife book by Jennifer Worth, the main characters are also connected to the Community of St. John the Divine, an Anglican religious order"
         ],
         "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_24",
-      "utterance": "Who wrote the national anthem trinidad and tobago?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: The author of the lyrics for the national anthem of Trinidad and Tobago, \"Forged from the Love of Liberty,\" is Patrick S",
-          "Not verified in the retrieved documents: The composer of the music for the national anthem of Trinidad and Tobago is also Patrick S",
-          "The evidence does not mention any other individuals involved in the creation of the national anthem."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -2796,8 +2697,8 @@
       "utterance": "Who fought with an angel in the bible?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4672,
-        "utterance_end_ms": 3594,
+        "first_retrieval_ms": 4938,
+        "utterance_end_ms": 3566,
         "decisions": [
           [
             "wait",
@@ -2821,9 +2722,27 @@
     {
       "category": "under_decomposition",
       "corpus": "asqa",
+      "fixture": "asqa_compound_26",
+      "utterance": "Who fought with an angel in the bible?",
+      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
+      "evidence": {
+        "gold": [
+          "What is the man's name before he fights with an angel in the bible?",
+          "What is the man's name after he fights with an angel in the bible?"
+        ],
+        "predicted": [
+          "who fought with an angel Old Testament bible"
+        ],
+        "merged_by_guard": 1,
+        "method": "llm"
+      }
+    },
+    {
+      "category": "under_decomposition",
+      "corpus": "asqa",
       "fixture": "asqa_compound_27",
       "utterance": "Who plays the voice of darth vader in star wars?",
-      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "what_happened": "6 gold sub-intents, 4 sub-queries produced.",
       "evidence": {
         "gold": [
           "Who plays the voice of darth vader in star wars Episodes III–VI, IX, and Rebels?",
@@ -2834,46 +2753,13 @@
           "Who plays the voice of darth vader in star wars radio drama?"
         ],
         "predicted": [
-          "Darth Vader original Star Wars trilogy voice actor",
-          "Darth Vader Star Wars animated series voice actor"
+          "Darth Vader voice actor original Star Wars trilogy films",
+          "Darth Vader voice actor Star Wars Episode III Revenge of the Sith",
+          "Darth Vader voice actor Star Wars The Clone Wars TV series",
+          "Darth Vader voice actor Star Wars Rebels TV series"
         ],
         "merged_by_guard": 0,
         "method": "llm"
-      }
-    },
-    {
-      "category": "under_decomposition",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_28",
-      "utterance": "Who sings the song stuck in the middle with you?",
-      "what_happened": "3 gold sub-intents, 2 sub-queries produced.",
-      "evidence": {
-        "gold": [
-          "Who originally sang \"Stuck in the Middle With You\"?",
-          "Who sang \"Stuck in the Middle with You\" on the album Can't Explain?",
-          "Who sang \"Stuck in the Middle With You\" on the album Old Flame?"
-        ],
-        "predicted": [
-          "Stuck in the Middle with You original recording singer",
-          "Stuck in the Middle with You most famous cover version singer"
-        ],
-        "merged_by_guard": 0,
-        "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_28",
-      "utterance": "Who sings the song stuck in the middle with you?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: The most famous cover version of \"Stuck in the Middle with You\" was recorded by Juice Newton, which was included on her 1985 album \"Old Flame\"",
-          "The identity of the most famous cover version singer could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -2892,9 +2778,9 @@
           "What is the highest amount of points scored by a single team in playoff games?"
         ],
         "predicted": [
-          "nba most points scored single player game record",
-          "nba most points scored by a team in a single game",
-          "nba most combined points both teams single game"
+          "NBA most points scored by a single player in one game",
+          "NBA most points scored by a single team in one game",
+          "NBA most combined points scored by both teams in one game"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2912,7 +2798,7 @@
           "When was the song 'As Time Goes By' (as performed by Hiroko Shimabukuro) written?"
         ],
         "predicted": [
-          "As Time Goes By original song composition date"
+          "As Time Goes By original song year written"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2931,8 +2817,8 @@
           "Who landed the first quad jump in figure skating ever?"
         ],
         "predicted": [
-          "first quad jump landed men's figure skating skater",
-          "first quad jump landed women's figure skating skater"
+          "first quad jump landed men's figure skating competition skater",
+          "first quad jump landed women's figure skating competition skater"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2943,7 +2829,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_32",
       "utterance": "Who said the power of the pen is mightier than the sword?",
-      "what_happened": "4 gold sub-intents, 2 sub-queries produced.",
+      "what_happened": "4 gold sub-intents, 1 sub-queries produced.",
       "evidence": {
         "gold": [
           "Who first said the exact phrase the power of the pen is mightier than the sword?",
@@ -2952,10 +2838,9 @@
           "Who first said \"the pen is mightier than the sword\"?"
         ],
         "predicted": [
-          "originator of the phrase the pen is mightier than the sword",
-          "famous user or popularizer of the phrase the pen is mightier than the sword"
+          "the pen is mightier than the sword original 1839 phrase author"
         ],
-        "merged_by_guard": 0,
+        "merged_by_guard": 1,
         "method": "llm"
       }
     },
@@ -2974,8 +2859,8 @@
           "What country was the Count of Monte Cristo comic book published in?"
         ],
         "predicted": [
-          "The Count of Monte Cristo original 1844 novel publication location",
-          "The Count of Monte Cristo 2002 film release location"
+          "The Count of Monte Cristo original novel publication location",
+          "The Count of Monte Cristo first English translation publication location"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -2986,7 +2871,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_34",
       "utterance": "Where does raymond live in everybody loves raymond?",
-      "what_happened": "5 gold sub-intents, 1 sub-queries produced.",
+      "what_happened": "5 gold sub-intents, 2 sub-queries produced.",
       "evidence": {
         "gold": [
           "What is the city and state where Raymond lives in Everybody Loves Raymond?",
@@ -2996,10 +2881,26 @@
           "Where does Raymond live in Everybody Loves Raymond, in terms of other people?"
         ],
         "predicted": [
-          "Raymond Barone home location in original Everybody Loves Raymond TV series"
+          "Everybody Loves Raymond Raymond Barone home city town location",
+          "Everybody Loves Raymond Raymond Barone house apartment type of residence"
         ],
         "merged_by_guard": 0,
         "method": "llm"
+      }
+    },
+    {
+      "category": "claim_withheld",
+      "corpus": "asqa",
+      "fixture": "asqa_compound_34",
+      "utterance": "Where does raymond live in everybody loves raymond?",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "evidence": {
+        "uncertainty": [
+          "Not verified in the cited documents: Raymond Barone's type of residence is not explicitly stated, but he is described as living with his family on Long Island",
+          "The specific type of house or apartment where Raymond Barone lives could not be verified from the retrieved documents."
+        ],
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3007,7 +2908,7 @@
       "corpus": "asqa",
       "fixture": "asqa_compound_35",
       "utterance": "Ok google who won the world cup soccer?",
-      "what_happened": "6 gold sub-intents, 2 sub-queries produced.",
+      "what_happened": "6 gold sub-intents, 3 sub-queries produced.",
       "evidence": {
         "gold": [
           "Who won the 2015 FIFA Women's World Cup?",
@@ -3018,10 +2919,11 @@
           "Who won the 2006 FIFA World Cup?"
         ],
         "predicted": [
-          "FIFA Men's World Cup most recent winner",
-          "FIFA Women's World Cup most recent winner"
+          "country most FIFA men's World Cups won",
+          "country most FIFA women's World Cups won",
+          "team most FIFA women's World Cups won"
         ],
-        "merged_by_guard": 0,
+        "merged_by_guard": 1,
         "method": "llm"
       }
     },
@@ -3033,11 +2935,10 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The most recent winner of the FIFA Men's World Cup is France, who won the title in 2018",
-          "The winner of the FIFA Men's World Cup prior to 2018 could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Brazil has won the most FIFA men's World Cups, with a total of five titles"
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3055,54 +2956,7 @@
         ],
         "predicted": [
           "In the Heat of the Night 1967 film filming locations",
-          "In the Heat of the Night TV series filming locations"
-        ],
-        "merged_by_guard": 0,
-        "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_36",
-      "utterance": "Where did they film the movie in the heat of the night?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: In the Heat of the Night, the 1967 film, was primarily filmed in Sparta, Illinois, although it was set in the fictional town of Sparta, Mississippi",
-          "The evidence does not provide specific filming locations for the In the Heat of the Night TV series.",
-          "Filming locations for the In the Heat of the Night TV series could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_37",
-      "utterance": "Who sings better than i in joseph king of dreams?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "'Better Than I' Joseph: King of Dreams original animated film singer"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "under_decomposition",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_37",
-      "utterance": "Who sings better than i in joseph king of dreams?",
-      "what_happened": "2 gold sub-intents, 1 sub-queries produced.",
-      "evidence": {
-        "gold": [
-          "Who is the character that sings better than i in joseph king of dreams?",
-          "Who is the artist that sings better than i in joseph king of dreams?"
-        ],
-        "predicted": [
-          "'Better Than I' Joseph: King of Dreams original animated film singer"
+          "In the Heat of the Night 1988 TV movie filming locations"
         ],
         "merged_by_guard": 0,
         "method": "llm"
@@ -3124,29 +2978,13 @@
           "Who did Kobe Bryant beat in the Olympic finals in 2012?"
         ],
         "predicted": [
-          "Kobe Bryant NBA Finals opponent 2000",
-          "Kobe Bryant NBA Finals opponent 2001",
-          "Kobe Bryant NBA Finals opponent 2002",
-          "Kobe Bryant NBA Finals opponent 2009"
+          "Kobe Bryant 2000 NBA Finals opponent team",
+          "Kobe Bryant 2001 NBA Finals opponent team",
+          "Kobe Bryant 2002 NBA Finals opponent team",
+          "Kobe Bryant 2009 NBA Finals opponent team"
         ],
         "merged_by_guard": 0,
         "method": "llm"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_compound_38",
-      "utterance": "Who did kobe bryant beat in the finals?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: Kobe Bryant's NBA Finals opponent in 2000 was the Indiana Pacers, and the Lakers won the series 4 games to 2",
-          "Not verified in the cited documents: In 2001, Kobe Bryant faced the Philadelphia 76ers in the NBA Finals, and the Lakers won the series 4 games to 1",
-          "Kobe Bryant's NBA Finals opponent in 2002 could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -3157,12 +2995,12 @@
       "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: India won the men's Cricket World Cup in 1983 and 2011",
-          "Not verified in the cited documents: India has not won the Women's Cricket World Cup; they were the runners-up in 2017",
-          "The years of any Women's Cricket World Cup wins by India could not be verified from the retrieved documents."
+          "Not verified in the cited documents: India won the men's ICC Cricket World Cup in 1983 and 2011",
+          "Not verified in the cited documents: India has not won the women's Cricket World Cup; they were runners-up in 2017",
+          "The years India won the women's Cricket World Cup could not be verified from the retrieved documents."
         ],
         "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3186,25 +3024,12 @@
     {
       "category": "starved_sub_intent",
       "corpus": "asqa",
-      "fixture": "asqa_late_detail_01",
-      "utterance": "What is the meaning of the latin word camera obscura?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "camera obscura latin word meaning"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
       "fixture": "asqa_late_detail_02",
       "utterance": "What season is the plane crash greys anatomy?",
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Grey's Anatomy original series plane crash season"
+          "Grey's Anatomy plane crash season"
         ],
         "quota_applied": false
       }
@@ -3214,15 +3039,13 @@
       "corpus": "asqa",
       "fixture": "asqa_late_detail_02",
       "utterance": "What season is the plane crash greys anatomy?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The episode titled \"Flight,\" which depicts the crash, is the twenty-fourth and final episode of that season",
-          "Not verified in the cited documents: The episode \"One Flight Down,\" which features a plane crash, is in the eleventh season and recalls the events of the season eight crash",
-          "Specific details about the exact date of the plane crash could not be verified from the retrieved documents."
+          "Not verified in the retrieved documents: The plane crash is part of the season finale of season eight"
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.8,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3233,26 +3056,24 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The aftermath of the plane crash is dealt with in season nine, where characters cope with the consequences of the crash that claimed the life of Lexie Grey and affected other survivors, following the events of the first plane crash in season eight",
-          "The detail raises whether there are multiple plane crashes in the series, as the new detail specifies \"first.\""
+          "Not verified in the cited documents: The plane crash is referenced in season eleven, but it originally happened in the first episode of season eight",
+          "The detail raises whether the episode title \"Flight\" is the only significant episode related to the plane crash in season eight."
         ],
-        "support_rate": 0.6667,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.8,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
-      "category": "claim_withheld",
+      "category": "starved_sub_intent",
       "corpus": "asqa",
       "fixture": "asqa_late_detail_03",
       "utterance": "When was crude oil first discovered in nigeria?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: The first commercial crude oil discovery in Nigeria occurred in 1956 when Shell-BP found oil in Oloibiri, Nigeria",
-          "The specific date of the first exploratory crude oil find in Nigeria could not be verified from the retrieved documents."
+        "sub_queries": [
+          "crude oil first commercial discovery date nigeria"
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "quota_applied": false
       }
     },
     {
@@ -3263,24 +3084,10 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: Notable cover versions of the song were sung by Rosemary Clooney, Ray Charles, Karen Carpenter, and Willie Nelson",
-          "Specific notable cover version singers beyond those listed could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Paul Simon sang the original 1975 recording of \"Still Crazy After All These Years\""
         ],
         "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_late_detail_05",
-      "utterance": "The dna directed synthesis of an rna molecule is called?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "dna directed synthesis of rna molecule process name"
-        ],
-        "quota_applied": false
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3288,29 +3095,15 @@
       "corpus": "asqa",
       "fixture": "asqa_late_detail_06",
       "utterance": "Who is the singer of main tera boyfriend?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The original version of \"Main Tera Boyfriend\" was created by J Star, who is also known for his 2015 track \"Na Na Na Na\"",
-          "The specific details about J Star's role in the original version of \"Main Tera Boyfriend\" could not be verified from the retrieved documents."
+          "Not verified in the cited documents: The singer of \"Main Tera Boyfriend\" from the film \"Raabta\" is Arijit Singh, along with Meet Bros and Neha Kakkar",
+          "Not verified in the cited documents: The singer of the original Punjabi song \"Na Na Na Na\" is J Star",
+          "The specific details about J Star's original song \"Na Na Na Na\" could not be verified from the retrieved documents."
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_late_detail_06",
-      "utterance": "Oh wait, I meant the original version.",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: The original version of the song is a 2015 track titled \"Na Na Na Na\"",
-          "Whether there are any additional details about the original version's reception or popularity compared to the revamped version."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3327,16 +3120,17 @@
       }
     },
     {
-      "category": "starved_sub_intent",
+      "category": "claim_withheld",
       "corpus": "asqa",
       "fixture": "asqa_late_detail_10",
       "utterance": "What is the objective of tour de france?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
-        "sub_queries": [
-          "objective of tour de france cycling race"
+        "uncertainty": [
+          "Not verified in the cited documents: The individual rider's objective in the Tour de France is to compete for the overall general classification, which is determined by the rider's cumulative time across all stages"
         ],
-        "quota_applied": false
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3344,29 +3138,15 @@
       "corpus": "asqa",
       "fixture": "asqa_late_detail_10",
       "utterance": "Actually, I meant current.",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The next edition of the Tour de France is scheduled to take place in 2024, coinciding with the Summer Olympics in Paris",
-          "The specific objectives or changes in the race format for the 2024 edition compared to previous years."
+          "Not verified in the cited documents: The team objective in the Tour de France is to achieve the best overall time by adding the times of each team's best three riders each day, with new rules reducing the number of riders per team from 9 to 8 starting in 2024",
+          "Not verified in the cited documents: The current edition of the Tour de France is set to take place in 2024, coinciding with the Paris Summer Olympics",
+          "Whether the objectives or rules for the Tour de France will change significantly for the 2024 edition compared to previous years."
         ],
         "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_late_detail_11",
-      "utterance": "Sorry, I mean a single season.",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: Hack Wilson holds the MLB single-season RBI record with 191 RBIs, achieved in 1930, which remains the highest total for a single season in Major League Baseball history",
-          "The detail raises whether there are any players who have come close to Wilson's record in recent seasons."
-        ],
-        "support_rate": 0.6667,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3376,8 +3156,8 @@
       "utterance": "Who played alice in a league of their own?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5489,
-        "utterance_end_ms": 4000,
+        "first_retrieval_ms": 5484,
+        "utterance_end_ms": 3999,
         "decisions": [
           [
             "wait",
@@ -3406,27 +3186,11 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: Renée Coleman played Alice \"Skeeter\" Gaspers in the 1992 film A League of Their Own",
-          "The evidence does not mention who played Alice in the 2022 TV series A League of Their Own.",
-          "The actress who played Alice in the 2022 TV series A League of Their Own could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Renée Coleman played the younger Alice, known as Alice \"Skeeter\" Gaspers, in the 1992 film \"A League of Their Own\"",
+          "The name of the actress who played older Alice could not be verified from the retrieved documents."
         ],
         "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_late_detail_12",
-      "utterance": "Oh wait, I meant younger.",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: In the 2022 TV series adaptation, the younger version of Alice is played by a different actress",
-          "The detail raises whether the younger Alice in the 2022 series has a different actress than the one in the 1992 film."
-        ],
-        "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3437,7 +3201,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Big Ben tower name London"
+          "name of the tower in London that houses Big Ben clock"
         ],
         "quota_applied": false
       }
@@ -3445,16 +3209,16 @@
     {
       "category": "claim_withheld",
       "corpus": "asqa",
-      "fixture": "asqa_late_detail_13",
-      "utterance": "What is the name of the tower big ben is in?",
+      "fixture": "asqa_late_detail_14",
+      "utterance": "Who wrote the song if i ruled the world?",
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: The same information is also stated in another document",
-          "The name of the tower Big Ben is in could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Nas is a songwriter for \"If I Ruled the World (Imagine That)\"",
+          "The evidence does not mention if Tony Bennett is a songwriter for \"If I Ruled the World.\""
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.6667,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3478,7 +3242,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Christina Aguilera Genie in a Bottle Spanish version release date"
+          "Christina Aguilera Genio Atrapado Spanish version Genie in a Bottle single release date United States"
         ],
         "quota_applied": false
       }
@@ -3491,7 +3255,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Places in the Heart 1984 film family farm scenes filming location"
+          "Places in the Heart 1984 family farm scenes filming locations"
         ],
         "quota_applied": false
       }
@@ -3517,24 +3281,9 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "New York Rangers most recent Stanley Cup win year"
+          "new york rangers last stanley cup win year season"
         ],
         "quota_applied": false
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_single_05",
-      "utterance": "Which Stanley Cup was the new york rangers last win of the stanley cup?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: The New York Rangers' last win of the Stanley Cup was in 1994",
-          "The specific details of the 1994 Stanley Cup Finals, such as the exact score of game seven, could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.6667,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     },
     {
@@ -3545,7 +3294,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Shema location Torah book"
+          "Shema passage book Torah"
         ],
         "quota_applied": false
       }
@@ -3558,7 +3307,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Deion Sanders total years played MLB baseball"
+          "Deion Sanders MLB career length number of years"
         ],
         "quota_applied": false
       }
@@ -3571,7 +3320,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "i fooled around and fell in love 1976 original recording singer"
+          "i fooled around and fell in love 1976 singer"
         ],
         "quota_applied": false
       }
@@ -3596,8 +3345,8 @@
       "utterance": "When did the American show lie to me end?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4966,
-        "utterance_end_ms": 3996,
+        "first_retrieval_ms": 5107,
+        "utterance_end_ms": 3922,
         "decisions": [
           [
             "wait",
@@ -3626,7 +3375,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Washington Redskins Super Bowl date 1992 season"
+          "Washington Redskins Super Bowl 1992 date"
         ],
         "quota_applied": false
       }
@@ -3639,7 +3388,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Royal Flying Doctor Service founding date AIM Aerial Medical Service"
+          "Royal Flying Doctor Service founding date AIM Aerial Medical Service name"
         ],
         "quota_applied": false
       }
@@ -3651,8 +3400,8 @@
       "utterance": "Where is the tv show the ranch filmed?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 5112,
-        "utterance_end_ms": 3981,
+        "first_retrieval_ms": 5179,
+        "utterance_end_ms": 3678,
         "decisions": [
           [
             "wait",
@@ -3674,16 +3423,19 @@
       }
     },
     {
-      "category": "starved_sub_intent",
+      "category": "over_fragmentation",
       "corpus": "asqa",
       "fixture": "asqa_single_14",
       "utterance": "What part of the the shoulder does flat iron cut of meat come from?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "what_happened": "2 sub-queries for 1 gold sub-intents.",
       "evidence": {
-        "sub_queries": [
-          "flat iron cut of meat anatomical location on shoulder"
+        "gold": [
+          "What part of the the shoulder does flat iron cut of meat come from?"
         ],
-        "quota_applied": false
+        "predicted": [
+          "flat iron steak section of shoulder",
+          "flat iron steak muscle of shoulder"
+        ]
       }
     },
     {
@@ -3694,22 +3446,25 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "unincorporated city Texas highest elevation"
+          "unincorporated city Texas highest elevation above sea level"
         ],
         "quota_applied": false
       }
     },
     {
-      "category": "starved_sub_intent",
+      "category": "over_fragmentation",
       "corpus": "asqa",
       "fixture": "asqa_single_16",
       "utterance": "How many jimmy john's are there plans for in the world?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "what_happened": "2 sub-queries for 1 gold sub-intents.",
       "evidence": {
-        "sub_queries": [
-          "total number of planned Jimmy John's locations worldwide"
+        "gold": [
+          "How many jimmy john's are there plans for in the world?"
         ],
-        "quota_applied": false
+        "predicted": [
+          "number of Jimmy John's restaurants planned worldwide",
+          "number of Jimmy John's restaurants planned internationally outside United States"
+        ]
       }
     },
     {
@@ -3733,7 +3488,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Louisiana Purchase Treaty original 1803 signing date"
+          "Louisiana Purchase Treaty 1803 signing date United States France"
         ],
         "quota_applied": false
       }
@@ -3746,40 +3501,25 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "Grey's Anatomy season 9 character dies from plane crash injuries actor"
+          "Grey's Anatomy season 9 actor character dies from plane crash injuries"
         ],
         "quota_applied": false
       }
     },
     {
-      "category": "claim_withheld",
+      "category": "over_fragmentation",
       "corpus": "asqa",
-      "fixture": "asqa_single_19",
-      "utterance": "Who portrayed the character who dies in season 9 from injuries sustained in the plane crash on Grey's?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
+      "fixture": "asqa_single_20",
+      "utterance": "Who was the president of indian national congress when india became free due to the Indian Independence Act 1947 being passed?",
+      "what_happened": "2 sub-queries for 1 gold sub-intents.",
       "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: Additionally, Mark Sloan, portrayed by Eric Dane, is also a character who sustains injuries from the crash and is on life support",
-          "The specific details about the character who dies in season 9 from injuries sustained in the plane crash could not be verified from the retrieved documents."
+        "gold": [
+          "Who was the president of indian national congress when india became free due to the Indian Independence Act 1947 being passed?"
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_01",
-      "utterance": "When did west germany win the world cup?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: West Germany won the men's FIFA World Cup in 1954, 1974, and 1990",
-          "West Germany's women's FIFA World Cup wins years are not mentioned in the retrieved documents.",
-          "West Germany women's FIFA World Cup wins years could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "predicted": [
+          "Indian National Congress president 15 August 1947",
+          "Indian National Congress president 18 July 1947 Indian Independence Act passed"
+        ]
       }
     },
     {
@@ -3789,8 +3529,8 @@
       "utterance": "Who's won the most premierships in afl?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 4652,
-        "utterance_end_ms": 3256,
+        "first_retrieval_ms": 5107,
+        "utterance_end_ms": 3295,
         "decisions": [
           [
             "wait",
@@ -3810,32 +3550,15 @@
     {
       "category": "claim_withheld",
       "corpus": "asqa",
-      "fixture": "asqa_suppression_04",
-      "utterance": "When does dr owen come to grey's anatomy?",
+      "fixture": "asqa_suppression_03",
+      "utterance": "Put that in one sentence.",
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: Owen Hunt first appears in the fifth season of Grey's Anatomy",
-          "The specific episode number of Dr.",
-          "Owen Hunt's first appearance could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Carlton and Essendon have each won sixteen VFL/AFL premierships, while Luke Beveridge, John Longmire, John Worsfold, and Mark Thompson have each won the coaching award twice"
         ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_05",
-      "utterance": "Where does implantation of the fertilized ovum usually occur?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the retrieved documents: In humans, the implantation of a fertilized ovum usually occurs in the endometrium of the uterus",
-          "The specific anatomical location within the uterus where implantation occurs could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.75,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3846,7 +3569,7 @@
       "what_happened": "A sub-intent reached the answer with no evidence of its own.",
       "evidence": {
         "sub_queries": [
-          "number of houses in UK Parliament"
+          "number of houses in Parliament of the United Kingdom of Great Britain and Northern Ireland"
         ],
         "quota_applied": false
       }
@@ -3855,40 +3578,30 @@
       "category": "claim_withheld",
       "corpus": "asqa",
       "fixture": "asqa_suppression_07",
-      "utterance": "Say that again as a numbered list.",
+      "utterance": "How many houses are in the british parliament?",
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the retrieved documents: 2"
+          "Not verified in the cited documents: Parliament is bicameral, consisting of two houses: the House of Lords and the House of Commons, along with the sovereign as a third part",
+          "The total number of houses in the British Parliament could not be verified from the retrieved documents."
         ],
-        "support_rate": 0.75,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "support_rate": 0.5,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
-      "category": "starved_sub_intent",
+      "category": "claim_withheld",
       "corpus": "asqa",
       "fixture": "asqa_suppression_08",
       "utterance": "How many grammy awards does whitney houston have?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "what_happened": "2 generated claim(s) failed verification and were withheld.",
       "evidence": {
-        "sub_queries": [
-          "Whitney Houston total Grammy Awards won"
+        "uncertainty": [
+          "Not verified in the cited documents: Whitney Houston won a total of 8 Grammy Awards as a lead artist",
+          "Not verified in the cited documents: Whitney Houston won a total of 8 Grammy Awards, which includes both lead and featured artist wins"
         ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_09",
-      "utterance": "When does the new family guy season come out?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "Family Guy next season release date"
-        ],
-        "quota_applied": false
+        "support_rate": 0.0,
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3899,12 +3612,25 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "The number of NBA players who have scored 60 points in a regular season game is not specified in the retrieved documents.",
-          "Not verified in the cited documents: The number of NBA players who have scored 60 points in a playoff game is 2, specifically Michael Jordan and Elgin Baylor, each accomplishing this once",
+          "Not verified in the cited documents: Michael Jordan and Elgin Baylor are the only players to have scored at least 60 points in a playoff game, totaling 2 players",
+          "The evidence does not provide a total number of NBA players who scored 60 points in a regular season game.",
           "The total number of NBA players who scored 60 points in a regular season game could not be verified from the retrieved documents."
         ],
         "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
+      }
+    },
+    {
+      "category": "starved_sub_intent",
+      "corpus": "asqa",
+      "fixture": "asqa_suppression_12",
+      "utterance": "Where was it came from outer space filmed?",
+      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
+      "evidence": {
+        "sub_queries": [
+          "It Came from Outer Space 1953 filming locations"
+        ],
+        "quota_applied": false
       }
     },
     {
@@ -3915,11 +3641,11 @@
       "what_happened": "1 generated claim(s) failed verification and were withheld.",
       "evidence": {
         "uncertainty": [
-          "Not verified in the cited documents: Adrián Alonso played Zorro's son in the 2005 film The Legend of Zorro",
-          "The specific character name of Zorro's son in The Legend of Zorro could not be verified from the retrieved documents."
+          "Not verified in the cited documents: Adrián Alonso Barona played Zorro's son Joaquin de la Vega in the 2005 film The Legend of Zorro",
+          "The specific role of Joaquin de la Vega in the film could not be verified from the retrieved documents."
         ],
         "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
+        "verifier": "cross-encoder/nli-deberta-v3-xsmall + lytang/MiniCheck-RoBERTa-Large"
       }
     },
     {
@@ -3929,8 +3655,8 @@
       "utterance": "When did the song lean on me come out?",
       "what_happened": "No provisional search fired before the speaker finished; retrieval began at the utterance end.",
       "evidence": {
-        "first_retrieval_ms": 6080,
-        "utterance_end_ms": 4284,
+        "first_retrieval_ms": 5690,
+        "utterance_end_ms": 4051,
         "decisions": [
           [
             "wait",
@@ -3949,50 +3675,6 @@
             "utterance_complete"
           ]
         ]
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_14",
-      "utterance": "When did the song lean on me come out?",
-      "what_happened": "2 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: The original release date of \"Lean on Me\" by Bill Withers was in April 1972 as the first single from his second album, Still Bill",
-          "Not verified in the cited documents: The most famous cover version of \"Lean on Me\" is by the British group Red Box, which was released in 1985 as the third single from their debut album The Circle & the Square",
-          "The release date of the most famous cover version of \"Lean on Me\" could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.0,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
-      }
-    },
-    {
-      "category": "starved_sub_intent",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_15",
-      "utterance": "How much did it cost rio to host the olympics?",
-      "what_happened": "A sub-intent reached the answer with no evidence of its own.",
-      "evidence": {
-        "sub_queries": [
-          "2016 Rio de Janeiro Summer Olympics total hosting cost"
-        ],
-        "quota_applied": false
-      }
-    },
-    {
-      "category": "claim_withheld",
-      "corpus": "asqa",
-      "fixture": "asqa_suppression_15",
-      "utterance": "How much did it cost rio to host the olympics?",
-      "what_happened": "1 generated claim(s) failed verification and were withheld.",
-      "evidence": {
-        "uncertainty": [
-          "Not verified in the cited documents: This figure is supported by multiple sources, indicating that the estimated cost of the 2016 Summer Games in Rio de Janeiro was also approximately US$11.1 billion",
-          "The specific breakdown of costs or how they were allocated could not be verified from the retrieved documents."
-        ],
-        "support_rate": 0.5,
-        "verifier": "cross-encoder/nli-deberta-v3-xsmall"
       }
     }
   ],

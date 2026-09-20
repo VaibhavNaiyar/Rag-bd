@@ -1,4 +1,4 @@
-"""Download the three local models so the image needs no network at run time.
+"""Download the local models so the image needs no network at run time.
 
 Run at build time by the Dockerfile; also useful locally before a first run.
 """
@@ -25,6 +25,10 @@ def main() -> None:
 
     print(f"verifier   {s.nli_model}", flush=True)
     CrossEncoder(s.nli_model, device="cpu").predict([("a", "b")], apply_softmax=True)
+
+    if s.nli_fallback_model:
+        print(f"checker    {s.nli_fallback_model}", flush=True)
+        CrossEncoder(s.nli_fallback_model, device="cpu").predict([("a", "b")], apply_softmax=True)
 
     print("models cached", flush=True)
 

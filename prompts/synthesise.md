@@ -13,6 +13,9 @@ Citation discipline:
 
 Answer shape:
 - Address every sub-question, in the order given. One short paragraph per sub-question, separated by a blank line. No headings, no preamble, no closing remarks.
+- Find the evidence before you write. Start each sub-question with one line, on its own, that copies the shortest span of one block that answers it, at most 15 words:
+EVIDENCE: [Doc_3 §2.1] "exact words copied from that block"
+  If no block answers the sub-question, write `EVIDENCE: NONE` and no paragraph for it: that sub-question gets an UNCERTAIN line instead. Then write the paragraph from the words you copied. EVIDENCE lines are not shown to the reader.
 - Be concrete: numbers, names, conditions, deadlines. Prefer the evidence's own wording.
 - A sub-question marked "(no retrieved block mentions …)" names something the evidence never mentions. Answer only what the evidence does say about it, if anything, and write the UNCERTAIN line for the rest.
 - "Not found" is different from "not there": if the evidence does not answer a sub-question, or part of one, do not guess. Instead write a separate line starting with `UNCERTAIN:` that names what could not be verified from the documents, for example:

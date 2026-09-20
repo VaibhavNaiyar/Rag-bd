@@ -20,13 +20,19 @@ import time
 from dataclasses import dataclass, field
 
 from slr.config import Settings
-from slr.contracts import SubQuery
+from slr.contracts import Hit, SubQuery
 from slr.controller.signals import proper_entities, retrieval_shape
 from slr.llm import ChatModel, parse_json, render_prompt
 from slr.retrieval.embed import Embedder
 from slr.retrieval.store import Index
 from slr.telemetry.cost import UsageLedger
-from slr.text import REQUEST_WORDS, content_tokens, is_number, raw_words
+from slr.text import (
+    REQUEST_WORDS,
+    content_tokens,
+    heading_subject,
+    is_number,
+    raw_words,
+)
 
 log = logging.getLogger(__name__)
 
@@ -103,8 +109,23 @@ def heuristic_split(
     return out
 
 
+def format_passages(hits: list[Hit], n: int, chars: int = 300) -> str:
+    """The top passages an early search found, titled, for the decomposer to read."""
+    lines = []
+    for h in sorted(hits, key=lambda h: -h.score)[:n]:
+        text = " ".join(h.chunk.text.split())
+        lines.append(f"- [{heading_subject(h.chunk.heading) or h.chunk.doc_label}] {text[:chars]}")
+    return "\n".join(lines)
+
+
 async def _llm_split(
-    utterance: str, context: str, model: ChatModel, ledger: UsageLedger, s: Settings
+    utterance: str,
+    context: str,
+    model: ChatModel,
+    ledger: UsageLedger,
+    s: Settings,
+    examples: str = "",
+    passages: str = "",
 ) -> list[dict]:
     system, user = render_prompt(
         s.prompts_dir,
@@ -112,6 +133,8 @@ async def _llm_split(
         max_subqueries=str(s.max_subqueries),
         utterance=utterance,
         context=context or "(none)",
+        examples=examples or "(none)",
+        passages=passages or "(none yet)",
     )
     raw = await model.complete(system, user, ledger=ledger, step="decompose", json_mode=True, max_tokens=400)
     items = parse_json(raw).get("sub_queries", [])
@@ -189,6 +212,8 @@ async def decompose(
     settings: Settings,
     ledger: UsageLedger,
     context: str = "",
+    examples: str = "",
+    passages: str = "",
 ) -> Decomposition:
     started = time.perf_counter()
     method = "heuristic"
@@ -198,7 +223,7 @@ async def decompose(
         items, method = [{"text": utterance, "span": utterance, "confidence": 1.0}], "off"
     elif model is not None:
         try:
-            items = await _llm_split(utterance, context, model, ledger, settings)
+            items = await _llm_split(utterance, context, model, ledger, settings, examples, passages)
             method = "llm"
         except Exception as exc:
             log.warning("LLM decomposition failed (%s); using heuristic split", exc)

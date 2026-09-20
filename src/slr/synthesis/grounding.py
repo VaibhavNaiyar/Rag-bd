@@ -29,12 +29,20 @@ from typing import Protocol
 from slr.contracts import Claim, Hit
 from slr.retrieval.context import EvidencePackage
 from slr.retrieval.rerank import predict_by_length
-from slr.text import containment, content_tokens, heading_subject, sentences
+from slr.text import (
+    containment,
+    content_tokens,
+    ends_with_abbreviation,
+    heading_subject,
+    sentences,
+)
 
 log = logging.getLogger(__name__)
 
 #: anything bracketed that looks like an attempt at a citation
 CANDIDATE_MARKER = re.compile(r"\[\s*([A-Za-z][A-Za-z0-9_.:-]*)\s*(?:§\s*([^\[\]\n]{1,40}))?\]")
+#: the answer model's own attribution, written before each paragraph and never shown
+EVIDENCE_LINE = re.compile(r"^\s*(?:[-*]\s*)?(?:\*\*)?EVIDENCE(?:\*\*)?\s*:\s*(.*)$", re.I | re.S)
 UNCERTAIN_PREFIX = re.compile(r"^\s*(?:[-*]\s*)?(?:\*\*)?UNCERTAIN(?:\*\*)?\s*:\s*", re.I)
 #: A sentence whose point is that the documents do NOT say something ("the lead
 #: actor is not mentioned in the retrieved documents"). The prompt asks for these
@@ -63,6 +71,14 @@ CONNECTIVE = re.compile(
     r"notably|overall|specifically|in contrast|by contrast|on the other hand)\s*,\s*",
     re.I,
 )
+
+
+_PERCENT = re.compile(r"(\d)\s*%")
+
+
+def _units(text: str) -> str:
+    """One spelling for the same quantity: "65.46%" and "65.46 percent" say the same thing."""
+    return _PERCENT.sub(r"\1 percent", text)
 
 
 def normalise_marker(doc: str, section: str | None) -> str:
@@ -123,7 +139,8 @@ class NliVerifier:
         ctx = contexts or [""] * len(sources)
         # "However, the venue opened in 2004" asserts what the bare
         # clause asserts; the connective only links it to the previous sentence.
-        claim = CONNECTIVE.sub("", claim, count=1) or claim
+        claim = _units(CONNECTIVE.sub("", claim, count=1) or claim)
+        sources = [_units(s) for s in sources]
         out: list[float | None] = [self._cache.get((claim, c, s)) for c, s in zip(ctx, sources)]
         todo = [i for i, v in enumerate(out) if v is None]
         if todo:
@@ -149,6 +166,73 @@ class NliVerifier:
 @lru_cache(maxsize=2)
 def load_nli(model_name: str) -> NliVerifier:
     return NliVerifier(model_name)
+
+
+class FactChecker:
+    """A model trained for exactly this question: is this sentence supported by this document?
+
+    MiniCheck (Tang, Laban and Durrett, EMNLP 2024) reads a whole passage against a
+    sentence and was trained on claims that join facts across sentences, so it needs no
+    sentence windows. It is larger and slower than the NLI model, so it only sees the
+    sentences the NLI model would reject (``CascadeVerifier``).
+    """
+
+    def __init__(self, model_name: str, max_length: int = 512):
+        from sentence_transformers import CrossEncoder
+
+        self.name = model_name
+        try:
+            # From the local cache first. Loaded online, a checkpoint without safetensors
+            # makes transformers start a conversion process, which on Windows re-imports
+            # the caller's main module.
+            self._model = CrossEncoder(model_name, max_length=max_length, device="cpu", local_files_only=True)
+        except OSError:
+            self._model = CrossEncoder(model_name, max_length=max_length, device="cpu")
+        self._lock = threading.Lock()
+        self._cache: dict[tuple[str, str, str], float] = {}
+
+    def support(self, claim: str, sources: list[str], contexts: list[str] | None = None) -> list[float]:
+        ctx = contexts or [""] * len(sources)
+        claim = _units(CONNECTIVE.sub("", claim, count=1) or claim)
+        docs = [_units(f"{c}: {s}" if c else s) for c, s in zip(ctx, sources)]
+        out: list[float | None] = [self._cache.get((claim, c, s)) for c, s in zip(ctx, sources)]
+        todo = [i for i, v in enumerate(out) if v is None]
+        if todo:
+            with self._lock:
+                probs = predict_by_length(self._model, [(docs[i], claim) for i in todo], batch_size=8, apply_softmax=True)
+            for i, p in zip(todo, probs):
+                out[i] = float(p[1])  # label 1 = supported
+                self._cache[(claim, ctx[i], sources[i])] = out[i]
+        return [float(v) for v in out]  # type: ignore[arg-type]
+
+
+@lru_cache(maxsize=2)
+def load_checker(model_name: str) -> FactChecker:
+    return FactChecker(model_name)
+
+
+class CascadeVerifier:
+    """The fast verifier decides; a sentence it scores below ``below`` gets a second reading.
+
+    Both readings apply the grounder's usual bars, so the cascade never lowers a threshold:
+    it corrects the small model's false rejections, such as "France is the most recent
+    winner, having won in 2018" read against "The current champion is France, who won
+    the title in 2018".
+    """
+
+    def __init__(self, first: Verifier, second: Verifier, below: float):
+        self.first, self.second, self.below = first, second, below
+        self.name = f"{first.name} + {second.name}"
+
+    def support(self, claim: str, sources: list[str], contexts: list[str] | None = None) -> list[float]:
+        scores = self.first.support(claim, sources, contexts)
+        todo = [i for i, v in enumerate(scores) if v < self.below]
+        if todo:
+            ctx = contexts or [""] * len(sources)
+            again = self.second.support(claim, [sources[i] for i in todo], [ctx[i] for i in todo])
+            for i, v in zip(todo, again):
+                scores[i] = max(scores[i], v)
+        return scores
 
 
 # --------------------------------------------------------------------------
@@ -178,6 +262,13 @@ class SentenceStream:
 
     def _next(self) -> str | None:
         buf = self.buf
+        if buf.lstrip().lstrip("-* ").upper().startswith("EVIDENCE"):
+            # A quote may hold several sentences; the whole line is one segment.
+            nl = buf.find("\n")
+            if nl == -1:
+                return None
+            seg, self.buf = buf[: nl + 1], buf[nl + 1 :]
+            return seg
         cut = None
         for m in _END.finditer(buf):
             end = m.end()
@@ -185,6 +276,8 @@ class SentenceStream:
                 break  # cannot yet see what follows the whitespace
             if "\n" not in m.group(1) and (buf[end] == "[" or _open_bracket(buf[: m.start()])):
                 continue  # a marker still belongs to this sentence
+            if "\n" not in m.group(1) and ends_with_abbreviation(buf[: m.start() + 1]):
+                continue  # "St. John": the full stop belongs to a word, not the sentence
             cut = end
             break
         nl = buf.find("\n")
@@ -235,6 +328,8 @@ class Grounder:
     recited: int = 0
     demoted: int = 0
     fabricated_markers: list[str] = field(default_factory=list)
+    #: what the model quoted before each paragraph ("NONE" when it found nothing)
+    attributions: list[str] = field(default_factory=list)
     _cmap: dict[str, Hit] = field(init=False)
 
     def __post_init__(self) -> None:
@@ -323,6 +418,9 @@ class Grounder:
             return GroundedSegment(text=segment if self.claims else "")
         trailing = segment[len(segment.rstrip()) :]
         body = segment.strip()
+        if m := EVIDENCE_LINE.match(body):
+            self.attributions.append(m.group(1).strip()[:300])
+            return GroundedSegment(text="")
         if UNCERTAIN_PREFIX.match(body) or ABSENCE.search(body):
             note = UNCERTAIN_PREFIX.sub("", body)
             note, _ = self.resolve(note)

@@ -17,6 +17,8 @@ Write one query per reading, each naming the qualifier that tells it apart. Thes
 
 Readings are for questions about the wider world, where the same words point at different real things. A question about the rules, policies, procedures, prices, budgets or facilities of the speaker's own organisation has ONE reading: the current rule, as their documents state it. Do not split it by time period, by room, by unit of measure, or by any attribute the speaker did not ask about. Never write a placeholder such as [venue name] or <year>; if you cannot name a reading, it is not one.
 
+When similar questions are listed below the rules, split this utterance about as finely as they were split, along the lines that fit this utterance.
+
 Example. "Who sang Hallelujah?" has two readings, so it returns two queries: "Hallelujah original 1984 recording singer" and "Hallelujah most famous cover version singer". "What is the cancellation fee for the Pune venue?" has one reading and returns one query. So does "How many people can the main hall seat?"
 
 Rules:
@@ -31,6 +33,12 @@ Respond with JSON only:
 {"needs": [{"need": "...", "readings": ["..."]}], "sub_queries": [{"text": "...", "span": "...", "confidence": 0.9}]}
 
 ## USER
+Similar questions and the readings they turned out to have (they show how finely questions like this one split; they are not about this utterance):
+{{examples}}
+
+Passages the search found while the speaker was talking (they show which readings the documents actually cover, and when a question is already specific):
+{{passages}}
+
 Earlier request in this session (use only to resolve words like "it" or "that"):
 {{context}}
 

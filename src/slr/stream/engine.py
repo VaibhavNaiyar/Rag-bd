@@ -38,7 +38,8 @@ from slr.controller.base import (
 from slr.controller.batch import BatchController
 from slr.controller.model import ModelController
 from slr.controller.rules import RuleController
-from slr.decompose.decomposer import decompose, heuristic_split
+from slr.decompose.decomposer import decompose, format_passages, heuristic_split
+from slr.decompose.examples import ExampleBank, format_examples
 from slr.llm import ChatModel, build_chat_model, with_fallback
 from slr.retrieval.context import EvidencePackage, assemble
 from slr.retrieval.embed import Embedder
@@ -51,10 +52,12 @@ from slr.stream.simulator import load_fixture, timed_chunks
 from slr.synthesis import generate as gen
 from slr.synthesis import refine as ref
 from slr.synthesis.grounding import (
+    CascadeVerifier,
     Grounder,
     LexicalVerifier,
     SentenceStream,
     Verifier,
+    load_checker,
     load_nli,
 )
 from slr.telemetry.cost import UsageLedger
@@ -82,9 +85,11 @@ class Engine:
         model: ChatModel | None,
         sink: TraceSink,
         decomposer: ChatModel | None = None,
+        examples: ExampleBank | None = None,
     ):
         self.s = settings
         self._decomposer = decomposer
+        self.examples = examples
         self.index = index
         self.embedder: Embedder = index.embedder
         self.retriever = retriever
@@ -112,13 +117,19 @@ class Engine:
                 if s.verifier == "nli":
                     raise
                 log.warning("NLI verifier unavailable (%s); lexical support will be used", exc)
+            if s.nli_fallback_model and verifier.name != "lexical":
+                try:
+                    verifier = CascadeVerifier(verifier, load_checker(s.nli_fallback_model), s.nli_fallback_below)
+                except Exception as exc:
+                    log.warning("fact-checker %s unavailable (%s); NLI alone", s.nli_fallback_model, exc)
         model = build_chat_model(s)
         decomposer = None
         if model is not None and s.decompose_model and s.decompose_model != s.llm_model:
             # Same provider, so the same circuit: an outage opens it for both.
             decomposer = build_chat_model(s, s.decompose_model, breaker=getattr(model, "breaker", None))
         sink = TraceSink(s.trace_path, exporter=OtelExporter.from_settings(s.otel_endpoint))
-        return cls(s, index, Retriever(index, reranker, s), verifier, model, sink, decomposer)
+        examples = ExampleBank.load(s.decompose_examples, index.embedder) if s.decompose_examples else None
+        return cls(s, index, Retriever(index, reranker, s), verifier, model, sink, decomposer, examples)
 
     @property
     def decomposer(self) -> ChatModel | None:
@@ -475,6 +486,11 @@ class SessionRunner:
         topic = self.store.topic
         context = topic.utterance if topic else ""
         spec = await self._speculate(turn) if e.model is not None and s.speculate and s.decompose else None
+        shown = e.examples.nearest(turn.state.prefix, e.embedder, s.decompose_shots, s.decompose_single_shots) if e.examples else []
+        shots = format_examples(shown) if shown else ""
+        # What the mid-utterance searches have already found; never waited for.
+        found = [h for r in _finished(turn.provisional) for h in r.kept]
+        passages = format_passages(found, s.decompose_passages) if found and s.decompose_passages else ""
         decomposition = await decompose(
             turn.state.prefix,
             turn_id=turn.id,
@@ -484,6 +500,8 @@ class SessionRunner:
             settings=s,
             ledger=turn.ledger,
             context=context,
+            examples=shots,
+            passages=passages,
         )
         turn.record["decomposition"] = {
             "method": decomposition.method,
@@ -491,6 +509,7 @@ class SessionRunner:
             "merged": decomposition.merged,
             "capped": decomposition.capped,
             "ms": round(decomposition.ms, 1),
+            "examples": [ex.question for ex in shown],
         }
         decomposed = decomposition.items
 
@@ -1140,6 +1159,7 @@ class SessionRunner:
                 "demoted_claims": grounder.demoted,
                 "auto_cited": grounder.auto_cited,
                 "recited": grounder.recited,
+                "attributions": grounder.attributions,
                 "fabricated_markers": grounder.fabricated_markers,
                 "verifier": self.engine.verifier.name,
             }
@@ -1290,3 +1310,12 @@ async def _drain(deltas: asyncio.Queue) -> AsyncIterator[str]:
         if isinstance(item, BaseException):
             raise item
         yield item
+
+
+def _finished(provisional: list[Provisional]) -> list[SubQueryResult]:
+    """Results of the mid-utterance searches that have already completed."""
+    return [
+        p.task.result()
+        for p in provisional
+        if not p.cancelled and p.task.done() and not p.task.cancelled() and p.task.exception() is None
+    ]

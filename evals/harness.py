@@ -148,7 +148,11 @@ def settings_for(corpus: str, **overrides) -> Settings:
     base = get_settings()
     if corpus == "asqa":
         root = asqa_dir()
-        base = base.with_overrides(corpus_dir=str(root / "corpus"), index_dir=str(root / "index_asqa"))
+        base = base.with_overrides(
+            corpus_dir=str(root / "corpus"),
+            index_dir=str(root / "index_asqa"),
+            decompose_examples=str(root / "decompose_examples.jsonl"),
+        )
     return base.with_overrides(**overrides) if overrides else base
 
 
@@ -163,6 +167,11 @@ def ensure_asqa_corpus() -> dict:
 
     corpus = asqa_dir() / "corpus"
     if corpus.is_dir() and any(corpus.glob("*.md")):
+        examples = asqa_dir() / "decompose_examples.jsonl"
+        if not examples.exists():
+            from evals.build_dataset import load_split, write_examples
+
+            write_examples(load_split("train"), examples)
         return {"asqa_corpus": "reused"}
     info = build(DEFAULT_COUNTS, corpus_out=corpus)
     return {"asqa_corpus": f"built from the vendored snapshot ({info['corpus']})"}
