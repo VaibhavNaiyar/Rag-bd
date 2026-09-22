@@ -93,7 +93,9 @@ def test_each_model_is_priced_at_its_own_rate(monkeypatch):
     assert rate_for("gpt-4o-mini-2024-07-18", default) == (0.15, 0.60), "a dated snapshot is its family"
     assert rate_for("gpt-4.1-mini-2025-04-14", default) == (0.40, 1.60), "longest family name wins"
     assert rate_for("gpt-4.1", default) == (2.00, 8.00)
-    assert rate_for("gpt-5.4-mini", default) == default, "not gpt-5: unknown models use the configured price"
+    assert rate_for("gpt-5.4-mini-2026-03-17", default) == (0.50, 4.00), "longest family name wins"
+    assert rate_for("gpt-5.4", default) == (2.50, 15.00)
+    assert rate_for("some-other-model", default) == default, "an unpriced model uses the configured price"
     monkeypatch.setenv("SLR_PRICE_GPT_4_1", "1.0,4.0")
     assert rate_for("gpt-4.1", default) == (1.0, 4.0)
 

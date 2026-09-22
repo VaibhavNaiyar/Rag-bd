@@ -178,7 +178,14 @@ def main() -> None:
         if not fixtures:
             steps["manual_steps"].append(f"no fixtures for corpus {corpus}")
             continue
-        print(f"[eval] {corpus}: {len(fixtures)} fixtures", flush=True)
+        # The models the run actually resolved, env included: a benchmark that measured a
+        # different model than the one in the code is worth nothing, and has happened.
+        print(
+            f"[eval] {corpus}: {len(fixtures)} fixtures | answer {engine.s.llm_model}"
+            f" (reasoning {engine.s.llm_reasoning_effort}) | decompose {engine.s.decompose_model}"
+            f" | verifier {engine.verifier.name}",
+            flush=True,
+        )
         played[corpus] = (settings, fixtures)
         runs[corpus] = run(engine, fixtures, args.speed)
         print(f"[eval] {corpus}: {len(runs[corpus].turns)} turns in {runs[corpus].seconds:.0f}s", flush=True)

@@ -11,3 +11,4 @@ data/traces/
 freeze.txt
 data/logs/
 data/decompose_examples*
+.venv-eval/

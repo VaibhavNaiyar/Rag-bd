@@ -1,0 +1,13 @@
+# Deep-eval harness only (evals/ragas_eval.py), installed into its own virtualenv so the
+# engine's pinned dependencies are untouched:
+#
+#   python -m venv .venv-eval
+#   .venv-eval/Scripts/pip install -r evals/requirements-ragas.txt
+#
+# ragas 0.4.x still imports langchain_community.chat_models.vertexai, which the 0.4 line of
+# langchain-community no longer ships, so the langchain packages are pinned to 0.3.
+ragas==0.4.3
+langchain==0.3.27
+langchain-core==0.3.75
+langchain-community==0.3.27
+langchain-openai==0.3.28

@@ -1,6 +1,6 @@
 # Optional OTLP collector, enabled with `docker compose --profile observability up`.
-# The engine's own record is the JSONL trace; this is here for judges who want the
-# turn stream in a dashboard, and is deliberately off the one-command path.
+# The engine's own record is the JSONL trace; this turns the same record into the
+# dashboard stream, and is deliberately off the one-command path.
 receivers:
   otlp:
     protocols:
@@ -11,8 +11,14 @@ processors:
   batch: {}
 
 exporters:
+  # Scraped by Prometheus at otel:9464/metrics, and read from there by Grafana.
+  prometheus:
+    endpoint: 0.0.0.0:9464
+    send_timestamps: true
+    resource_to_telemetry_conversion:
+      enabled: true
   debug:
-    verbosity: detailed
+    verbosity: normal
 
 service:
   pipelines:
@@ -20,3 +26,7 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]

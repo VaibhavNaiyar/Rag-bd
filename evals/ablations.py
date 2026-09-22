@@ -3,6 +3,7 @@
 1. hybrid (BM25 + dense) vs dense-only retrieval
 2. rule-based vs model-based retrieval controller
 3. per-intent quota on vs off
+4. cross-encoder rerank + margin cut vs the fused order alone
 
 And the baseline: the same fixtures through a conventional batch RAG turn
 (``SLR_CONTROLLER=batch``: nothing until the speaker stops, then one search for
@@ -98,8 +99,12 @@ def run_arm(arm: Arm, fixtures: list[dict], index: Index, speed: float) -> dict[
         print(f"[eval]   {arm.name}: skipped — {arm.skipped}", flush=True)
         return {"arm": arm.name, "skipped": arm.skipped}
     print(f"[eval]   {arm.name}: {len(fixtures)} fixtures", flush=True)
-    engine = build_engine(arm.settings)
-    arm.result = run(engine, fixtures, speed)
+    try:
+        engine = build_engine(arm.settings)
+        arm.result = run(engine, fixtures, speed)
+    except Exception as exc:  # noqa: BLE001 - a broken arm is a missing row, not a lost run
+        print(f"[eval]   {arm.name}: FAILED — {type(exc).__name__}: {exc}", flush=True)
+        return {"arm": arm.name, "skipped": f"failed: {type(exc).__name__}"}
     print(f"[eval]   {arm.name}: {len(arm.result.turns)} turns in {arm.result.seconds:.0f}s", flush=True)
     return {"arm": arm.name, **summarise(arm.result, index)}
 
@@ -116,7 +121,14 @@ def compare_baseline(
 def run_ablations(
     base: Settings, fixtures: list[dict], index: Index, speed: float = 8.0, has_llm: bool = False
 ) -> list[dict[str, Any]]:
-    """Each experiment is a pair of arms that differ in exactly one knob."""
+    """Each experiment is a pair of arms that differ in exactly one knob.
+
+    Every arm runs the offline extractive synthesiser (``ablation_llm``) rather than the
+    answer model the service uses: these experiments vary retrieval and are compared with
+    each other, so a deterministic writer isolates the knob under test. The report says so.
+    """
+    served = base  # the settings the service runs, for the one arm that needs its model
+    base = base.with_overrides(llm=base.ablation_llm)
     experiments = [
         (
             "retrieval branches",
@@ -130,18 +142,26 @@ def run_ablations(
             "per-intent quota",
             "What happens to the quiet sub-intent when the context window is filled by score alone?",
             [
-                Arm("quota = 2 per intent", base.with_overrides(quota_per_intent=2)),
+                Arm(f"quota = {base.quota_per_intent} per intent", base),
                 Arm("quota = 0 (global top-k)", base.with_overrides(quota_per_intent=0)),
+            ],
+        ),
+        (
+            "cross-encoder reranker",
+            "The fused order is already relevance-sorted; what does a cross-encoder pass add?",
+            [
+                Arm("cross-encoder rerank + margin cut", base),
+                Arm("fused order, no rerank", base.with_overrides(reranker="none")),
             ],
         ),
         (
             "retrieval controller",
             "Is a model call per transcript chunk worth what it costs?",
             [
-                Arm("rule controller", base.with_overrides(controller="rule")),
+                Arm("rule controller", base.with_overrides(controller="rule", llm=served.llm)),
                 Arm(
                     "model controller",
-                    base.with_overrides(controller="model"),
+                    base.with_overrides(controller="model", llm=served.llm, llm_model=served.llm_model),
                     skipped="" if has_llm else "needs an LLM (set OPENAI_API_KEY) — not run",
                 ),
             ],

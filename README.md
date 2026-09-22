@@ -91,6 +91,7 @@ transcript chunks ──▶ [1] Retrieval controller ──▶ provisional searc
 - `evals/` — fixtures, gates, ablations, report. Never imported by `src/`.
 
 Full design rationale: [`docs/ARCHITECTURE_BRIEF.md`](docs/ARCHITECTURE_BRIEF.md).
+Diagrams of the whole path: [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md).
 Trace field reference: [`docs/TELEMETRY_SCHEMA.md`](docs/TELEMETRY_SCHEMA.md).
 Measured results: [`docs/BENCHMARK_REPORT.md`](docs/BENCHMARK_REPORT.md).
 
@@ -144,6 +145,61 @@ compresses the gap between the last word and the end-of-utterance signal — whi
 what the early-retrieval gate measures.
 
 ---
+
+### Deep evaluation (RAGAS)
+
+The gates measure what this theme asks for. RAGAS measures the same answers the way the RAG
+literature does, against the same golden set (`evals/gold.jsonl`: ASQA's question, its gold
+sub-questions, the gold passage behind each answer, and ASQA's own reference long answer):
+
+```bash
+python -m venv .venv-eval
+.venv-eval/Scripts/pip install -r evals/requirements-ragas.txt
+.venv-eval/Scripts/python evals/ragas_eval.py evals/results/turns.jsonl --limit 30
+```
+
+| Metric | What it checks here |
+|---|---|
+| `faithfulness` | every statement in the answer is supported by the retrieved context |
+| `answer_relevancy` | the answer addresses the question that was asked |
+| `context_precision` | the chunks that matter are ranked first — what the cross-encoder reranker is for |
+| `context_recall` | the retrieved context covers the reference answer |
+| `answer_correctness` | the answer agrees with ASQA's own long answer |
+
+It reads a finished run and the index; it never imports `slr`, and it judges with an LLM, so
+`--limit` caps the sample (30 questions ≈ $0.10-0.20 with the default `gpt-4.1-mini` judge).
+Results land in `evals/results/ragas.json`.
+
+## Telemetry dashboard
+
+Every turn is written to `data/traces/trace.jsonl` (the system of record, and what gate G6
+checks). The same record can be exported as OpenTelemetry spans *and* metrics, which is what
+the dashboard reads:
+
+```
+SLR_OTEL_ENDPOINT=http://otel:4318 docker compose --profile observability up
+```
+
+Then open **http://localhost:3001** — Grafana, no login, dashboard already provisioned
+(`docs/grafana/dashboards/streaming-live-rag.json`). It shows, for the turns played since the
+stack came up:
+
+| Panel | What it answers |
+|---|---|
+| Turns, spend, tokens | how much work was done, and what it cost |
+| Fabricated citations shipped / blocked | the shipped count must stay 0 (G4's hard rule) |
+| Citation support | supported sentences over every factual sentence written (G4) |
+| Time to first validated token, p50/p90 | how long after the speaker stops before the answer starts |
+| Answer complete after speech | the same, for the finished answer |
+| Retrieval lead before end of speech | how early the first search ran (G2) |
+| Searches by trigger | provisional, multi-intent, whole-utterance, refine, cancelled |
+| Turns by controller decision | retrieve / refine / suppress |
+| Claims supported vs withheld | what the verifier let through, and what it held back |
+| Tokens by model, spend by step | where the tokens and the money go (decompose / synthesise / verify) |
+
+Prometheus is at http://localhost:9090 and the collector's scrape endpoint at
+http://localhost:9464/metrics, if you would rather read the raw series. The whole profile is
+optional: nothing on the one-command path waits for it.
 
 ## Configuration
 

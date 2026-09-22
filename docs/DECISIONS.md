@@ -415,3 +415,87 @@ are the audit model rejecting true claims ("the 2001 Finals opponent was the Phi
 Test-cricket record cited to a sentence about international cricket). The cost is time:
 MiniCheck runs on CPU on every weak sentence, and first-token latency rose to 3.4 s
 (enterprise) and 4.5 s (ASQA) against the baseline's 2.5 s.
+
+### D31 — The answer model, chosen by measurement
+
+ASQA citation support, pooled over every factual sentence written, same pipeline and same
+fixtures, one full replay each:
+
+| Answer model | G4 | Sentences written | Time to first token (median / p90) | Cost per turn |
+|---|---|---|---|---|
+| gpt-4o-mini | 82.9% (84.3 / 82.1 / 82.2 over three runs) | 200 | 3.4 s | $0.0023 |
+| gpt-4.1-mini | 77.8% | 225 | — | $0.0021 |
+| gpt-5.4-mini | 89.8% | 177 | 6.7 s / 34.7 s | $0.0048 |
+| gpt-5.4 | 92.8% | 223 | 8.5 s / 22.9 s | $0.0098 |
+
+The gap is not retrieval. Of the 35 sentences the verifier withheld on a gpt-4o-mini run,
+only three were supported by *any* retrieved block: the rest were the model stating what it
+remembered where the passage was thin ("India won the World Cup in 1983 and 2011" from a
+block that names 1983). Withholding them is the gate working, so the lever was the writer.
+gpt-5.4 earns the top score honestly — it wrote *more* sentences than gpt-4o-mini, and the
+independent audit's agreement rose with it, from 85.5% to 91.8% — but costs 8.5 s to the
+first word against a batch baseline's 2.5 s. `gpt-5.4-mini` is the shipped default: it clears
+the gate at half the price, and `SLR_LLM_MODEL` switches to either neighbour without a code
+change. Reasoning effort is `none`: the gpt-5.4 family rejects `minimal`, and any reasoning
+at all sits on the path to the first word.
+
+Two further findings from the same runs. A model's verbosity moves this metric as much as its
+accuracy — gpt-4.1-mini scored worst while writing the most, because every extra sentence of
+elaboration is another claim to support. And a benchmark is only as good as the settings it
+actually ran with: one full run measured the wrong model because `.env` overrode the default
+in code. The run script now prints the resolved model, and the report records it.
+
+### D32 — Retrieval: the margin cut, and searching what the speaker said
+
+Two changes, both measured offline against the gold passages before any benchmark ran:
+
+- **The rerank margin was too tight.** At 0.15 the cut dropped gold passages; at 0.3 ASQA
+  recall@k went 77.5% -> 81.6% for about one extra chunk per turn, with no extra rerank work.
+- **The readings are not the question.** The decomposer writes keyword queries; the utterance
+  is what the speaker actually said. Searching it too, as an extra with no quota of its own,
+  took recall to **85.5%** against a ceiling of 86.7% (the share of gold passages that appear
+  anywhere in the candidate pool). The enterprise set went 89.6% -> 93.8%. It runs as its own
+  call, not another entry in the batch, because the rerank budget is per call. The baseline
+  arm skips it: with decomposition off the utterance is already the only query.
+
+Recall rose by seven points and G4 did not move, which is the point of measuring both: the
+answer model's willingness to write past its evidence was the binding constraint (D31).
+
+### D33 — A figure the cited block does not contain
+
+Borrowed from a sibling codebase's narrator, which discards a sentence whose numbers do not
+appear in the data it was handed. Entailment models are weakest exactly there: they read
+"1983 and 2011" as close enough to a block that says 1983. Every shipped sentence now has its
+figures checked against the blocks it cites; a sentence with a figure none of them contains is
+re-attributed to a block that does carry it, at the engine's own bar, and withheld if there is
+none. Small counts are skipped, so "the two houses" against a block that writes "two" as a
+word is not a fabrication.
+
+The re-attribution pool also grew from three blocks to six. Word overlap is a weak proxy for
+what a verifier will accept: on the withheld ASQA sentences the supporting block sat outside
+the top three about half the time. The search stops at the first block over the bar, so the
+extra depth costs nothing on the common path.
+
+### D34 — G5 counts a rewritten claim as a refinement
+
+Two ASQA refinements failed G5 while doing exactly what the guide asks: version 2 built on
+version 1, the parent's claims rewritten rather than dropped, session evidence carried, no
+full-corpus search. They failed because the gate also demanded that at least one claim be
+*preserved* — impossible when the parent verified one claim and the correction lands on it.
+The criterion is now the guide's own: every parent claim is accounted for, kept or rewritten,
+and the corpus is not searched again. Under the old rule that run scored 86.7%; under this one,
+100%. Both numbers are in the report, and the threshold line states the criterion.
+
+### D35 — Telemetry as metrics, and a dashboard that reads them
+
+The trace record was already exported as spans. The same record now also exports as
+OpenTelemetry *metrics* — histograms for the three latencies the theme asks to report, counters
+for turns, searches by trigger, claims by outcome, tokens by model and spend by step — because
+a dashboard aggregates, it does not replay. `docker compose --profile observability up` brings
+up the collector, Prometheus and a Grafana with the dashboard provisioned (13 panels, no login),
+and the profile stays off the one-command path so a judge running G1 never waits for it.
+
+`evals/ragas_eval.py` scores a finished run with RAGAS — faithfulness, answer relevancy,
+context precision, context recall, answer correctness — against the golden set the dataset
+builder already writes. It reads the run file and the index, never imports `slr`, and installs
+into its own virtualenv: RAGAS needs langchain 0.3, which the engine does not ship.

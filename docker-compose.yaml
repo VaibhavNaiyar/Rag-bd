@@ -20,7 +20,7 @@ services:
       # Unset -> the deterministic offline arms run, and the suite still passes.
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       SLR_LLM: ${SLR_LLM:-auto}
-      SLR_LLM_MODEL: ${SLR_LLM_MODEL:-gpt-4o-mini}
+      SLR_LLM_MODEL: ${SLR_LLM_MODEL:-gpt-5.4-mini}
       SLR_DECOMPOSE_MODEL: ${SLR_DECOMPOSE_MODEL:-gpt-4.1}
       SLR_CONTROLLER: ${SLR_CONTROLLER:-rule}
       # Span export: `SLR_OTEL_ENDPOINT=http://otel:4318 docker compose --profile observability up`
@@ -64,4 +64,31 @@ services:
     volumes:
       - ./docs/otel-collector.yaml:/etc/otel/config.yaml:ro
     ports:
-      - "4318:4318"
+      - "4318:4318"   # OTLP/HTTP in
+      - "9464:9464"   # Prometheus scrape of the turn metrics
+
+  # Stores the turn metrics the collector exposes.
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    profiles: ["observability"]
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ./docs/grafana/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  # http://localhost:3001 — the dashboard is provisioned, no login needed.
+  grafana:
+    image: grafana/grafana:11.3.1
+    profiles: ["observability"]
+    depends_on: [prometheus]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/streaming-live-rag.json
+    volumes:
+      - ./docs/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docs/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3001:3000"

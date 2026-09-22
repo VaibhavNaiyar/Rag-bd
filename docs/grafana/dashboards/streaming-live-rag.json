@@ -1,0 +1,537 @@
+{
+  "uid": "streaming-live-rag",
+  "title": "Streaming Live RAG \u2014 turn telemetry",
+  "tags": [
+    "slr"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Turns",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(slr_turns_total)",
+          "legendFormat": "turns",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Spend (USD)",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(slr_cost_usd_total)",
+          "legendFormat": "usd",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Tokens",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(slr_tokens_total)",
+          "legendFormat": "tokens",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Fabricated citations shipped (must stay 0)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(slr_fabricated_citations_total{slr_outcome=\"shipped\"})",
+          "legendFormat": "shipped",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "sum(slr_fabricated_citations_total{slr_outcome=\"blocked\"})",
+          "legendFormat": "blocked",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Citation support (G4)",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * sum(slr_claims_total{slr_outcome=\"supported\"}) / clamp_min(sum(slr_claims_total), 1)",
+          "legendFormat": "support %",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Time to first validated token (G2/G3 cost)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum(rate(slr_turn_ttft_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p50",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.9, sum(rate(slr_turn_ttft_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p90",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "C",
+          "expr": "sum(slr_turn_ttft_milliseconds_sum) / clamp_min(sum(slr_turn_ttft_milliseconds_count), 1)",
+          "legendFormat": "mean, all turns",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "title": "Answer complete after speech",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum(rate(slr_turn_complete_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p50",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.9, sum(rate(slr_turn_complete_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p90",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "C",
+          "expr": "sum(slr_turn_complete_milliseconds_sum) / clamp_min(sum(slr_turn_complete_milliseconds_count), 1)",
+          "legendFormat": "mean, all turns",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 8,
+      "title": "Retrieval lead before end of speech (G2)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum(rate(slr_retrieval_lead_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p50 lead",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "sum(slr_retrieval_lead_milliseconds_sum) / clamp_min(sum(slr_retrieval_lead_milliseconds_count), 1)",
+          "legendFormat": "mean lead",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 9,
+      "title": "Searches by trigger",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (slr_trigger) (slr_searches_total)",
+          "legendFormat": "{{slr_trigger}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 10,
+      "title": "Turns by controller decision",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (slr_mode) (slr_turns_total)",
+          "legendFormat": "{{slr_mode}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 11,
+      "title": "Claims supported vs withheld",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (slr_outcome) (slr_claims_total)",
+          "legendFormat": "{{slr_outcome}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 12,
+      "title": "Tokens by model",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (gen_ai_request_model, slr_direction) (slr_tokens_total)",
+          "legendFormat": "{{gen_ai_request_model}} {{slr_direction}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 13,
+      "title": "Spend by pipeline step",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "slr-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (slr_step) (slr_cost_usd_total)",
+          "legendFormat": "{{slr_step}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "slr-prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      }
+    }
+  ]
+}

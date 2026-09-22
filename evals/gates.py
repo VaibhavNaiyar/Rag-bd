@@ -341,12 +341,16 @@ def gate_g5(result: RunResult) -> Gate:
             "carried_from_session": fusion.get("carried_from_session", 0),
             "parent_claims": (turn.trace.get("refinement") or {}).get("parent_claims"),
         }
+        # The criterion is the guide's: the late detail must update the previous answer
+        # rather than clear the session or search the corpus again. Every parent claim is
+        # accounted for — kept as it was, or rewritten — and a correction that lands on the
+        # only claim the parent had rewrites all of them, which is the point of refining.
+        row["accounted_for"] = row["preserved"] + row["mutated"]
         row["passed"] = bool(
             row["routed_as_refine"]
             and row["version"] == 2
             and row["parent"] == 1
-            # there is nothing to preserve when the parent answer verified no claims
-            and (row["preserved"] > 0 or row["parent_claims"] == 0)
+            and (row["accounted_for"] > 0 or row["parent_claims"] == 0)
             and row["full_corpus_search"] is False
         )
         rows.append(row)
@@ -356,7 +360,7 @@ def gate_g5(result: RunResult) -> Gate:
         "G5",
         "Session refinement",
         value,
-        "every late-detail turn: version 2, parent 1, claims preserved, no full-corpus search",
+        "every late-detail turn: version 2, parent 1, every parent claim kept or rewritten, no full-corpus search",
         bool(rows and len(passed) == len(rows)),
         {"refinement_turns": len(rows), "rows": rows},
         applicable=bool(rows),

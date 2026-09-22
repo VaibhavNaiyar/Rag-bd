@@ -199,7 +199,7 @@ WIRE_SCHEMA: dict[str, tuple[set[str], set[str]]] = {
 
 CLIENT_EVENTS = {"utterance.start", "utterance.chunk", "utterance.end", "replay", "session.new"}
 DECISIONS = {d.value for d in Decision}
-TRIGGERS = {"provisional", "multi_intent", "refine"}
+TRIGGERS = {"provisional", "multi_intent", "full_utterance", "refine"}
 SUBQUERY_SOURCES = {"provisional", "decomposed"}
 
 

@@ -316,6 +316,8 @@ class Grounder:
     verifier: Verifier
     support_min: float
     auto_cite_min: float
+    #: how many retrieved blocks a failed citation may be re-checked against
+    attribution_pool: int
     claim_prefix: str
     default_sub_query: str
     claims: list[Claim] = field(default_factory=list)
@@ -326,6 +328,8 @@ class Grounder:
     auto_cited: int = 0
     #: cited claims moved to a different retrieved block that does support them
     recited: int = 0
+    #: claims withheld because a figure in them was in no retrieved block
+    ungrounded_numbers: int = 0
     demoted: int = 0
     fabricated_markers: list[str] = field(default_factory=list)
     #: what the model quoted before each paragraph ("NONE" when it found nothing)
@@ -370,13 +374,24 @@ class Grounder:
         return self.verifier.support(claim, [h.chunk.text for h in hits], [_subject(h) for h in hits])
 
     def _best_attribution(self, claim: str, exclude: list[Hit] | None = None) -> tuple[Hit | None, float]:
+        """The retrieved block that best supports this sentence, best word-overlap first.
+
+        Word overlap is a weak proxy for what a verifier will accept — a block that states
+        the fact in other words sits well down the order — so the search goes as deep as
+        ``attribution_pool`` and stops at the first block over the bar rather than scoring
+        the whole pool: measured on ASQA, the supporting block is outside the top three for
+        about half the sentences that reach here.
+        """
         others = [h for h in self.evidence.hits if h not in (exclude or [])]
-        pool = sorted(others, key=lambda h: -containment(claim, h.chunk.text))[:3]
-        scores = self._score(claim, pool)
-        if not scores:
-            return None, 0.0
-        i = max(range(len(scores)), key=scores.__getitem__)
-        return pool[i], scores[i]
+        pool = sorted(others, key=lambda h: -containment(claim, h.chunk.text))[: self.attribution_pool]
+        best, best_score = None, 0.0
+        for hit in pool:
+            score = self._score(claim, [hit])[0]
+            if score > best_score:
+                best, best_score = hit, score
+            if best_score >= self.auto_cite_min:
+                break
+        return best, best_score
 
     def ground(self, sentence: str, *, count: bool = True) -> tuple[str, list[Hit], float] | None:
         """Validate one sentence. Returns (shipped text, hits, support) or None if withheld."""
@@ -409,6 +424,21 @@ class Grounder:
             # keep only the markers that actually support the claim
             strong = [h for h, s in zip(hits, scores) if s >= self.support_min]
             hits = strong or hits
+        missing = _ungrounded_numbers(bare, hits)
+        if missing:
+            # A number the cited blocks do not contain: entailment models read "1983 and
+            # 2011" as close enough to a block that says 1983. Try a block that does carry
+            # every number, at the engine's own bar; otherwise the sentence is withheld.
+            best, score = self._best_attribution(bare, exclude=hits)
+            if best is None or score < self.auto_cite_min or _ungrounded_numbers(bare, [best]):
+                self.demoted += 1
+                self.ungrounded_numbers += 1
+                self.uncertainty.append(
+                    f"Not verified in the retrieved documents ({', '.join(missing)} is not in them): {_plain(bare)}"
+                )
+                return None
+            hits, support = [best], score
+            self.recited += 1
         if count:
             self.supported += 1
         return _attach(bare, hits), hits, support
@@ -442,6 +472,29 @@ class Grounder:
         )
         self.claims.append(claim)
         return GroundedSegment(text=prefix + shipped + (trailing or " "), claim=claim)
+
+
+#: a number as written in prose: 1983, 65.46, 15,921, 2,297
+_NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?")
+#: ordinals and small counts that read as words elsewhere in the same fact
+_NUMBER_STOP = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+
+
+def _figures(text: str) -> set[str]:
+    return {n.replace(",", "").rstrip(".") for n in _NUMBER.findall(text)}
+
+
+def _ungrounded_numbers(claim: str, hits: list[Hit]) -> list[str]:
+    """Figures in the claim that none of its blocks contain.
+
+    A number is the part of a sentence an entailment model is least likely to check and a
+    reader most likely to act on. Small counts are skipped: "the two houses" against a block
+    that writes "two" as a word is a spelling difference, not an invented figure.
+    """
+    if not hits:
+        return []
+    source = _figures(" ".join(f"{h.chunk.heading} {h.chunk.text}" for h in hits))
+    return sorted(n for n in _figures(claim) - source if n not in _NUMBER_STOP)
 
 
 def _plain(text: str) -> str:

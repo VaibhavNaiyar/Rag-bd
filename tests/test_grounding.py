@@ -22,7 +22,7 @@ def evidence() -> EvidencePackage:
 
 
 def grounder(support_min: float = 0.5, auto_cite_min: float = 0.75) -> Grounder:
-    return Grounder(evidence(), LexicalVerifier(), support_min, auto_cite_min, "t1_v1", "sq1")
+    return Grounder(evidence(), LexicalVerifier(), support_min, auto_cite_min, 6, "t1_v1", "sq1")
 
 
 def test_evidence_package_is_the_prompt_boundary():
@@ -239,3 +239,26 @@ def test_the_cascade_only_asks_the_second_verifier_about_weak_scores():
     assert cascade.support("claim", ["a", "b", "c"]) == [0.9, 0.8, 0.6], "a second reading never lowers a score"
     assert second.asked == [["b", "c"]], "a confident first reading is not re-checked"
     assert cascade.name == "small + checker"
+
+
+def test_a_figure_no_block_contains_is_withheld_even_when_the_verifier_is_happy():
+    g = grounder()
+    # TEXT_A gives 15 and 7 days; "21 days" is the model's own addition.
+    out = g.process("Cancellations made 21 or more calendar days before the event receive a full refund [Doc_11 §1]. ")
+    assert out.text == "" and out.claim is None
+    assert g.ungrounded_numbers == 1 and g.demoted == 1
+    assert any("21 is not in them" in u for u in g.uncertainty)
+
+
+def test_a_figure_another_block_contains_moves_the_citation_there():
+    g = grounder()
+    out = g.process("The catering budget is INR 900 per attendee per day [Doc_11 §1]. ")
+    assert out.claim is not None and out.claim.chunk_ids == ("c2",)
+    assert g.ungrounded_numbers == 0 and g.recited == 1
+
+
+def test_small_counts_are_not_treated_as_figures():
+    g = grounder()
+    # "7" is in the block; "2" is a count the block writes as a word, if at all.
+    out = g.process("Cancellations within 7 days are not refunded, in 2 named cases [Doc_11 §1]. ")
+    assert g.ungrounded_numbers == 0

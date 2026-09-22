@@ -73,6 +73,89 @@ def turn_attributes(record: dict[str, Any]) -> dict[str, Any]:
     return attrs
 
 
+class OtelMetrics:
+    """The same record, as metrics: what a dashboard aggregates rather than replays.
+
+    Histograms for the three latencies the theme asks to report, counters for turns,
+    searches, claims, tokens and cost. Same payload rule as the spans: counts, timings
+    and model names, never text.
+    """
+
+    def __init__(self, provider: Any) -> None:
+        self._provider = provider
+        meter = provider.get_meter("slr.telemetry")
+        self.ttft = meter.create_histogram("slr.turn.ttft", unit="ms", description="end of speech to first validated token")
+        self.complete = meter.create_histogram("slr.turn.complete", unit="ms", description="end of speech to the finished answer")
+        self.lead = meter.create_histogram("slr.retrieval.lead", unit="ms", description="how early the first search ran")
+        self.turns = meter.create_counter("slr.turns", description="turns, by mode")
+        self.searches = meter.create_counter("slr.searches", description="searches, by trigger")
+        self.claims = meter.create_counter("slr.claims", description="factual sentences, by outcome")
+        self.fabricated = meter.create_counter("slr.fabricated_citations", description="markers that resolved to nothing")
+        self.tokens = meter.create_counter("slr.tokens", description="model tokens, by model and direction")
+        self.cost = meter.create_counter("slr.cost", unit="usd", description="spend, by step")
+
+    @classmethod
+    def from_settings(cls, endpoint: str) -> OtelMetrics | None:
+        if not endpoint:
+            return None
+        try:
+            from opentelemetry.exporter.otlp.proto.http.metric_exporter import (
+                OTLPMetricExporter,
+            )
+            from opentelemetry.sdk.metrics import MeterProvider
+            from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+            from opentelemetry.sdk.resources import Resource
+        except ImportError:
+            return None
+        reader = PeriodicExportingMetricReader(
+            OTLPMetricExporter(endpoint=f"{endpoint.rstrip('/')}/v1/metrics"), export_interval_millis=5000
+        )
+        provider = MeterProvider(resource=Resource.create({"service.name": SERVICE_NAME}), metric_readers=[reader])
+        return cls(provider)
+
+    def export(self, record: dict[str, Any]) -> None:
+        try:
+            self._export(record)
+        except Exception:  # noqa: BLE001 - telemetry must never break a turn
+            log.exception("metric export failed for turn %s", record.get("turn_id"))
+
+    def _export(self, record: dict[str, Any]) -> None:
+        mode = record.get("mode") or "unknown"
+        base = {"slr.mode": mode, "slr.controller": record.get("controller") or ""}
+        latency = record.get("latency_ms") or {}
+        self.turns.add(1, base)
+        if latency.get("first_token_after_end") is not None:
+            self.ttft.record(float(latency["first_token_after_end"]), base)
+        if latency.get("complete_after_end") is not None:
+            self.complete.record(float(latency["complete_after_end"]), base)
+        rel = latency.get("first_retrieval_rel_end")
+        if rel is not None:
+            self.lead.record(float(-rel), base)  # positive = the search ran before the end
+        for event in record.get("retrieval_events") or []:
+            if event.get("event") == "retrieval_cancelled":
+                self.searches.add(1, {"slr.trigger": "cancelled"})
+            else:
+                self.searches.add(1, {"slr.trigger": event.get("trigger", "unknown")})
+        grounding = (record.get("answer") or {}).get("grounding") or {}
+        written = int(grounding.get("generated_claims") or 0)
+        supported = int(grounding.get("supported_claims") or 0)
+        if written:
+            self.claims.add(supported, {**base, "slr.outcome": "supported"})
+            self.claims.add(written - supported, {**base, "slr.outcome": "withheld"})
+        self.fabricated.add(int(record.get("fabricated_citations_blocked") or 0), {"slr.outcome": "blocked"})
+        self.fabricated.add(int(record.get("fabricated_citations") or 0), {"slr.outcome": "shipped"})
+        cost = record.get("cost") or {}
+        for model in cost.get("models") or []:
+            name = model.get("model", "")
+            self.tokens.add(int(model.get("inputTokens") or 0), {"gen_ai.request.model": name, "slr.direction": "input"})
+            self.tokens.add(int(model.get("outputTokens") or 0), {"gen_ai.request.model": name, "slr.direction": "output"})
+        for step in cost.get("steps") or []:
+            self.cost.add(float(step.get("usd") or 0.0), {"slr.step": step.get("step", "")})
+
+    def shutdown(self) -> None:
+        self._provider.shutdown()
+
+
 class OtelExporter:
     """Turns finished trace records into spans on an OpenTelemetry tracer provider."""
 
@@ -168,3 +251,24 @@ class OtelExporter:
 
     def shutdown(self) -> None:
         self._provider.shutdown()
+
+
+class Fanout:
+    """One sink that feeds several: the spans and the metrics come from the same record."""
+
+    def __init__(self, *sinks: Any) -> None:
+        self.sinks = [s for s in sinks if s is not None]
+
+    def export(self, record: dict[str, Any]) -> None:
+        for sink in self.sinks:
+            sink.export(record)
+
+    def shutdown(self) -> None:
+        for sink in self.sinks:
+            sink.shutdown()
+
+
+def exporters(endpoint: str) -> Fanout | None:
+    """Spans and metrics for one OTLP endpoint, or None when export is off."""
+    fan = Fanout(OtelExporter.from_settings(endpoint), OtelMetrics.from_settings(endpoint))
+    return fan if fan.sinks else None

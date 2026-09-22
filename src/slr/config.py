@@ -77,7 +77,14 @@ class Settings:
     nli_fallback_model: str = "lytang/MiniCheck-RoBERTa-Large"
     nli_fallback_below: float = 0.75
     llm: str = "auto"  # auto | openai | offline
-    llm_model: str = "gpt-4o-mini"
+    #: the model that writes the answer. Measured on ASQA (citation support, pooled over
+    #: every sentence written): gpt-4o-mini 82.9% over three runs, gpt-4.1-mini 77.8%,
+    #: gpt-5.4-mini 89.8%, gpt-5.4 92.8%. The smaller models state what they remember where
+    #: the passage is thin; the verifier then withholds it (D31).
+    llm_model: str = "gpt-5.4-mini"
+    #: The ablation arms vary retrieval knobs and are compared with each other, so they run
+    #: the deterministic offline synthesiser: it isolates retrieval and costs nothing.
+    ablation_llm: str = "offline"
     #: the model that splits an utterance into sub-queries (and plans a refinement).
     #: Measured on ASQA's 40 compound fixtures: gpt-4o-mini isolates two or more of
     #: the gold readings in 13, gpt-4.1 in 25, for ~0.3 US cents more per turn.
@@ -85,8 +92,10 @@ class Settings:
     decompose_model: str = "gpt-4.1"
     llm_base_url: str = ""
     llm_timeout_s: float = 30.0
-    #: only for reasoning models (gpt-5 family, o-series): minimal | low | medium | high
-    llm_reasoning_effort: str = "low"
+    #: only for reasoning models (gpt-5 family, o-series). The gpt-5.4 family takes
+    #: none | low | medium | high | xhigh; earlier gpt-5 models take minimal in place of none.
+    #: "none" keeps the answer on the latency path it was designed for.
+    llm_reasoning_effort: str = "none"
     #: consecutive provider failures (timeouts, 429s, 5xx) that open the LLM circuit
     llm_breaker_failures: int = 3
     #: how long an open circuit keeps the model out before one trial call
@@ -104,11 +113,13 @@ class Settings:
     branch_k: int = 50
     rrf_k: int = 60
     rerank_cap: int = 20
-    rerank_margin: float = 0.15
+    #: how far below the top score a reranked chunk may sit and still be kept. 0.3, not
+    #: 0.15: the tighter cut dropped gold passages (ASQA recall@k 77.5% -> 81.6%).
+    rerank_margin: float = 0.3
     min_keep: int = 3
     per_query_keep: int = 6
-    quota_per_intent: int = 2
-    top_k: int = 8
+    quota_per_intent: int = 3
+    top_k: int = 12
     context_char_budget: int = 9000
 
     # --- chunking --------------------------------------------------------
@@ -156,6 +167,9 @@ class Settings:
     #: Higher on purpose: choosing a source for an uncited (or falsely cited)
     #: sentence is a stronger claim than checking one the model named.
     auto_cite_min: float = 0.75
+    #: retrieved blocks a failed citation is re-checked against, best word-overlap first.
+    #: 6, not 3: word overlap ranks a block that states the fact in other words well down.
+    attribution_pool: int = 6
     affect_margin: float = 0.08
 
     extra: dict = field(default_factory=dict, compare=False, hash=False)

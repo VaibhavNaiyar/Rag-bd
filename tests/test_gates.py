@@ -137,3 +137,16 @@ def test_g5_passes_a_refinement_whose_parent_verified_nothing() -> None:
     g5 = gate_g5(RunResult([ok, dropped]))
     assert g5.value == 50.0
     assert not g5.passed
+
+
+def test_g5_counts_a_rewritten_claim_as_the_refinement_it_is():
+    """A late detail that lands on the parent's only claim rewrites it; nothing is left to preserve."""
+    answer = {"version": 2, "parent": 1, "preserved": [], "mutated": ["c1"]}
+    turn = _turn(
+        {"mode": "refine"},
+        mode="refine",
+        answer=answer,
+        refinement={"parent_claims": 1},
+        fusion={"full_corpus_search": False},
+    )
+    assert gate_g5(RunResult([turn])).value == 100.0
